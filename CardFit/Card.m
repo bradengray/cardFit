@@ -1,15 +1,13 @@
 //
-//  ViewController.h
+//  Card.m
 //  CardFit
 //
 //  Created by Braden Gray on 3/28/16.
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "Card.h"
 
-@interface ViewController : UIViewController
-
+@implementation Card
 
 @end
-
