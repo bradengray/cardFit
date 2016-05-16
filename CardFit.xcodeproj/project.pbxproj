@@ -23,8 +23,12 @@
 		F245CC101CA9FD8B00F034F5 /* PlayingCardDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = F245CC0F1CA9FD8B00F034F5 /* PlayingCardDeck.m */; };
 		F245CC131CAA101600F034F5 /* PlayingCardFitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F245CC121CAA101600F034F5 /* PlayingCardFitViewController.m */; };
 		F28B78001CAA14C600023B3D /* PlayingCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = F28B77FF1CAA14C600023B3D /* PlayingCardView.m */; };
+		F299D6FB1CDFF22C009EE988 /* Timer.m in Sources */ = {isa = PBXBuildFile; fileRef = F299D6FA1CDFF22C009EE988 /* Timer.m */; };
+		F299D6FE1CE2BCDE009EE988 /* OnePlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F299D6FD1CE2BCDE009EE988 /* OnePlayerViewController.m */; };
+		F299D7071CE54316009EE988 /* NumOfCardsPopoverContentTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F299D7061CE54316009EE988 /* NumOfCardsPopoverContentTVC.m */; };
 		F29AD2FB1CBC8FAF003F18A5 /* SettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F29AD2FA1CBC8FAF003F18A5 /* SettingsTVC.m */; };
-		F29AD2FE1CBC8FF3003F18A5 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = F29AD2FD1CBC8FF3003F18A5 /* Settings.m */; };
+		F29AD2FE1CBC8FF3003F18A5 /* PlayingCardSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = F29AD2FD1CBC8FF3003F18A5 /* PlayingCardSettings.m */; };
+		F2EA33EF1CC5B4BF0018CE5F /* CardFitGame.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EA33EE1CC5B4BF0018CE5F /* CardFitGame.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,10 +81,18 @@
 		F245CC121CAA101600F034F5 /* PlayingCardFitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardFitViewController.m; sourceTree = "<group>"; };
 		F28B77FE1CAA14C600023B3D /* PlayingCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardView.h; sourceTree = "<group>"; };
 		F28B77FF1CAA14C600023B3D /* PlayingCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardView.m; sourceTree = "<group>"; };
+		F299D6F91CDFF22C009EE988 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
+		F299D6FA1CDFF22C009EE988 /* Timer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Timer.m; sourceTree = "<group>"; };
+		F299D6FC1CE2BCDE009EE988 /* OnePlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnePlayerViewController.h; sourceTree = "<group>"; };
+		F299D6FD1CE2BCDE009EE988 /* OnePlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnePlayerViewController.m; sourceTree = "<group>"; };
+		F299D7051CE54316009EE988 /* NumOfCardsPopoverContentTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NumOfCardsPopoverContentTVC.h; path = ../NumOfCardsPopoverContentTVC.h; sourceTree = "<group>"; };
+		F299D7061CE54316009EE988 /* NumOfCardsPopoverContentTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NumOfCardsPopoverContentTVC.m; path = ../NumOfCardsPopoverContentTVC.m; sourceTree = "<group>"; };
 		F29AD2F91CBC8FAF003F18A5 /* SettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTVC.h; sourceTree = "<group>"; };
 		F29AD2FA1CBC8FAF003F18A5 /* SettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTVC.m; sourceTree = "<group>"; };
-		F29AD2FC1CBC8FF3003F18A5 /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
-		F29AD2FD1CBC8FF3003F18A5 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
+		F29AD2FC1CBC8FF3003F18A5 /* PlayingCardSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardSettings.h; sourceTree = "<group>"; };
+		F29AD2FD1CBC8FF3003F18A5 /* PlayingCardSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardSettings.m; sourceTree = "<group>"; };
+		F2EA33ED1CC5B4BF0018CE5F /* CardFitGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardFitGame.h; sourceTree = "<group>"; };
+		F2EA33EE1CC5B4BF0018CE5F /* CardFitGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardFitGame.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,8 +193,12 @@
 				F245CC091CA9F5B600F034F5 /* PlayingCard.m */,
 				F245CC0E1CA9FD8B00F034F5 /* PlayingCardDeck.h */,
 				F245CC0F1CA9FD8B00F034F5 /* PlayingCardDeck.m */,
-				F29AD2FC1CBC8FF3003F18A5 /* Settings.h */,
-				F29AD2FD1CBC8FF3003F18A5 /* Settings.m */,
+				F29AD2FC1CBC8FF3003F18A5 /* PlayingCardSettings.h */,
+				F29AD2FD1CBC8FF3003F18A5 /* PlayingCardSettings.m */,
+				F2EA33ED1CC5B4BF0018CE5F /* CardFitGame.h */,
+				F2EA33EE1CC5B4BF0018CE5F /* CardFitGame.m */,
+				F299D6F91CDFF22C009EE988 /* Timer.h */,
+				F299D6FA1CDFF22C009EE988 /* Timer.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -208,6 +224,10 @@
 				F245CC121CAA101600F034F5 /* PlayingCardFitViewController.m */,
 				F23D553A1CBB15AB00F7727B /* MainPageViewController.h */,
 				F23D553B1CBB15AB00F7727B /* MainPageViewController.m */,
+				F299D6FC1CE2BCDE009EE988 /* OnePlayerViewController.h */,
+				F299D6FD1CE2BCDE009EE988 /* OnePlayerViewController.m */,
+				F299D7051CE54316009EE988 /* NumOfCardsPopoverContentTVC.h */,
+				F299D7061CE54316009EE988 /* NumOfCardsPopoverContentTVC.m */,
 				F29AD2F91CBC8FAF003F18A5 /* SettingsTVC.h */,
 				F29AD2FA1CBC8FAF003F18A5 /* SettingsTVC.m */,
 			);
@@ -346,12 +366,16 @@
 			files = (
 				F245CBD71CA9F35F00F034F5 /* CardFitViewController.m in Sources */,
 				F245CC131CAA101600F034F5 /* PlayingCardFitViewController.m in Sources */,
-				F29AD2FE1CBC8FF3003F18A5 /* Settings.m in Sources */,
+				F29AD2FE1CBC8FF3003F18A5 /* PlayingCardSettings.m in Sources */,
+				F299D7071CE54316009EE988 /* NumOfCardsPopoverContentTVC.m in Sources */,
+				F299D6FB1CDFF22C009EE988 /* Timer.m in Sources */,
+				F2EA33EF1CC5B4BF0018CE5F /* CardFitGame.m in Sources */,
 				F29AD2FB1CBC8FAF003F18A5 /* SettingsTVC.m in Sources */,
 				F23D553C1CBB15AB00F7727B /* MainPageViewController.m in Sources */,
 				F245CC101CA9FD8B00F034F5 /* PlayingCardDeck.m in Sources */,
 				F245CBD41CA9F35F00F034F5 /* AppDelegate.m in Sources */,
 				F28B78001CAA14C600023B3D /* PlayingCardView.m in Sources */,
+				F299D6FE1CE2BCDE009EE988 /* OnePlayerViewController.m in Sources */,
 				F245CBD11CA9F35F00F034F5 /* main.m in Sources */,
 				F245CC071CA9F4CF00F034F5 /* Card.m in Sources */,
 				F245CC0D1CA9FB4700F034F5 /* Deck.m in Sources */,

@@ -65,7 +65,7 @@
     [[UIColor blackColor] setStroke];
     [roundedRect stroke];
     
-    if (!self.faceUp) {
+    if (self.faceUp) {
         UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@", [self rankAsString]]];
         if (faceImage) {
             CGRect imageRect = CGRectInset(self.bounds, self.bounds.size.width * FACE_CARD_IMAGE_SCALE_FACTOR, self.bounds.size.height * FACE_CARD_IMAGE_SCALE_FACTOR);
@@ -73,8 +73,10 @@
         } else {
             [self drawPips];
         }
+        [self drawCorners];
+    } else {
+        [[UIImage imageNamed:@"cardback"] drawInRect:self.bounds];
     }
-    [self drawCorners];
 }
 
 - (void)drawCorners {

@@ -20,7 +20,6 @@
 @property (nonatomic) CGFloat minSubViewWidth;
 @property (nonatomic) CGFloat minSubViewHeight;
 @property (nonatomic) BOOL rotated;
-@property (nonatomic) BOOL landscapeLeft;
 
 //outputs
 @property (nonatomic, readonly) CGSize subViewSize;
@@ -29,5 +28,6 @@
 - (CGRect)frameForCardView:(UIView *)cardView;
 - (CGRect)frameForStartButton:(UIButton *)button;
 - (CGRect)frameForTasklabel:(UILabel *)label;
+- (CGRect)frameForTimerLabel:(UILabel *)label;
 
 @end

@@ -16,11 +16,13 @@
 @property (nonatomic) NSUInteger maxCardWidth;
 @property (nonatomic) NSUInteger minCardHeight;
 @property (nonatomic) NSUInteger minCardWidth;
+@property (nonatomic) NSUInteger numberOfCards;
 
 - (Deck *)createDeck; //abstract
 - (UIView *)createCardViewWithCard:(Card *)card; //abstract
 - (void)updateCardView:(UIView *)cardView withCard:(Card *)card; //abstract
 - (NSString *)setTitleForCardView:(UIView *)cardView; //abstract
+- (NSNumber *)repsForCard:(Card *)card; //abstract
 
 @end
 

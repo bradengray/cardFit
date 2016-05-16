@@ -10,4 +10,6 @@
 
 @implementation Card
 
+//no code needed. Setters and Getters are created automatically and contents is not used in this app.
+
 @end
