@@ -8,16 +8,26 @@
 
 #import "CardFitViewController.h"
 #import "CardFitLayoutView.h"
-#import <CoreMotion/CoreMotion.h>
+#import "CardFitGame.h"
+#import "Timer.h"
 
 @interface CardFitViewController ()
-@property (nonatomic, strong) Deck *deck; //of Cards
-@property (nonatomic) NSUInteger cardCount;
+@property (nonatomic, strong) CardFitGame *game;
 @property (nonatomic, strong) CardFitLayoutView *cardFitLayoutView;
+
 @property (nonatomic, strong) Card *currentCard;
 @property (nonatomic, strong) UIView *cardView;
-@property (nonatomic, strong) UIButton *startButton;
+
+@property (nonatomic, strong) UIButton *pauseButton;
 @property (nonatomic, strong) UILabel *taskLabel;
+@property (weak, nonatomic) IBOutlet UILabel *countDownLabel;
+@property (nonatomic, strong) UILabel *timerLabel;
+
+@property (nonatomic) NSUInteger counter;
+@property (nonatomic) BOOL rotated;
+@property (nonatomic) BOOL paused;
+@property (nonatomic) BOOL started;
+@property (nonatomic, strong) NSTimer *gameTimer;
 
 @end
 
@@ -27,9 +37,12 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self createButton];
-    self.currentCard = [self drawRandomCard];
-    [self updateUI];
+    [self setUpUIForGameStart];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationController.navigationBar.hidden = YES;
 }
 
 #pragma mark - Rotation
@@ -39,16 +52,11 @@
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-         if (orientation == UIInterfaceOrientationLandscapeLeft) {
+         UIInterfaceOrientation orientation = [self orientation];
+         if (orientation == UIInterfaceOrientationLandscapeLeft || orientation ==UIInterfaceOrientationLandscapeRight) {
              self.cardFitLayoutView.rotated = YES;
-             self.cardFitLayoutView.landscapeLeft = YES;
-         } else if (orientation == UIInterfaceOrientationLandscapeRight) {
-             self.cardFitLayoutView.rotated = YES;
-             self.cardFitLayoutView.landscapeLeft = NO;
          } else {
              self.cardFitLayoutView.rotated = NO;
-             self.cardFitLayoutView.landscapeLeft = NO;
          }
      } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
@@ -58,23 +66,37 @@
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
-#pragma mark - Properties
-
-#define CARD_ASPECT_RATIO 0.620
-#define CORNER_OFFSET 5.0
-
-- (CGFloat)cardHeight {
-    return [self cardWidth] / CARD_ASPECT_RATIO;
+- (UIInterfaceOrientation)orientation {
+    return [[UIApplication sharedApplication] statusBarOrientation];
 }
 
-- (CGFloat)cardWidth {
-    return (self.view.bounds.size.width - (CORNER_OFFSET * 2.0));
+#pragma mark - Properties
+
+- (CardFitGame *)game {
+    if (!_game) {
+        _game = [[CardFitGame alloc] initWithCardCount:self.numberOfCards withDeck:[self createDeck]];
+    }
+    return _game;
+}
+
+- (NSUInteger)numberOfCards {
+    if (!_numberOfCards) {
+        _numberOfCards = 20;
+    }
+    return _numberOfCards;
 }
 
 - (CardFitLayoutView *)cardFitLayoutView {
     if (!_cardFitLayoutView) {
+        CGSize layoutViewSize;
+        if (self.rotated) {
+            layoutViewSize = CGSizeMake(self.view.frame.size.height, self.view.frame.size.width);
+        } else {
+            layoutViewSize = self.view.frame.size;
+        }
         _cardFitLayoutView = [[CardFitLayoutView alloc] init];
-        _cardFitLayoutView.size = self.view.frame.size;
+        _cardFitLayoutView.rotated = self.rotated;
+        _cardFitLayoutView.size = layoutViewSize;
         _cardFitLayoutView.aspectRatio = self.cardAspectRatio;
         _cardFitLayoutView.maxSubViewWidth = self.maxCardWidth;
         _cardFitLayoutView.maxSubViewHeight = self.maxCardHeight;
@@ -84,23 +106,23 @@
     return _cardFitLayoutView;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.navigationController.navigationBar.hidden = YES;
+- (BOOL)rotated {
+    if (!_rotated) {
+        UIInterfaceOrientation orientation = [self orientation];
+        if (orientation != UIInterfaceOrientationPortrait) {
+            _rotated = YES;
+        } else {
+            _rotated = NO;
+        }
+    }
+    return _rotated;
 }
 
-- (NSUInteger)cardCount {
-    if (!_cardCount ) {
-        _cardCount = 0;
+- (NSUInteger)counter {
+    if (!_counter ) {
+        _counter = 0;
     }
-    return _cardCount;
-}
-
-- (Deck *)deck {
-    if (!_deck) {
-        _deck = [self createDeck];
-    }
-    return _deck;
+    return _counter;
 }
 
 - (UILabel *)taskLabel {
@@ -110,6 +132,110 @@
     return _taskLabel;
 }
 
+- (UILabel *)timerLabel {
+    if (!_timerLabel) {
+        _timerLabel = [[UILabel alloc] init];
+        _timerLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    return _timerLabel;
+}
+
+#pragma mark - Countdown And Setup
+
+#define COUNTDOWN_INTERVAL 1.0
+#define GAME_TIMER_INTERVAL 0.1
+
+- (void)activateGameTimer {
+    self.gameTimer = [NSTimer scheduledTimerWithTimeInterval:GAME_TIMER_INTERVAL target:self selector:@selector(updateGameTimeLabel) userInfo:nil repeats:YES];
+}
+
+- (void)deactivateGameTimer {
+    [self.gameTimer invalidate];
+}
+
+- (void)setUpUIForGameStart {
+    [self createButton];
+    self.currentCard = [self drawRandomCard];
+    [self updateUI];
+    [self removeGesturesForView:self.cardView];
+    NSRange range = NSMakeRange(0, 1);
+    self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:@"CardFit" attributes:[self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range]];
+    self.countDownLabel.hidden = YES;
+}
+
+- (void)startCountDown {
+    self.taskLabel.hidden = YES;
+    self.countDownLabel.hidden = NO;
+    [self.view bringSubviewToFront:self.countDownLabel];
+    [self countDown];
+    self.gameTimer = [NSTimer scheduledTimerWithTimeInterval:COUNTDOWN_INTERVAL target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+}
+                      
+- (void)countDown {
+    if (self.counter <= 3) {
+        [self animateCountDownLabel];
+    } else {
+        self.countDownLabel.hidden = YES;
+        [self setLabelTitleForCardView:self.cardView];
+        self.pauseButton.enabled = YES;
+        [self flipCard];
+        [self deactivateGameTimer];
+        [self activateGameTimer];
+        [self.pauseButton setAttributedTitle:[self setButtonAttributedTitleForHeight:self.pauseButton.frame.size.height] forState:UIControlStateNormal];
+    }
+    self.counter++;
+}
+
+- (void)flipCard {
+    [UIView transitionWithView:self.cardView
+                      duration:0.3
+                       options:UIViewAnimationOptionTransitionFlipFromLeft
+                    animations:^{
+                        self.currentCard.selected = !self.currentCard.selected;
+                        [self updateCardView:self.cardView withCard:self.currentCard];
+                    } completion:^(BOOL finished) {
+                        if (self.currentCard.selected) {
+                            self.taskLabel.hidden = NO;
+                            self.cardView.alpha = 1.0;
+                            [self.cardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)]];
+                            [self updateUI];
+                        }
+                    }];
+}
+
+- (void)updateGameTimeLabel {
+    [self.timerLabel setText:self.game.gameTime];
+    self.timerLabel.frame = [self.cardFitLayoutView frameForTimerLabel:self.timerLabel];
+}
+
+- (void)animateCountDownLabel {
+    self.countDownLabel.attributedText = [self countDownLabelAttributedText];
+    self.countDownLabel.alpha = .15;
+    [UIView animateWithDuration:0.8 animations:^{
+        self.countDownLabel.font = [self.countDownLabel.font fontWithSize:130];
+        self.countDownLabel.alpha = 1.0;
+    }];
+}
+
+- (NSAttributedString *)countDownLabelAttributedText {
+    return [[NSAttributedString alloc] initWithString:[self labelString] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2}];
+}
+
+- (NSString *)labelString {
+    if (self.counter == 0) {
+        return @"3";
+    } else if (self.counter == 1) {
+        return @"2";
+    } else if (self.counter == 2) {
+        return @"1";
+    } else if (self.counter == 3) {
+        return @"GO";
+    } else {
+        return @"Error";
+    }
+}
+
+#pragma mark - UI and EndGame
 
 - (void)updateUI {
     if (self.currentCard) {
@@ -119,53 +245,72 @@
             [self.cardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)]];
             [self.view addSubview:self.cardView];
             [self setLabelTitleForCardView:self.cardView];
+//            self.taskLabel.numberOfLines = 2;
             self.taskLabel.frame = [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
             [self.view addSubview:self.taskLabel];
+            self.timerLabel.frame = [self.cardFitLayoutView frameForTimerLabel:self.timerLabel];
+            [self.view addSubview:self.timerLabel];
         } else {
             [UIView transitionWithView:self.cardView
                               duration:.001
                                options:UIViewAnimationOptionCurveEaseIn
             animations:^{
                 self.cardView.frame = [self.cardFitLayoutView frameForCardView:self.cardView];
-                self.startButton.frame = [self.cardFitLayoutView frameForStartButton:self.startButton];
-//                self.taskLabel.font = [self labelfont];
+                self.pauseButton.frame = [self.cardFitLayoutView frameForStartButton:self.pauseButton];
                 self.taskLabel.frame = [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
+                self.timerLabel.frame = [self.cardFitLayoutView frameForTimerLabel:self.timerLabel];
             } completion:nil];
         }
     } else {
+        [self endGame];
         NSLog(@"Error No Card");
     }
 }
 
 - (Card *)drawRandomCard {
-    self.cardCount++;
-    NSLog(@"%lu", (unsigned long)self.cardCount);
-    Card *card = [self.deck drawRandomCard];
+    Card *card = [self.game drawCard];
+    self.game.totalReps = [[self repsForCard:card] intValue];
     if (!card) {
-        NSLog(@"No More Cards");
+        NSLog(@"No more Cards");
     }
-    
     return card;
 }
 
-#pragma mark - StartButton
+- (void)removeGesturesForView:(UIView *)view {
+    for (UIGestureRecognizer *gesture in self.cardView.gestureRecognizers) {
+        if ([gesture isKindOfClass:[UITapGestureRecognizer class]]) {
+            [view removeGestureRecognizer:gesture];
+        }
+    }
+}
+
+- (void)endGame {
+    NSRange range = NSMakeRange(0, 1);
+    NSDictionary *attributes = [self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
+    [self.taskLabel setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score :%ld", self.game.score] attributes:attributes]];
+    self.pauseButton.enabled = NO;
+    self.navigationController.navigationBar.hidden = NO;
+    self.game.paused = YES;
+}
+
+#pragma mark - PauseButton
 
 - (void)createButton {
-    self.startButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.pauseButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    self.startButton.layer.cornerRadius = 10;
+    self.pauseButton.layer.cornerRadius = 10;
     
-    self.startButton.frame = [self.cardFitLayoutView frameForStartButton:self.startButton];
+    self.pauseButton.frame = [self.cardFitLayoutView frameForStartButton:self.pauseButton];
     
-    [self.startButton setBackgroundColor:[UIColor colorWithRed:0 green:.3 blue:.8 alpha:1]];
+    [self.pauseButton setBackgroundColor:[UIColor colorWithRed:0 green:.3 blue:.8 alpha:1]];
     
-    [self.startButton setAttributedTitle:[self setButtonAttributedTitleForHeight:self.startButton.frame.size.height] forState:UIControlStateNormal];
+    [self.pauseButton setAttributedTitle:[self setButtonAttributedTitleForHeight:self.pauseButton.frame.size.height] forState:UIControlStateNormal];
     
-    [self.startButton addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
+    [self.pauseButton addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
     
-    [self.startButton addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+    [self.pauseButton addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
     
-    [self.view addSubview:self.startButton];
+    [self.view addSubview:self.pauseButton];
 }
 
 #define BUTTON_FONT_SCALE_FACTOR 25
@@ -177,25 +322,60 @@
     UIFont *buttonTitleFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     buttonTitleFont = [buttonTitleFont fontWithSize:buttonTitleFont.pointSize * (height / BUTTON_FONT_SCALE_FACTOR)];
     
-    NSAttributedString *buttonAttributedTitle = [[NSAttributedString alloc] initWithString:@"Start" attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : buttonTitleFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-3}];
+    NSAttributedString *buttonAttributedTitle = [[NSAttributedString alloc] initWithString:[self buttonString] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : buttonTitleFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-3}];
     
     return buttonAttributedTitle;
 }
 
 - (void)buttonTouchDown:(UIButton *)button {
-    button.titleLabel.alpha = 0.15;
+    button.titleLabel.alpha = 0.35;
     [button setBackgroundColor:[UIColor colorWithRed:0 green:.2 blue:.7 alpha:0.9]];
 }
 
 - (void)buttonTouchUpInside:(UIButton *)button {
-    [UIView animateWithDuration:0.3 animations:^{
-        button.titleLabel.alpha = 1.0;
-        [button setBackgroundColor:[UIColor colorWithRed:0 green:.3 blue:.8 alpha:1]];
-    }];
-    self.navigationController.navigationBar.hidden = NO;
+    button.titleLabel.alpha = 1.0;
+    [button setBackgroundColor:[UIColor colorWithRed:0 green:.3 blue:.8 alpha:1]];
+    if (self.started) {
+        self.paused = !self.paused;
+        if (!self.paused) {
+            self.game.paused = YES;
+            [self activateGameTimer];
+            [UIView animateWithDuration:0.3 animations:^{
+                self.navigationController.navigationBar.hidden = YES;
+                self.cardView.alpha = 1.0;
+                self.taskLabel.alpha = 1.0;
+                [button setAttributedTitle:[self setButtonAttributedTitleForHeight:button.frame.size.height] forState:UIControlStateNormal];
+                [self.cardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)]];
+            }];
+        } else {
+            [button setAttributedTitle:[self setButtonAttributedTitleForHeight:button.frame.size.height] forState:UIControlStateNormal];
+            self.navigationController.navigationBar.hidden = NO;
+            self.cardView.alpha = 0.35;
+            self.taskLabel.alpha = 0.35;
+            self.game.paused = NO;
+            [self deactivateGameTimer];
+            [self removeGesturesForView:self.cardView];
+        }
+    } else {
+        self.pauseButton.enabled = NO;
+        [self startCountDown];
+        self.started = YES;
+    }
 }
 
-#pragma mark - Label
+- (NSString *)buttonString {
+    if (self.started) {
+        if (!self.paused) {
+            return @"Pause";
+        } else {
+            return @"Resume";
+        }
+    } else {
+        return @"Start";
+    }
+}
+
+#pragma mark - Task Label
 
 #define LABEL_FONT_SCALE_FACTOR 0.005
 
@@ -213,28 +393,19 @@
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
-//    UIFont *labelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-//    labelFont = [labelFont fontWithSize:labelFont.pointSize * [self labelFontScaleFactor]];
+    UIFont *labelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    labelFont = [labelFont fontWithSize:36];
     
-    self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self setTitleForCardView:cardView]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : [self labelfont], NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
+    self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self setTitleForCardView:cardView]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
     
     self.taskLabel.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:0.50];
-}
-
-- (UIFont *)labelfont {
-    UIFont *labelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    labelFont = [labelFont fontWithSize:labelFont.pointSize * [self labelFontScaleFactor]];
-    return labelFont;
-}
-
-- (NSString *)setTitleForCardView:(UIView *)cardView { //abstract
-    return nil;
 }
 
 - (void)tap:(UITapGestureRecognizer *)gesture {
     [self.cardView removeFromSuperview];
     self.cardView = nil;
     self.currentCard = [self drawRandomCard];
+    self.currentCard.selected = YES;
     [self updateUI];
 }
 
@@ -250,6 +421,14 @@
 
 - (void)updateCardView:(UIView *)cardView withCard:(Card *)card { // abstract
     return;
+}
+
+- (NSString *)setTitleForCardView:(UIView *)cardView { //abstract
+    return nil;
+}
+
+- (NSNumber *)repsForCard:(Card *)card { //abstract
+    return nil;
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "MainPageViewController.h"
+#import "OnePlayerViewController.h"
 
 @interface MainPageViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *multiPlayerButton;
@@ -77,6 +78,19 @@
         button.titleLabel.alpha = 1.0;
         [button setBackgroundColor:[UIColor colorWithRed:0 green:.3 blue:.8 alpha:1]];
     }];
+}
+
+- (void)prepareViewController:(OnePlayerViewController *)opvc {
+    opvc.title = @"One Player";
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"One Player Identifier"]) {
+        if ([segue.destinationViewController isKindOfClass:[OnePlayerViewController class]]) {
+            OnePlayerViewController *opvc = (OnePlayerViewController *)segue.destinationViewController;
+            [self prepareViewController:opvc];
+        }
+    }
 }
 
 @end

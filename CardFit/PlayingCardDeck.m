@@ -11,16 +11,23 @@
 
 @implementation PlayingCardDeck
 
-- (instancetype)init {
+#pragma mark - Initialization
+
+- (instancetype)initWithNumberOfDecks:(NSUInteger)numberOfDecks withJokers:(BOOL)jokers { //designated initialiazer
     self = [super init];
     
-    for (int suit = 0; suit <= [PlayingCard maxSuit]; suit++) {
-        for (int rank = 1; rank <= [PlayingCard maxRank]; rank++) {
-            if (!(rank == 14) || (rank == 14 && suit < 2)) {
-                PlayingCard *card = [[PlayingCard alloc] init];
-                card.rank = rank;
-                card.suit = suit;
-                [self addCard:card];
+    //Cycle through number of decks, suits, ranks, and jokers to create a deck or decks of cards.
+    for (int decks = 0; decks < numberOfDecks; decks++) {
+        for (int suit = 0; suit <= [PlayingCard maxSuit]; suit++) {
+            for (int rank = 1; rank <= [PlayingCard maxRank]; rank++) {
+                if (rank != 14 || (rank == 14 && suit < 2)) {
+                    if (rank !=14 || (rank == 14 && jokers)) {
+                        PlayingCard *card = [[PlayingCard alloc] init];
+                        card.rank = rank;
+                        card.suit = suit;
+                        [self addCard:card];
+                    }
+                }
             }
         }
     }

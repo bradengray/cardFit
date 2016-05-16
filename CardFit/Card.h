@@ -10,7 +10,7 @@
 
 @interface Card : NSObject
 
-@property (nonatomic, strong) NSString *contents;
-@property (nonatomic) BOOL selected;
+@property (nonatomic, strong) NSString *contents; //returns a string of the cards contents;
+@property (nonatomic) BOOL selected; //bool value for telling if card is selected or not.
 
 @end

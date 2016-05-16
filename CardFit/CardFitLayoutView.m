@@ -44,16 +44,6 @@
     double minWidth = self.minSubViewWidth;
     double minHeight = self.minSubViewHeight;
     
-//    BOOL flipped = NO;
-    if (self.rotated) {
-        self.rotated = YES;
-        overallHeight = ABS(self.size.width);
-        overallWidth = ABS(self.size.height);
-//        aspectRatio = 1.0/aspectRatio;
-        maxWidth = self.maxSubViewHeight;
-        maxHeight = self.maxSubViewWidth;
-    }
-    
     if (minWidth < 0) {
         minWidth = 0;
     }
@@ -82,11 +72,7 @@
         if (subViewWidth <= minWidth) {
             self.unresolvable = YES;
         } else {
-            if (self.rotated) {
-                self.subViewSize = CGSizeMake(subViewHeight, subViewWidth);
-            } else {
-                self.subViewSize = CGSizeMake(subViewWidth, subViewHeight);
-            }
+            self.subViewSize = CGSizeMake(subViewWidth, subViewHeight);
             self.resolved = YES;
         }
     }
@@ -102,6 +88,14 @@
     } else {
         return MINIMUM_VOFFSET;
     }
+}
+
+- (CGFloat)buttonLandscapeWidth {
+    return self.size.width * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE);
+}
+
+- (CGFloat)cardLandscapeWidth {
+    return self.subViewSize.width - [self buttonLandscapeWidth];
 }
 
 - (CGAffineTransform)rotate {
@@ -120,14 +114,8 @@
     cardView.transform = [self rotate];
     CGRect frame = CGRectMake([self hoffset], [self voffset], self.subViewSize.width, self.subViewSize.height);
     if (self.rotated) {
-        if (self.landscapeLeft) {
-            cardView.transform = [self rotateLeft];
-//            frame = CGRectMake([self voffset], [self hoffset], self.subViewSize.height, self.subViewSize.width);
-            frame = CGRectMake([self voffset] + self.size.height * (1 - self.subViewSize.height) / 2.0, [self hoffset], self.subViewSize.height, self.subViewSize.width - self.size.width * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE));
-        } else {
-            cardView.transform = [self rotateRight];
-            frame = CGRectMake(([self voffset] - MINIMUM_VOFFSET) + self.size.height * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE), [self hoffset], self.subViewSize.height, self.subViewSize.width);
-        }
+        cardView.transform = [self rotateLeft];
+        frame = CGRectMake(self.size.height / 2.0 - self.subViewSize.height / 2.0, self.size.width / 2.0 - self.subViewSize.width / 2.0, self.subViewSize.height, [self cardLandscapeWidth]);
     }
     return frame;
 }
@@ -136,42 +124,53 @@
     button.transform = [self rotate];
     CGRect frame = CGRectMake([self hoffset], [self voffset] + self.subViewSize.height, self.subViewSize.width, self.size.height * (1 -SUBVIEW_HEIGHT_SCALE_PERCENTAGE));
     if (self.rotated) {
-        if (self.landscapeLeft) {
-            button.transform = [self rotateLeft];
-//            frame = CGRectMake([self voffset] + self.subViewSize.height, [self hoffset], self.size.height * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE), self.subViewSize.width);
-            frame = CGRectMake(0, self.size.width - self.size.width * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE), self.size.width, self.subViewSize.height * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE));
-        } else {
-            button.transform = [self rotateRight];
-            frame = CGRectMake([self voffset] - MINIMUM_VOFFSET, [self hoffset], self.size.height * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE), self.subViewSize.width);
+        CGFloat buttonHeight = [self buttonLandscapeWidth];
+        if ([self voffset] == MINIMUM_VOFFSET) {
+            buttonHeight = [self buttonLandscapeWidth] + (self.size.width - self.subViewSize.width) / 2.0;
         }
+        frame = CGRectMake(self.size.height / 2.0 - self.subViewSize.height / 2.0, self.size.width / 2.0 + self.subViewSize.width / 2.0 - [self buttonLandscapeWidth], self.subViewSize.height, buttonHeight);
     }
     return frame;
 }
 
 - (CGRect)frameForTasklabel:(UILabel *)label {
-//    label.transform = [self rotate];
-    CGRect frame;
+//    [self setLabel:label fontSizeForWidth:self.subViewSize.width];
+    CGRect frame = CGRectMake([self hoffset], ([self voffset] + self.subViewSize.height / 2.0) - label.attributedText.size.height / 2.0, self.subViewSize.width, label.attributedText.size.height);
     if (self.rotated) {
         [self setLabel:label fontSizeForWidth:self.subViewSize.height];
-        if (self.landscapeLeft) {
-//            label.transform = [self rotateLeft];
-//            frame = CGRectMake(([self hoffset] + self.subViewSize.height / 2.0) - label.attributedText.size.height / 2.0, [self hoffset], label.attributedText.size.height, self.subViewSize.width);
-            frame = CGRectMake([self voffset], ([self hoffset] + self.subViewSize.width / 2.0) - label.attributedText.size.height / 2.0, self.subViewSize.height, label.attributedText.size.height);
-        } else {
-//            label.transform = [self rotateRight];
-//            frame = CGRectMake((((self.size.height * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE)) + self.subViewSize.height / 2.0) + [self voffset]) - label.attributedText.size.height / 2.0, [self hoffset], label.attributedText.size.height, self.subViewSize.width);
-            frame = CGRectMake(self.size.height * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE), ([self hoffset] + self.subViewSize.width / 2.0) - label.attributedText.size.height / 2.0, self.subViewSize.height, label.attributedText.size.height);
-        }
-    } else {
-        [self setLabel:label fontSizeForWidth:self.subViewSize.width];
-        frame = CGRectMake([self hoffset], ([self voffset] + self.subViewSize.height / 2.0) - label.attributedText.size.height / 2.0, self.subViewSize.width, label.attributedText.size.height);
+        frame = CGRectMake(self.size.height / 2.0 - self.subViewSize.height / 2.0, self.size.width / 2.0 - label.attributedText.size.height / 2.0 - self.size.width * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE) / 2.0, self.subViewSize.height, label.attributedText.size.height);
+    }
+    return frame;
+}
+
+- (CGRect)frameForTimerLabel:(UILabel *)label {
+    CGRect frame = CGRectMake(self.size.width / 2.0 - label.attributedText.size.width / 2.0, [self voffset] + self.subViewSize.height - label.attributedText.size.height, label.attributedText.size.width, label.attributedText.size.height);
+    if (self.rotated) {
+        [self setLabel:label fontSizeForWidth:self.subViewSize.height];
+        frame = CGRectMake(self.size.height / 2.0 - label.attributedText.size.width / 2.0, (self.size.width - self.subViewSize.width) / 2.0 + [self cardLandscapeWidth] - label.attributedText.size.height, label.attributedText.size.width, label.attributedText.size.height);
     }
     return frame;
 }
 
 - (void)setLabel:(UILabel *)label fontSizeForWidth:(CGFloat)width {
-    while (label.attributedText.size.width > width) {
-        label.font = [label.font fontWithSize:label.font.pointSize - 1];
+    if (label.attributedText.size.width > width) {
+//        label.font = [label.font fontWithSize:label.font.pointSize - 1];
+        label.numberOfLines = 2;
+        NSRange range = NSMakeRange(0, 1);
+        NSDictionary *attributes = [label.attributedText attributesAtIndex:0 effectiveRange:&range];
+        NSArray *textArray = [label.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        NSString *textString = @"";
+        int i = 0;
+        for (NSString *string in textArray) {
+            if (i > 0) {
+                textString = [textString stringByAppendingString:[NSString stringWithFormat:@"%@ ", string]];
+            } else {
+                textString = [textString stringByAppendingString:[NSString stringWithFormat:@"%@\n", string]];
+            }
+            i++;
+        }
+        NSAttributedString *attributedTextString = [[NSAttributedString alloc] initWithString:textString attributes:attributes];
+        label.attributedText = attributedTextString;
     }
 }
 

@@ -7,7 +7,7 @@
 //
 
 #import "SettingsTVC.h"
-#import "Settings.h"
+#import "PlayingCardSettings.h"
 
 @interface  SettingsTVC () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *spadesExerciseTextField;
@@ -25,7 +25,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *defaultButton;
 @property (nonatomic, strong) NSString *textFieldRecentValue;
 
-@property (nonatomic, strong) Settings *settings;
+@property (nonatomic, strong) PlayingCardSettings *settings;
 
 @end
 
@@ -37,9 +37,9 @@
     [self loadTextFieldValues];
 }
 
-- (Settings *)settings {
+- (PlayingCardSettings *)settings {
     if (!_settings) {
-        _settings = [[Settings alloc] init];
+        _settings = [[PlayingCardSettings alloc] init];
     }
     return _settings;
 }
@@ -103,11 +103,11 @@
     self.acesRepsTextField.inputAccessoryView = numberToolBar;
     self.jokersRepsTextField.inputAccessoryView = numberToolBar;
     
-    self.jacksRepsTextField.text = [NSString stringWithFormat:@"%lu", self.settings.jacksReps];
-    self.queensRepsTextField.text = [NSString stringWithFormat:@"%lu", self.settings.queensReps];
-    self.kingsRepsTextField.text = [NSString stringWithFormat:@"%lu", self.settings.kingsReps];
-    self.acesRepsTextField.text = [NSString stringWithFormat:@"%lu", self.settings.acesReps];
-    self.jokersRepsTextField.text = [NSString stringWithFormat:@"%lu", self.settings.jokersReps];
+    self.jacksRepsTextField.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.settings.jacksReps];
+    self.queensRepsTextField.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.settings.queensReps];
+    self.kingsRepsTextField.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.settings.kingsReps];
+    self.acesRepsTextField.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.settings.acesReps];
+    self.jokersRepsTextField.text = [NSString stringWithFormat:@"%lu", (unsigned long)self.settings.jokersReps];
 }
 
 - (UIToolbar *)numberToolBar {
@@ -130,7 +130,7 @@
     [self.currentTextField resignFirstResponder];
 }
 
-#define MINIMUM_STRING_LENGTH 20
+#define MINIMUM_STRING_LENGTH 15
 #define MAX_REPS_NUMBER 1000
 
 - (void)saveUserInputForTextField {
@@ -140,7 +140,7 @@
         self.currentTextField.text = self.textFieldRecentValue;
     } else {
         if ([self numberField]) {
-            if ([self.currentTextField.text integerValue] > MAX_REPS_NUMBER) {
+            if ([self.currentTextField.text integerValue] >= MAX_REPS_NUMBER) {
                 [self alert:[NSString stringWithFormat:@"Reps Must Be Less Than %d", MAX_REPS_NUMBER]];
                 self.currentTextField.text = self.textFieldRecentValue;
             } else {
