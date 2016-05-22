@@ -44,7 +44,7 @@
     //If there is a start date and timer is active the set timeElapsed since active plust total time.
     } else if (self.active) {
         _timeElapsed = [[NSDate date] timeIntervalSinceDate:self.start] + [self.totalTime floatValue];
-    }
+    } 
     return _timeElapsed;
 }
 

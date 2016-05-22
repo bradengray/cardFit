@@ -11,13 +11,16 @@
 #import "CardFitViewController.h"
 #import "PlayingCardSettings.h"
 
-@interface OnePlayerViewController () <UITextFieldDelegate, NumberOfCardsDelegate, UIPopoverPresentationControllerDelegate>
+@interface OnePlayerViewController () <UITextFieldDelegate, NumberOfCardsDelegate, UIPopoverPresentationControllerDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *textFieldLabel;
 @property (weak, nonatomic) IBOutlet UITextField *numberOfCardsTextField;
 @property (weak, nonatomic) IBOutlet UIButton *startButton;
 @property (weak, nonatomic) IBOutlet UILabel *switchLabel;
 @property (weak, nonatomic) IBOutlet UISwitch *jokerSwitch;
 @property (nonatomic, strong) PlayingCardSettings *settings;
+
+@property (weak, nonatomic) IBOutlet UIPickerView *picker;
+
 
 @end
 
@@ -29,6 +32,8 @@
     [super viewWillAppear:animated];
     [self setButtonAttributes];
     [self setLabelText];
+    self.picker.delegate = self;
+    self.picker.dataSource = self;
     [self updateUI];
 }
 
@@ -46,6 +51,12 @@
 - (void)updateUI {
     self.numberOfCardsTextField.text = self.settings.onePlayerNumberOfCards;
     self.jokerSwitch.on = self.settings.jokers;
+    [self updatePickerView];
+}
+
+-(void)updatePickerView {
+    NSInteger row = [self.settings.onePlayerNumberOfCardsOptionStrings indexOfObject:self.settings.onePlayerNumberOfCards];
+    [self.picker selectRow:row inComponent:0 animated:YES];
 }
 
 - (IBAction)touchedJokerSwitch:(UISwitch *)sender {
@@ -151,6 +162,27 @@
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     [self performSegueWithIdentifier:@"Popover Content" sender:textField];
     return NO;
+}
+
+#pragma mark - UIPickerViewDataSource
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return [self.settings.onePlayerNumberOfCardsOptionStrings count];
+}
+
+#pragma mark - UIPickerViewDelegate
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    return self.settings.onePlayerNumberOfCardsOptionStrings[row];
+}
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    self.settings.onePlayerNumberOfCards = self.settings.onePlayerNumberOfCardsOptionStrings[row];
+    [self updateUI];
 }
 
 @end

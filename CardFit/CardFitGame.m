@@ -27,7 +27,7 @@
     
     //Draw cards from the deck given based on the cardCount.
     if (self) {
-        for (int i; i < cardCount; i++) {
+        for (int i = 0; i < cardCount; i++) {
             Card *card = [deck drawRandomCard];
             //If there is a card add it to self.cards.
             if (card) {
@@ -63,7 +63,7 @@
 
 - (void)setPaused:(BOOL)paused { //When paused set timer.active equal to paused.
     _paused = paused;
-    self.timer.active = paused;
+    self.timer.active = !paused;
 }
 
 - (NSString *)gameTime { //Lazy Instantiate gameTime.

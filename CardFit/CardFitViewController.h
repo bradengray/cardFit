@@ -21,7 +21,7 @@
 - (Deck *)createDeck; //abstract
 - (UIView *)createCardViewWithCard:(Card *)card; //abstract
 - (void)updateCardView:(UIView *)cardView withCard:(Card *)card; //abstract
-- (NSString *)setTitleForCardView:(UIView *)cardView; //abstract
+- (NSString *)setTitleForCardView:(Card *)card; //abstract
 - (NSNumber *)repsForCard:(Card *)card; //abstract
 
 @end

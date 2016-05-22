@@ -11,11 +11,15 @@
 //Main dictionary key used to store all values in NSUserdefaults.
 #define SETTINGS_DICTIONARY_KEY @"Settings Dictionary Key"
 
+#define JOKERS_OPTIONS @"Play With Jokers"
+#define ACE_EXERCISE_AND_REPS_LABEL @"Ace Label Options"
+#define JOKER_EXERCISE_AND_REPS_LABEL @"Joker Label Options"
+
 //Keys for exercises
 #define SPADES_EXCERCISE_KEY @"Spades Exercise Key"
-#define CLUBS_EXCERCISE_KEY @"Clubs Exercise Key"
+#define CLUBS_EXCERCISE_KEY @"Clubs Exercies Key"
 #define HEARTS_EXCERCISE_KEY @"Hearts Exercise Key"
-#define DIAMONDS_EXCERCISE_KEY @"Diamonds Exercise Key"
+#define DIAMONDS_EXCERCISE_KEY @"Diamonds Exercies Key"
 #define ACES_EXERCISE_KEY @"Aces Exercise Key"
 #define JOKERS_EXERCISE_KEY @"Jokers Exercise Key"
 
@@ -47,6 +51,179 @@
 #define TEN_DECKS @"Ten Decks"
 
 @implementation PlayingCardSettings
+
+#pragma mark - Settings
+
+- (NSArray *)data {
+    return @[[self defaults], [self options], [self suits], [self cards]];
+}
+
+- (NSArray *)sectionsArray {
+    return @[@"Defaults", @"Options", @"Suits", @"Cards"];
+}
+
+#pragma mark - Keys
+
+//- (NSString *)exerciseKey {
+//    return EXERCISE;
+//}
+//
+//- (NSString *)repsKey {
+//    return REPS;
+//}
+//
+//- (NSString *)defaultsKey {
+//    return DEFAULTS;
+//}
+//
+//- (NSString *)jokerOptionsKey {
+//    return JOKER;
+//}
+
+#pragma mark - Section Arrays
+
+- (NSArray *)suits {
+    return @[[self spade], [self club], [self heart], [self diamond]];
+}
+
+- (NSArray *)cards {
+    if (self.jokers) {
+        return @[[self jack], [self queen], [self king], [self ace], [self joker]];
+    } else {
+        return @[[self jack], [self queen], [self king], [self ace]];
+    }
+}
+
+- (NSArray *)defaults {
+    return @[[self defaultButtons]];
+}
+
+- (NSArray *)options {
+    return @[[self jokerOption]];
+}
+
+#pragma mark - Row Dictionaries
+
+- (NSDictionary *)defaultButtons {
+    return @{TEXTLABEL_TITLE_KEY : DEFAULTS, PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_3};
+}
+
+- (NSDictionary *)spade {
+    return @{TEXTLABEL_TITLE_KEY : SPADE, EXERCISE : self.spadesExerciseString, PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+}
+
+- (NSDictionary *)club {
+    return @{TEXTLABEL_TITLE_KEY : CLUB, EXERCISE : self.clubsExerciseString, PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+}
+
+- (NSDictionary *)heart {
+    return @{TEXTLABEL_TITLE_KEY : HEART, EXERCISE : self.heartsExerciseString, PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+}
+
+- (NSDictionary *)diamond {
+    return @{TEXTLABEL_TITLE_KEY : DIAMOND, EXERCISE : self.diamondsExerciseString, PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+}
+
+- (NSDictionary *)jack {
+    return @{TEXTLABEL_TITLE_KEY : JACK, REPS : [NSString stringWithFormat:@"%ld", self.jacksReps], PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
+}
+
+- (NSDictionary *)queen {
+    return @{TEXTLABEL_TITLE_KEY : QUEEN, REPS : [NSString stringWithFormat:@"%ld", self.queensReps], PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
+}
+
+- (NSDictionary *)king {
+    return @{TEXTLABEL_TITLE_KEY : KING, REPS : [NSString stringWithFormat:@"%ld", self.kingsReps], PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
+}
+
+- (NSDictionary *)ace {
+    return @{TEXTLABEL_TITLE_KEY : ACE, EXERCISE : self.acesExerciseString, REPS : [NSString stringWithFormat:@"%ld", self.acesReps], PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, REPS], PROTOTYPE_CELL_1_BOOL_KEY : [NSNumber numberWithBool:self.aceExerciseAndRepsLabel], CARD_LABEL : [self labelForKey:ACE]};
+}
+
+- (NSDictionary *)joker {
+    return @{TEXTLABEL_TITLE_KEY : JOKER, EXERCISE : self.jokersExerciseString, REPS : [NSString stringWithFormat:@"%ld", self.jokersReps], PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, REPS], PROTOTYPE_CELL_1_BOOL_KEY : [NSNumber numberWithBool:self.jokerExerciseAndRepsLabel], CARD_LABEL : [self labelForKey:JOKER]};
+}
+  
+- (NSDictionary *)jokerOption {
+    return @{TEXTLABEL_TITLE_KEY : JOKERS_OPTIONS, PROTOTYPE_CELL_2_BOOL_KEY : [NSNumber numberWithBool:self.jokers], PROTOTYPE_CELL_KEY : PROTOTYPE_CELL_2};
+}
+
+#pragma mark - Label
+
+- (NSString *)labelForKey:(NSString *)key {
+    if ([key isEqualToString:SPADE]) {
+        return [NSString stringWithFormat:@"%@", self.spadesExerciseString];
+    } else if ([key isEqualToString:CLUB]) {
+        return [NSString stringWithFormat:@"%@", self.clubsExerciseString];
+    } else if ([key isEqualToString:HEART]) {
+        return [NSString stringWithFormat:@"%@", self.heartsExerciseString];
+    } else if ([key isEqualToString:DIAMOND]) {
+        return [NSString stringWithFormat:@"%@", self.diamondsExerciseString];
+    } else if ([key isEqualToString:JACK]) {
+        return [NSString stringWithFormat:@"%ld", self.jacksReps];
+    } else if ([key isEqualToString:QUEEN]) {
+        return [NSString stringWithFormat:@"%ld", self.queensReps];
+    } else if ([key isEqualToString:KING]) {
+        return [NSString stringWithFormat:@"%ld", self.kingsReps];
+    } else if ([key isEqualToString:ACE]) {
+        if (self.aceExerciseAndRepsLabel) {
+            return [NSString stringWithFormat:@"%ld %@", self.acesReps, self.acesExerciseString];
+        } else {
+            return [NSString stringWithFormat:@"%@", self.acesExerciseString];
+        }
+    } else if ([key isEqualToString:JOKER]) {
+        if (self.jokerExerciseAndRepsLabel) {
+            return [NSString stringWithFormat:@"%ld %@", self.jokersReps, self.jokersExerciseString];
+        } else {
+           return [NSString stringWithFormat:@"%@", self.jokersExerciseString]; 
+        }
+    } else {
+        return @"Error no string for label";
+    }
+}
+
+- (NSString *)labelForPlayingCard:(PlayingCard *)playingCard {
+    NSString *rankKey = [self keyForRank:playingCard.rank];
+    NSString *suitKey = [self keyForSuit:playingCard.suit];
+    
+    if (playingCard.rank < 2 || playingCard.rank > 13) {
+        return [self labelForKey:rankKey];
+    } else if (playingCard.rank <= 10) {
+        return [NSString stringWithFormat:@"%ld %@", playingCard.rank, [self labelForKey:suitKey]];
+    } else {
+        return [NSString stringWithFormat:@"%@ %@", [self labelForKey:rankKey], [self labelForKey:suitKey]];
+    }
+}
+
+- (NSString *)keyForRank:(NSUInteger)rank {
+    if (rank == 1) {
+        return ACE;
+    } else if(rank == 11) {
+        return JACK;
+    } else if (rank == 12) {
+        return QUEEN;
+    } else if (rank == 13) {
+        return KING;
+    } else if (rank == 14) {
+        return JOKER;
+    } else {
+        return @"";
+    }
+}
+
+- (NSString *)keyForSuit:(NSUInteger)suit {
+    if (suit == 0) {
+        return SPADE;
+    } else if (suit == 1) {
+        return HEART;
+    } else if (suit == 2) {
+        return CLUB;
+    } else if (suit == 3) {
+        return DIAMOND;
+    } else {
+        return @"";
+    }
+}
 
 #pragma mark - Exercises Properties
 
@@ -204,6 +381,38 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+#pragma mark = Boolean Properties
+
+- (BOOL)jokers { //Returns a boolean value for whether or not a game should have jokers used.
+    NSUInteger number = [self valueForKey:JOKERS_BOOLEAN_KEY withDefaultValue:[[NSNumber numberWithBool:YES] integerValue]];
+    return [[NSNumber numberWithInteger:number] boolValue];
+}
+
+- (void)setJokers:(BOOL)jokers { //Sets a boolean value for whether or not a game should have jokers in NSUserdefaults.
+    NSNumber *number = [NSNumber numberWithBool:jokers];
+    [self setNSUIntegerValue:[number integerValue] forKey:JOKERS_BOOLEAN_KEY];
+}
+
+- (BOOL)aceExerciseAndRepsLabel { //Returns a boolean value for whether or not a game should have jokers used.
+    NSUInteger number = [self valueForKey:ACE_EXERCISE_AND_REPS_LABEL withDefaultValue:[[NSNumber numberWithBool:YES] integerValue]];
+    return [[NSNumber numberWithInteger:number] boolValue];
+}
+
+- (void)setAceExerciseAndRepsLabel:(BOOL)aceExerciseAndRepsLabel { //Sets a boolean value for whether or not a game should have jokers in NSUserdefaults.
+    NSNumber *number = [NSNumber numberWithBool:aceExerciseAndRepsLabel];
+    [self setNSUIntegerValue:[number integerValue] forKey:ACE_EXERCISE_AND_REPS_LABEL];
+}
+
+- (BOOL)jokerExerciseAndRepsLabel { //Returns a boolean value for whether or not a game should have jokers used.
+    NSUInteger number = [self valueForKey:JOKER_EXERCISE_AND_REPS_LABEL withDefaultValue:[[NSNumber numberWithBool:NO] integerValue]];
+    return [[NSNumber numberWithInteger:number] boolValue];
+}
+
+- (void)setJokerExerciseAndRepsLabel:(BOOL)jokerExerciseAndRepsLabel { //Sets a boolean value for whether or not a game should have jokers in NSUserdefaults.
+    NSNumber *number = [NSNumber numberWithBool:jokerExerciseAndRepsLabel];
+    [self setNSUIntegerValue:[number integerValue] forKey:JOKER_EXERCISE_AND_REPS_LABEL];
+}
+
 #pragma mark - Number Of Cards Settings
 
 - (NSString *)onePlayerNumberOfCards { //Returns the number of cards used for OnePlayer Games or a default value.
@@ -236,14 +445,9 @@
     return @{TWENTY_CARDS : @20, TWENTY_FIVE_CARDS : @25, THIRTY_CARDS : @30, THIRTY_FIVE_CARDS : @35, FORTY_CARDS : @40, FORTY_FIVE_CARDS : @45, ONE_DECK : @54, TWO_DECKS : @108, THREE_DECKS : @162, FOUR_DECKS : @216, SIX_DECKS : @324, EIGHT_DECKS : @432, TEN_DECKS : @540};
 }
 
-- (BOOL)jokers { //Returns a boolean value for whether or not a game should have jokers used.
-    NSUInteger number = [self valueForKey:JOKERS_BOOLEAN_KEY withDefaultValue:[[NSNumber numberWithBool:YES] integerValue]];
-    return [[NSNumber numberWithInteger:number] boolValue];
-}
-
-- (void)setJokers:(BOOL)jokers { //Sets a boolean value for whether or not a game should have jokers in NSUserdefaults.
-    NSNumber *number = [NSNumber numberWithBool:jokers];
-    [self setNSUIntegerValue:[number integerValue] forKey:JOKERS_BOOLEAN_KEY];
+- (void)resetDefaults {
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
 }
 
 @end
