@@ -25,7 +25,7 @@
 
 @property (nonatomic) NSUInteger counter;
 @property (nonatomic) BOOL rotated;
-@property (nonatomic) BOOL paused;
+//@property (nonatomic) BOOL paused;
 @property (nonatomic) BOOL started;
 @property (nonatomic, strong) NSTimer *gameTimer;
 
@@ -287,7 +287,8 @@
 - (void)endGame {
     NSRange range = NSMakeRange(0, 1);
     NSDictionary *attributes = [self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
-    [self.taskLabel setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score :%ld", self.game.score] attributes:attributes]];
+    self.taskLabel.numberOfLines = 2;
+    [self.taskLabel setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score :%ld\nReps:%ld", self.game.score, self.game.totalReps] attributes:attributes]];
     self.pauseButton.enabled = NO;
     self.navigationController.navigationBar.hidden = NO;
     self.game.paused = YES;
@@ -336,9 +337,10 @@
     button.titleLabel.alpha = 1.0;
     [button setBackgroundColor:[UIColor colorWithRed:0 green:.3 blue:.8 alpha:1]];
     if (self.started) {
-        self.paused = !self.paused;
-        if (!self.paused) {
-            self.game.paused = YES;
+//        self.paused = !self.paused;
+        self.game.paused = !self.game.paused;
+        if (!self.game.paused) {
+//            self.game.paused = YES;
             [self activateGameTimer];
             [UIView animateWithDuration:0.3 animations:^{
                 self.navigationController.navigationBar.hidden = YES;
@@ -352,7 +354,7 @@
             self.navigationController.navigationBar.hidden = NO;
             self.cardView.alpha = 0.35;
             self.taskLabel.alpha = 0.35;
-            self.game.paused = NO;
+//            self.game.paused = NO;
             [self deactivateGameTimer];
             [self removeGesturesForView:self.cardView];
         }
@@ -365,7 +367,7 @@
 
 - (NSString *)buttonString {
     if (self.started) {
-        if (!self.paused) {
+        if (!self.game.paused) {
             return @"Pause";
         } else {
             return @"Resume";
@@ -396,7 +398,7 @@
     UIFont *labelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     labelFont = [labelFont fontWithSize:36];
     
-    self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self setTitleForCardView:cardView]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
+    self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self setTitleForCardView:self.currentCard]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
     
     self.taskLabel.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:0.50];
 }
@@ -423,7 +425,7 @@
     return;
 }
 
-- (NSString *)setTitleForCardView:(UIView *)cardView { //abstract
+- (NSString *)setTitleForCardView:(Card *)card { //abstract
     return nil;
 }
 

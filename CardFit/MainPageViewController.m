@@ -8,11 +8,14 @@
 
 #import "MainPageViewController.h"
 #import "OnePlayerViewController.h"
+#import "PlayingCardSettings.h"
+#import "GameSettingsTVC.h"
 
 @interface MainPageViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *multiPlayerButton;
 @property (weak, nonatomic) IBOutlet UIButton *onePlayerButton;
 @property (weak, nonatomic) IBOutlet UIButton *settingsButton;
+@property (nonatomic, strong) PlayingCardSettings *settings;
 
 @end
 
@@ -20,7 +23,19 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(settingsSegue)];
     [self updateUI];
+}
+
+- (PlayingCardSettings *)settings {
+    if (!_settings) {
+        _settings = [[PlayingCardSettings alloc] init];
+    }
+    return _settings;
+}
+
+- (void)settingsSegue {
+    
 }
 
 #define BUTTON_CORNER_RADIUS 5.0
@@ -80,15 +95,17 @@
     }];
 }
 
-- (void)prepareViewController:(OnePlayerViewController *)opvc {
-    opvc.title = @"One Player";
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"One Player Identifier"]) {
         if ([segue.destinationViewController isKindOfClass:[OnePlayerViewController class]]) {
             OnePlayerViewController *opvc = (OnePlayerViewController *)segue.destinationViewController;
-            [self prepareViewController:opvc];
+            opvc.title = @"One Player";
+        }
+    } else if ([segue.identifier isEqualToString:@"Show Settings"]) {
+        if ([segue.destinationViewController isKindOfClass:[GameSettingsTVC class]]) {
+            GameSettingsTVC *gstvc = (GameSettingsTVC *)segue.destinationViewController;
+            gstvc.data = self.settings.data;
+            gstvc.sectionsArray = self.settings.sectionsArray;
         }
     }
 }

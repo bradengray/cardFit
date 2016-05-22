@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F2016C021CEE6E4F0079887E /* GameSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */; };
+		F2016C051CEE723D0079887E /* PlayingCardSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */; };
 		F23D55391CB70DD800F7727B /* CardFitLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = F23D55381CB70DD800F7727B /* CardFitLayoutView.m */; };
 		F23D553C1CBB15AB00F7727B /* MainPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23D553B1CBB15AB00F7727B /* MainPageViewController.m */; };
 		F245CBD11CA9F35F00F034F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F245CBD01CA9F35F00F034F5 /* main.m */; };
@@ -22,6 +24,7 @@
 		F245CC0D1CA9FB4700F034F5 /* Deck.m in Sources */ = {isa = PBXBuildFile; fileRef = F245CC0C1CA9FB4700F034F5 /* Deck.m */; };
 		F245CC101CA9FD8B00F034F5 /* PlayingCardDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = F245CC0F1CA9FD8B00F034F5 /* PlayingCardDeck.m */; };
 		F245CC131CAA101600F034F5 /* PlayingCardFitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F245CC121CAA101600F034F5 /* PlayingCardFitViewController.m */; };
+		F25C7BFA1CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F25C7BF91CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m */; };
 		F28B78001CAA14C600023B3D /* PlayingCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = F28B77FF1CAA14C600023B3D /* PlayingCardView.m */; };
 		F299D6FB1CDFF22C009EE988 /* Timer.m in Sources */ = {isa = PBXBuildFile; fileRef = F299D6FA1CDFF22C009EE988 /* Timer.m */; };
 		F299D6FE1CE2BCDE009EE988 /* OnePlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F299D6FD1CE2BCDE009EE988 /* OnePlayerViewController.m */; };
@@ -49,6 +52,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F2016C001CEE6E4F0079887E /* GameSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameSettingsTVC.h; sourceTree = "<group>"; };
+		F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSettingsTVC.m; sourceTree = "<group>"; };
+		F2016C031CEE723D0079887E /* PlayingCardSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardSettingsTVC.h; sourceTree = "<group>"; };
+		F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardSettingsTVC.m; sourceTree = "<group>"; };
 		F23D55371CB70DD800F7727B /* CardFitLayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardFitLayoutView.h; sourceTree = "<group>"; };
 		F23D55381CB70DD800F7727B /* CardFitLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardFitLayoutView.m; sourceTree = "<group>"; };
 		F23D553A1CBB15AB00F7727B /* MainPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainPageViewController.h; sourceTree = "<group>"; };
@@ -79,6 +86,9 @@
 		F245CC0F1CA9FD8B00F034F5 /* PlayingCardDeck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardDeck.m; sourceTree = "<group>"; };
 		F245CC111CAA101600F034F5 /* PlayingCardFitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardFitViewController.h; sourceTree = "<group>"; };
 		F245CC121CAA101600F034F5 /* PlayingCardFitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardFitViewController.m; sourceTree = "<group>"; };
+		F25C7BF81CEFEC8C00BF7EAE /* GameSettingsDetailTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameSettingsDetailTVC.h; sourceTree = "<group>"; };
+		F25C7BF91CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSettingsDetailTVC.m; sourceTree = "<group>"; };
+		F25C7BFE1CF1039100BF7EAE /* SettingsChangedNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsChangedNotification.h; sourceTree = "<group>"; };
 		F28B77FE1CAA14C600023B3D /* PlayingCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardView.h; sourceTree = "<group>"; };
 		F28B77FF1CAA14C600023B3D /* PlayingCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardView.m; sourceTree = "<group>"; };
 		F299D6F91CDFF22C009EE988 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
@@ -143,6 +153,7 @@
 		F245CBCE1CA9F35F00F034F5 /* CardFit */ = {
 			isa = PBXGroup;
 			children = (
+				F25C7BFE1CF1039100BF7EAE /* SettingsChangedNotification.h */,
 				F245CC021CA9F47E00F034F5 /* Model */,
 				F245CC031CA9F48F00F034F5 /* View */,
 				F245CC041CA9F4AF00F034F5 /* Controllers */,
@@ -230,6 +241,12 @@
 				F299D7061CE54316009EE988 /* NumOfCardsPopoverContentTVC.m */,
 				F29AD2F91CBC8FAF003F18A5 /* SettingsTVC.h */,
 				F29AD2FA1CBC8FAF003F18A5 /* SettingsTVC.m */,
+				F2016C001CEE6E4F0079887E /* GameSettingsTVC.h */,
+				F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */,
+				F25C7BF81CEFEC8C00BF7EAE /* GameSettingsDetailTVC.h */,
+				F25C7BF91CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m */,
+				F2016C031CEE723D0079887E /* PlayingCardSettingsTVC.h */,
+				F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -301,6 +318,7 @@
 				TargetAttributes = {
 					F245CBCB1CA9F35F00F034F5 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = JYXR948UZ7;
 					};
 					F245CBE41CA9F35F00F034F5 = {
 						CreatedOnToolsVersion = 7.3;
@@ -369,6 +387,7 @@
 				F29AD2FE1CBC8FF3003F18A5 /* PlayingCardSettings.m in Sources */,
 				F299D7071CE54316009EE988 /* NumOfCardsPopoverContentTVC.m in Sources */,
 				F299D6FB1CDFF22C009EE988 /* Timer.m in Sources */,
+				F25C7BFA1CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m in Sources */,
 				F2EA33EF1CC5B4BF0018CE5F /* CardFitGame.m in Sources */,
 				F29AD2FB1CBC8FAF003F18A5 /* SettingsTVC.m in Sources */,
 				F23D553C1CBB15AB00F7727B /* MainPageViewController.m in Sources */,
@@ -376,10 +395,12 @@
 				F245CBD41CA9F35F00F034F5 /* AppDelegate.m in Sources */,
 				F28B78001CAA14C600023B3D /* PlayingCardView.m in Sources */,
 				F299D6FE1CE2BCDE009EE988 /* OnePlayerViewController.m in Sources */,
+				F2016C051CEE723D0079887E /* PlayingCardSettingsTVC.m in Sources */,
 				F245CBD11CA9F35F00F034F5 /* main.m in Sources */,
 				F245CC071CA9F4CF00F034F5 /* Card.m in Sources */,
 				F245CC0D1CA9FB4700F034F5 /* Deck.m in Sources */,
 				F245CC0A1CA9F5B600F034F5 /* PlayingCard.m in Sources */,
+				F2016C021CEE6E4F0079887E /* GameSettingsTVC.m in Sources */,
 				F23D55391CB70DD800F7727B /* CardFitLayoutView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -523,10 +544,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = CardFit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.standford.cs193p.graycode.CardFit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -534,10 +558,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = CardFit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.standford.cs193p.graycode.CardFit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
