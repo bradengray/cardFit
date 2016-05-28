@@ -12,11 +12,16 @@
 @interface PlayingCardSettingsTVC ()
 
 @property (nonatomic, strong) PlayingCardSettings *settings;
-@property (weak, nonatomic) IBOutlet UISwitch *cellSwitch;
 
 @end
 
 @implementation PlayingCardSettingsTVC
+
+#pragma mark - ViewController Life Cycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
 
 #pragma mark - Initialization
 

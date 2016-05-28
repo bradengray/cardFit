@@ -147,43 +147,44 @@
 }
 
 - (CGRect)frameForTasklabel:(UILabel *)label {
-//    [self setLabel:label fontSizeForWidth:self.subViewSize.width];
+    [self setLabel:label fontSizeForWidth:self.subViewSize.width];
     CGRect frame = CGRectMake([self hoffset], ([self voffset] + [self adjustedCardSize].height / 2.0) - label.attributedText.size.height / 2.0, [self adjustedCardSize].width, label.attributedText.size.height);
-//    if (self.rotated) {
-//        [self setLabel:label fontSizeForWidth:self.subViewSize.height];
-//    }
+    if (self.rotated) {
+        [self setLabel:label fontSizeForWidth:self.subViewSize.height];
+    }
     return frame;
 }
 
 - (CGRect)frameForTimerLabel:(UILabel *)label {
     CGRect frame = CGRectMake([self hoffset] + [self adjustedCardSize].width / 2.0 - label.attributedText.size.width / 2.0, [self voffset] + [self adjustedCardSize].height - label.attributedText.size.height, label.attributedText.size.width, label.attributedText.size.height);
+//    [self setLabel:label fontSizeForWidth:self.subViewSize.height];
 //    if (self.rotated) {
 //        [self setLabel:label fontSizeForWidth:self.subViewSize.height];
 //    }
     return frame;
 }
 
-//- (void)setLabel:(UILabel *)label fontSizeForWidth:(CGFloat)width {
-//    if (label.attributedText.size.width > width) {
-////        label.font = [label.font fontWithSize:label.font.pointSize - 1];
-//        label.numberOfLines = 2;
-//        NSRange range = NSMakeRange(0, 1);
-//        NSDictionary *attributes = [label.attributedText attributesAtIndex:0 effectiveRange:&range];
-//        NSArray *textArray = [label.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-//        NSString *textString = @"";
-//        int i = 0;
-//        for (NSString *string in textArray) {
-//            if (i > 0) {
-//                textString = [textString stringByAppendingString:[NSString stringWithFormat:@"%@ ", string]];
-//            } else {
-//                textString = [textString stringByAppendingString:[NSString stringWithFormat:@"%@\n", string]];
-//            }
-//            i++;
-//        }
-//        NSAttributedString *attributedTextString = [[NSAttributedString alloc] initWithString:textString attributes:attributes];
-//        label.attributedText = attributedTextString;
-//    }
-//}
+- (void)setLabel:(UILabel *)label fontSizeForWidth:(CGFloat)width {
+    if (label.attributedText.size.width > width) {
+//        label.font = [label.font fontWithSize:label.font.pointSize - 1];
+        label.numberOfLines = 2;
+        NSRange range = NSMakeRange(0, 1);
+        NSDictionary *attributes = [label.attributedText attributesAtIndex:0 effectiveRange:&range];
+        NSArray *textArray = [label.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        NSString *textString = @"";
+        int i = 0;
+        for (NSString *string in textArray) {
+            if (i > 0) {
+                textString = [textString stringByAppendingString:[NSString stringWithFormat:@"%@ ", string]];
+            } else {
+                textString = [textString stringByAppendingString:[NSString stringWithFormat:@"%@\n", string]];
+            }
+            i++;
+        }
+        NSAttributedString *attributedTextString = [[NSAttributedString alloc] initWithString:textString attributes:attributes];
+        label.attributedText = attributedTextString;
+    }
+}
 
 - (void)setResolved:(BOOL)resolved {
     self.unresolvable = NO;

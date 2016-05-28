@@ -14,7 +14,6 @@
 @property (nonatomic, strong) NSArray *rows;
 @property (nonatomic, strong) UITextField *currentTextField;
 @property (nonatomic) BOOL cancelEntry;
-@property (nonatomic) BOOL settingsChanged;
 
 @end
 
@@ -33,7 +32,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.settingsChanged = NO;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
@@ -46,15 +44,6 @@
         }
     }
     self.rows = array;
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    if (self.settingsChanged) {
-        if (self.delegate != nil) {
-            [self.delegate settingsChanged:self.settings];
-        }
-    }
 }
 
 - (void)setSettings:(NSDictionary *)settings {
@@ -227,8 +216,7 @@
     if (save) {
         NSMutableDictionary *dictionary = [self.settings mutableCopy];
         [dictionary setObject:textField.text forKey:key];
-        self.settings = dictionary;
-        self.settingsChanged = YES;
+        [self.delegate settingsChanged:dictionary];
     } 
 }
 

@@ -442,7 +442,7 @@
 - (NSDictionary *)numberOfCardsOptionValues { //Returns a dictionary of values for the number of cards to be used in OnePlayer or MultiPlayer Games.
     
     //Keys used as the values are the same as the strings used in the methods (NSArray *)onePlayerNumberOfCards and (NSArray *)multiPlayerNumberOfCards
-    return @{TWENTY_CARDS : @20, TWENTY_FIVE_CARDS : @25, THIRTY_CARDS : @30, THIRTY_FIVE_CARDS : @35, FORTY_CARDS : @40, FORTY_FIVE_CARDS : @45, ONE_DECK : @54, TWO_DECKS : @108, THREE_DECKS : @162, FOUR_DECKS : @216, SIX_DECKS : @324, EIGHT_DECKS : @432, TEN_DECKS : @540};
+    return @{TWENTY_CARDS : @5, TWENTY_FIVE_CARDS : @25, THIRTY_CARDS : @30, THIRTY_FIVE_CARDS : @35, FORTY_CARDS : @40, FORTY_FIVE_CARDS : @45, ONE_DECK : @54, TWO_DECKS : @108, THREE_DECKS : @162, FOUR_DECKS : @216, SIX_DECKS : @324, EIGHT_DECKS : @432, TEN_DECKS : @540};
 }
 
 - (void)resetDefaults {

@@ -11,6 +11,7 @@
 #define SETTINGS_DETAIL_SEGUE_IDENTIFER @"Show Settings Detail"
 
 #import "GameSettingsTVC.h"
+#import "SWRevealViewController.h"
 #import "GameSettingsDetailTVC.h"
 #import "SettingsChangedNotification.h"
 
@@ -21,6 +22,20 @@
 @end
 
 @implementation GameSettingsTVC
+
+#pragma mark - View Life Cycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.sidebarButton setTarget:self.revealViewController];
+    [self.sidebarButton setAction:@selector(revealToggle:)];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+}
 
 #pragma mark - Properties
 
