@@ -245,7 +245,6 @@
             [self.cardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)]];
             [self.view addSubview:self.cardView];
             [self setLabelTitleForCardView:self.cardView];
-//            self.taskLabel.numberOfLines = 2;
             self.taskLabel.frame = [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
             [self.view addSubview:self.taskLabel];
             self.timerLabel.frame = [self.cardFitLayoutView frameForTimerLabel:self.timerLabel];
@@ -287,8 +286,10 @@
 - (void)endGame {
     NSRange range = NSMakeRange(0, 1);
     NSDictionary *attributes = [self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
-    self.taskLabel.numberOfLines = 2;
-    [self.taskLabel setAttributedText:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score :%ld\nReps:%ld", self.game.score, self.game.totalReps] attributes:attributes]];
+    self.taskLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld Reps:%ld", self.game.score, self.game.totalReps] attributes:attributes];
+    self.taskLabel.attributedText = attributedString;
+    [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
     self.pauseButton.enabled = NO;
     self.navigationController.navigationBar.hidden = NO;
     self.game.paused = YES;
@@ -337,10 +338,8 @@
     button.titleLabel.alpha = 1.0;
     [button setBackgroundColor:[UIColor colorWithRed:0 green:.3 blue:.8 alpha:1]];
     if (self.started) {
-//        self.paused = !self.paused;
         self.game.paused = !self.game.paused;
         if (!self.game.paused) {
-//            self.game.paused = YES;
             [self activateGameTimer];
             [UIView animateWithDuration:0.3 animations:^{
                 self.navigationController.navigationBar.hidden = YES;
@@ -354,7 +353,6 @@
             self.navigationController.navigationBar.hidden = NO;
             self.cardView.alpha = 0.35;
             self.taskLabel.alpha = 0.35;
-//            self.game.paused = NO;
             [self deactivateGameTimer];
             [self removeGesturesForView:self.cardView];
         }

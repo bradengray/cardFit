@@ -26,6 +26,8 @@
 
 @property (nonatomic, strong) NSArray *data;
 @property (nonatomic, strong) NSArray *sectionsArray;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
+
 
 - (void)switchChangedTo:(BOOL)on; //Abstract
 - (void)storeNewSettingsDictionary:(NSDictionary *)dictionary; //Abstract

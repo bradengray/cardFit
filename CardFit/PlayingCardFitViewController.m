@@ -106,18 +106,18 @@
 //    }
 //}
 
-//- (NSNumber *)repsForCard:(Card *)card {
-//    if ([card isKindOfClass:[PlayingCard class]]) {
-//        PlayingCard *playingCard = (PlayingCard *)card;
-//        if (playingCard.rank < 2 || playingCard.rank > 10) {
-//            return [NSNumber numberWithInteger:[self getRepsForRank:playingCard.rank]];
-//        } else {
-//            return [NSNumber numberWithInteger:playingCard.rank];
-//        }
-//    } else {
-//        return nil;
-//    }
-//}
+- (NSNumber *)repsForCard:(Card *)card {
+    if ([card isKindOfClass:[PlayingCard class]]) {
+        PlayingCard *playingCard = (PlayingCard *)card;
+        if (playingCard.rank < 2 || playingCard.rank > 10) {
+            return [NSNumber numberWithInteger:[self getRepsForRank:playingCard.rank]];
+        } else {
+            return [NSNumber numberWithInteger:playingCard.rank];
+        }
+    } else {
+        return nil;
+    }
+}
 //
 //- (NSString *)getExerciseStringForSuit:(NSUInteger)suit {
 //    if (suit == 0) {
@@ -133,21 +133,21 @@
 //    }
 //}
 //
-//- (NSUInteger)getRepsForRank:(NSUInteger)rank {
-//    if (rank == 1) {
-//        return self.settings.acesReps;
-//    } else if(rank == 11) {
-//        return self.settings.jacksReps;
-//    } else if (rank == 12) {
-//        return self.settings.queensReps;
-//    } else if (rank == 13) {
-//        return self.settings.kingsReps;
-//    } else if (rank == 14) {
-//        return 40;
-//    } else {
-//        NSLog(@"Error in getRepsForRank:(NSUInteger)rank PlayingCardFitViewController");
-//        return 0;
-//    }
-//}
+- (NSUInteger)getRepsForRank:(NSUInteger)rank {
+    if (rank == 1) {
+        return self.settings.acesReps;
+    } else if(rank == 11) {
+        return self.settings.jacksReps;
+    } else if (rank == 12) {
+        return self.settings.queensReps;
+    } else if (rank == 13) {
+        return self.settings.kingsReps;
+    } else if (rank == 14) {
+        return 40;
+    } else {
+        NSLog(@"Error in getRepsForRank:(NSUInteger)rank PlayingCardFitViewController");
+        return 0;
+    }
+}
 
 @end
