@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "PlayingCardSettings.h"
 
 @interface AppDelegate ()
 

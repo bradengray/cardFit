@@ -9,8 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface MainPageViewController : UIViewController
-//@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
-
-
 
 @end

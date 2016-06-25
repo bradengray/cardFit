@@ -1,17 +1,19 @@
 //
-//  ViewController.m
+//  MultiPlayerCardFitViewController.m
 //  CardFit
 //
-//  Created by Braden Gray on 3/28/16.
+//  Created by Braden Gray on 5/30/16.
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import "CardFitViewController.h"
+#import "MultiPlayerCardFitViewController.h"
 #import "CardFitLayoutView.h"
 #import "CardFitGame.h"
 #import "Timer.h"
 
-@interface CardFitViewController ()
+#define CARD_KEY @"Card Key"
+
+@interface MultiPlayerCardFitViewController ()
 @property (nonatomic, strong) CardFitGame *game;
 @property (nonatomic, strong) CardFitLayoutView *cardFitLayoutView;
 
@@ -30,9 +32,26 @@
 
 @property (nonatomic) NSUInteger cardCounter;
 
+@property (nonatomic) BOOL playerOne;
+@property (nonatomic) BOOL gameOver;
+
 @end
 
-@implementation CardFitViewController
+@implementation MultiPlayerCardFitViewController
+
+- (BOOL)playerOne {
+    if (!_playerOne) {
+        _playerOne = NO;
+    }
+    return _playerOne;
+}
+
+- (BOOL)gameOver {
+    if (!_gameOver) {
+        _gameOver = NO;
+    }
+    return _gameOver;
+}
 
 - (NSUInteger)cardCounter {
     if (!_cardCounter) {
@@ -45,12 +64,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self setUpUIForGameStart];
+    self.countDownLabel.hidden = YES;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+//    self.settings = [self createSettings];
 }
 
 #pragma mark - Rotation
@@ -163,12 +183,16 @@
 
 - (void)setUpUIForGameStart {
     [self createButton];
-    self.currentCard = [self drawRandomCard];
-    [self updateUI];
-    [self removeGesturesForView:self.cardView];
-    NSRange range = NSMakeRange(0, 1);
-    self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:@"CardFit" attributes:[self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range]];
-    self.countDownLabel.hidden = YES;
+    if (self.playerOne) {
+        self.currentCard = [self drawRandomCard];
+        [self updateUI];
+        [self removeGesturesForView:self.cardView];
+        NSRange range = NSMakeRange(0, 1);
+        self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Player One" attributes:[self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range]];
+        self.countDownLabel.hidden = YES;
+    } else {
+        [self.networkingEngine drawCard];
+    }
 }
 
 - (void)startCountDown {
@@ -178,7 +202,7 @@
     [self countDown];
     self.gameTimer = [NSTimer scheduledTimerWithTimeInterval:COUNTDOWN_INTERVAL target:self selector:@selector(countDown) userInfo:nil repeats:YES];
 }
-                      
+
 - (void)countDown {
     if (self.counter <= 3) {
         [self animateCountDownLabel];
@@ -261,16 +285,17 @@
             [UIView transitionWithView:self.cardView
                               duration:.001
                                options:UIViewAnimationOptionCurveEaseIn
-            animations:^{
-                self.cardView.frame = [self.cardFitLayoutView frameForCardView:self.cardView];
-                self.pauseButton.frame = [self.cardFitLayoutView frameForStartButton:self.pauseButton];
-                self.taskLabel.frame = [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
-                self.timerLabel.frame = [self.cardFitLayoutView frameForTimerLabel:self.timerLabel];
-            } completion:nil];
+                            animations:^{
+                                self.cardView.frame = [self.cardFitLayoutView frameForCardView:self.cardView];
+                                self.pauseButton.frame = [self.cardFitLayoutView frameForStartButton:self.pauseButton];
+                                self.taskLabel.frame = [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
+                                self.timerLabel.frame = [self.cardFitLayoutView frameForTimerLabel:self.timerLabel];
+                            } completion:nil];
         }
     } else {
-        [self endGame];
-        NSLog(@"Error No Card");
+        if (self.playerOne) {
+            [self endGame];
+        }
     }
 }
 
@@ -278,8 +303,6 @@
     CardFitCard *card = [self.game drawCard];
     self.cardCounter++;
     NSLog(@"%ld", self.cardCounter);
-    self.game.totalReps = card.reps; //[[self repsForCard:card] intValue];
-    NSLog(@"Reps: %ld", self.game.totalReps);
     if (!card) {
         NSLog(@"No more Cards");
     }
@@ -297,7 +320,7 @@
 - (void)endGame {
     NSRange range = NSMakeRange(0, 1);
     NSDictionary *attributes = [self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld Reps:%ld", self.game.score, self.game.totalReps] attributes:attributes];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Reps:%ld", self.game.totalReps] attributes:attributes];
     self.taskLabel.attributedText = attributedString;
     [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
     self.pauseButton.enabled = NO;
@@ -370,6 +393,7 @@
         self.pauseButton.enabled = NO;
         [self startCountDown];
         self.started = YES;
+        [self.networkingEngine startGame];
     }
 }
 
@@ -412,23 +436,97 @@
 }
 
 - (void)tap:(UITapGestureRecognizer *)gesture {
-    [self.cardView removeFromSuperview];
-    self.cardView = nil;
-    self.currentCard = [self drawRandomCard];
-    self.currentCard.selected = YES;
-    [self updateUI];
+    if (self.playerOne) {
+        [self.cardView removeFromSuperview];
+        self.cardView = nil;
+        self.currentCard = [self drawRandomCard];
+        self.game.totalReps = self.currentCard.reps; //[[self repsForCard:self.currentCard] integerValue];
+        self.currentCard.selected = YES;
+        [self updateUI];
+    } else {
+        if (!self.gameOver) {
+            [self.networkingEngine drawCard];
+        } else {
+            [self endGame];
+        }
+    }
+}
+
+- (void)card:(CardFitCard *)card {
+    self.currentCard = card;
+    if (self.started) {
+        [self.cardView removeFromSuperview];
+        self.cardView = nil;
+        self.game.totalReps = self.currentCard.reps; //[[self repsForCard:self.currentCard] intValue];
+        self.currentCard.selected = YES;
+        [self updateUI];
+    } else {
+        self.pauseButton.enabled = NO;
+        self.countDownLabel.hidden = NO;
+        self.currentCard.selected = NO;
+        [self updateUI];
+        [self removeGesturesForView:self.cardView];
+        NSRange range = NSMakeRange(0, 1);
+        self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Player Two" attributes:[self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range]];
+    }
 }
 
 #pragma mark - MultiplayerNetworkingProtocol
 
+- (void)matchReady {
+    NSLog(@"Ready");
+    [self setUpUIForGameStart];
+}
+
+- (void)gameStarted {
+    NSLog(@"We are playing the game");
+    [self startCountDown];
+    self.started = YES;
+}
+
+- (void)isPlayerOne {
+    NSLog(@"I know now who I am");
+    [self.networkingEngine sendGameInfo:[self settings]];
+    self.playerOne = YES;
+    [self setUpUIForGameStart];
+}
+
+- (void)drawCard {
+    NSLog(@"Drawing Card");
+    Card *card = [self drawRandomCard];
+    if (card) {
+        [self.networkingEngine sendGameInfo:card];
+    } else {
+        [self.networkingEngine gameEnded];
+    }
+}
+
+- (void)gameInfo:(id)gameInfo {
+    if ([gameInfo isKindOfClass:[CardFitCard class]]) {
+        CardFitCard *card = (CardFitCard *)gameInfo;
+        [self card:card];
+    } else {
+        [self settings:gameInfo];
+    }
+}
+
 - (void)matchEnded {
-    //nothing yet;
+    self.gameOver = YES;
+    [self endGame];
 }
 
 #pragma mark - Abstract Methods
 
 - (Deck *)createDeck { //abstract
     return nil;
+}
+
+- (id)settings { //abstract
+    return nil;
+}
+
+- (void)settings:(id)settings { //abstract
+    return;
 }
 
 - (UIView *)createCardViewWithCard:(Card *)card { // abstract

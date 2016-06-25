@@ -8,6 +8,7 @@
 
 #import "GameSettingsDetailTVC.h"
 #import "SettingsChangedNotification.h"
+//#import "Settings.h"
 
 @interface GameSettingsDetailTVC () <UITextFieldDelegate>
 
@@ -22,16 +23,21 @@
 #pragma mark - View LifeCycle
 
 - (void)awakeFromNib {
-    [[NSNotificationCenter defaultCenter] addObserverForName:SettingsChangedForDictionaryNotification
+    [[NSNotificationCenter defaultCenter] addObserverForName:SettingsChangedNotification
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification * _Nonnull note) {
-                                                      self.settings = note.userInfo[SettingsChangedForDictionary];
+                                                      self.settings = note.userInfo[SettingsChanged];
                                                   }];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:SettingsChangedNotification];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    [self createSettings];
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
@@ -76,19 +82,19 @@
     UIFont *font = [[UIFont alloc] init];
     font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     
-    if ([rowName isEqualToString:PROTOTYPE_CELL_1_BOOL_KEY]) {
-        cellIdentifier = @"Cell1";
+    if ([rowName isEqualToString:CELL_BOOL_KEY]) {
+        cellIdentifier = @"Cell2";
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
         cell.accessoryView = switchView;
-        [switchView setOn:[[self.settings objectForKey:PROTOTYPE_CELL_1_BOOL_KEY] boolValue] animated:NO];
+        [switchView setOn:[[self.settings objectForKey:CELL_BOOL_KEY] boolValue] animated:NO];
         [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
         
         cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Label With Reps" attributes:@{NSFontAttributeName : font}];
     } else {
-        cellIdentifier = @"Cell";
+        cellIdentifier = @"Cell1";
         cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         UITextField *textField;
         for (id object in cell.contentView.subviews) {
@@ -124,7 +130,7 @@
 
 - (void)switchChanged:(UISwitch *)switchView {
     NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithDictionary:self.settings];
-    [dictionary setObject:[NSNumber numberWithBool:switchView.on] forKey:PROTOTYPE_CELL_1_BOOL_KEY];
+    [dictionary setObject:[NSNumber numberWithBool:switchView.on] forKey:CELL_BOOL_KEY];
     [self.delegate settingsChanged:dictionary];
 }
 
