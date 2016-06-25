@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Card.h"
+//#import "Card.h"
+#import "CardFitCard.h"
 #import "Deck.h"
 
 @interface CardFitGame : NSObject
@@ -18,7 +19,7 @@
 @property (nonatomic) BOOL paused; //pauses the timer in the game.
 
 //- (Card *)drawCardAtIndex:(NSUInteger)index; //Draws a card for the deck in the game at a specific index.
-- (Card *)drawCard; //Draws a card for the deck in the game.
+- (CardFitCard *)drawCard; //Draws a card for the deck in the game.
 - (instancetype)initWithCardCount:(NSUInteger)cardCount withDeck:(Deck *)deck; //designated Initializer
 
 @end

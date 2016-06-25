@@ -9,8 +9,8 @@
 #ifndef SettingsChangedNotification_h
 #define SettingsChangedNotification_h
 
-#define SettingsChangedForDictionaryNotification @"Settings Changed"
-#define SettingsChangedForDictionary @"Dictionary"
+#define SettingsChangedNotification @"Settings Changed"
+#define SettingsChanged @"Dictionary"
 
 
 #endif /* SettingsChangedNotification_h */

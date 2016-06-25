@@ -1,24 +1,23 @@
 //
-//  PlayingCardFitViewController.m
+//  MultiPCFViewController.m
 //  CardFit
 //
-//  Created by Braden Gray on 3/28/16.
+//  Created by Braden Gray on 5/30/16.
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import "PlayingCardFitViewController.h"
+#import "MultiPCFViewController.h"
 #import "CardFitPlayingCardDeck.h"
-#import "CardFitPlayingCard.h"
 #import "PlayingCardView.h"
 #import "PlayingCardSettings.h"
 
-@interface PlayingCardFitViewController ()
+@interface MultiPCFViewController ()
 
-@property (nonatomic, strong) PlayingCardSettings *settings;
+@property (nonatomic, strong) PlayingCardSettings *playingCardSettings;
 
 @end
 
-@implementation PlayingCardFitViewController
+@implementation MultiPCFViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -29,14 +28,33 @@
     self.minCardHeight = 10;
 }
 
-- (PlayingCardSettings *)settings {
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.playingCardSettings.save = YES;
+}
+
+- (PlayingCardSettings *) playingCardSettings {
     return [PlayingCardSettings sharedPlayingCardSettings];
 }
 
 #pragma mark - properties
 
 - (Deck *)createDeck {
-    return [[CardFitPlayingCardDeck alloc] initWithNumberOfDecks:[self numberOfDecks] withJokers:self.settings.jokers];
+    return [[CardFitPlayingCardDeck alloc] initWithNumberOfDecks:[self numberOfDecks] withJokers:self.playingCardSettings.jokers];
+}
+
+//- (Settings *)createSettings {
+//    return [PlayingCardSettings sharedPlayingCardSettings];
+//}
+
+- (id)settings {
+    return self.playingCardSettings;
+}
+
+- (void)settings:(id)settings {
+    if ([settings isKindOfClass:[PlayingCardSettings class]]) {
+        self.playingCardSettings = (PlayingCardSettings *)settings;
+    }
 }
 
 - (NSUInteger)numberOfDecks {
@@ -48,7 +66,7 @@
 }
 
 - (NSUInteger)numberOfCardsInDeck {
-    if (self.settings.jokers) {
+    if (self.playingCardSettings.jokers) {
         return 54;
     } else {
         return 52;

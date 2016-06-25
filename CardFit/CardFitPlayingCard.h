@@ -6,9 +6,9 @@
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import "Card.h"
+#import "CardFitCard.h"
 
-@interface PlayingCard : Card
+@interface CardFitPlayingCard : CardFitCard <NSCoding>
 
 //Integer telling suit of card. Spade = 0, Club = 1, Heart = 2, Diamond = 3.
 @property (nonatomic) NSUInteger suit;

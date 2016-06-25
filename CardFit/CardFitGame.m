@@ -91,12 +91,12 @@
 //    return (index < [self.cards count]) ? self.cards[index] : nil;
 //}
 
-- (Card *)drawCard { //draws a card from self.cards.
+- (CardFitCard *)drawCard { //draws a card from self.cards.
     
     //if self.cards has a count.
     if ([self.cards count]) {
         //pull the card from index 0.
-        Card *card = [self.cards objectAtIndex:0];
+        CardFitCard *card = [self.cards objectAtIndex:0];
         //if card exists them remove it form self.cards.
         if (card) {
             [self.cards removeObject:card];

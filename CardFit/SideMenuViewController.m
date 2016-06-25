@@ -7,14 +7,13 @@
 //
 
 #import "SideMenuViewController.h"
-#import "PlayingCardSettings.h"
+//#import "Settings.h"
 #import "GameSettingsTVC.h"
 
 @interface SideMenuViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *instructionsButton;
 @property (weak, nonatomic) IBOutlet UIButton *optionsButton;
 @property (nonatomic) NSUInteger counter;
-@property (nonatomic, strong) PlayingCardSettings *settings;
 
 @end
 
@@ -32,13 +31,6 @@
     self.optionsButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
     NSArray *buttons = @[self.instructionsButton, self.optionsButton];
     [self animateButtons:buttons];
-}
-
-- (PlayingCardSettings *)settings {
-    if (!_settings) {
-        _settings = [[PlayingCardSettings alloc] init];
-    }
-    return _settings;
 }
 
 - (NSUInteger)counter {
@@ -96,19 +88,6 @@
             button.transform = CGAffineTransformMakeScale(1.0, 1.0);
         } completion:nil];
         counter += .2;
-    }
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"Show Settings"]) {
-        if ([segue.destinationViewController isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *nc = (UINavigationController *)segue.destinationViewController;
-            if ([[nc.childViewControllers firstObject] isKindOfClass:[GameSettingsTVC class]]) {
-                GameSettingsTVC *gstvc = (GameSettingsTVC *)[nc.childViewControllers firstObject];
-                gstvc.data = self.settings.data;
-                gstvc.sectionsArray = self.settings.sectionsArray;
-            }
-        }
     }
 }
 

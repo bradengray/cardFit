@@ -8,10 +8,11 @@
 
 #import "MainPageViewController.h"
 #import "SWRevealViewController.h"
-//#import "OnePlayerViewController.h"
 #import "PlayingCardSettings.h"
 #import "CardFitViewController.h"
-//#import "GameSettingsTVC.h"
+#import "MultiPlayerCardFitViewController.h"
+#import "GameKitHelper.h"
+#import "MultiplayerNetworking.h"
 
 @interface MainPageViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
 @property (weak, nonatomic) IBOutlet UIButton *multiPlayerButton;
@@ -19,8 +20,11 @@
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
 @property (weak, nonatomic) IBOutlet UIPickerView *pickerView;
 @property (nonatomic, strong) PlayingCardSettings *settings;
+@property (nonatomic, strong) MultiplayerNetworking *networkingEngine;
 @property (nonatomic, strong) UIBarButtonItem *sidebarButton;
 @property (nonatomic) BOOL selected;
+@property (nonatomic) BOOL onePlayer;
+@property (nonatomic) BOOL multiplayerReady;
 
 @end
 
@@ -28,10 +32,18 @@
 
 #pragma mark - View Life Cycle
 
+- (BOOL)multiplayerReady {
+    if (!_multiplayerReady) {
+        _multiplayerReady = NO;
+    }
+    return _multiplayerReady;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.multiPlayerButton.enabled = NO;
+    self.multiPlayerButton.titleLabel.alpha = 0.15;
     self.pickerView.delegate = self;
-    self.pickerView.dataSource = self;
     self.pickerView.hidden = YES;
     self.nextButton.hidden = YES;
     [self setUpButton:self.multiPlayerButton withTitle:@"MultiPlayer"];
@@ -45,11 +57,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self updatePickerView];
-//    self.multiPlayerButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
-//    self.onePlayerButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
-//    NSArray *buttons = @[self.multiPlayerButton, self.onePlayerButton];
-//    [self animateButtons:buttons];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerAuthenticated) name:LocalPlayerIsAuthenticated object:nil];
 }
 
 #pragma mark - Properties
@@ -78,6 +86,16 @@
     self.navigationItem.leftBarButtonItem = self.sidebarButton;
 }
 
+- (void)playerAuthenticated {
+    self.multiplayerReady = YES;
+    self.multiPlayerButton.enabled = YES;
+    self.multiPlayerButton.titleLabel.alpha = 1.0;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark - Button Setup
 
 - (void)setUpButton:(UIButton *)button withTitle:(NSString *)title {
@@ -92,13 +110,24 @@
 }
 
 - (void)buttonTouchUpInside:(UIButton *)button {
+    
     [UIView animateWithDuration:0.3 animations:^{
         button.titleLabel.alpha = 1.0;
     }];
-    if (self.selected) {
-        [self performSegueWithIdentifier:@"Play Game" sender:button];
-        self.selected = !self.selected;
-    } else {
+    
+    if (!self.selected) {
+        if (button == self.multiPlayerButton) {
+            self.onePlayer = NO;
+            self.pickerView.dataSource = nil;
+            self.pickerView.dataSource = self;
+            [self updatePickerView];
+        } else if (button == self.onePlayerButton) {
+            self.onePlayer = YES;
+            self.pickerView.dataSource = nil;
+            self.pickerView.dataSource = self;
+            [self updatePickerView];
+        }
+
         [UIView animateWithDuration:0.15 animations:^{
             self.multiPlayerButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
             self.onePlayerButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
@@ -114,8 +143,14 @@
             NSArray *objects = @[self.pickerView, self.nextButton];
             [self animateObjects:objects];
         }];
+        self.selected = !self.selected;
+    } else {
+        if (self.onePlayer) {
+            [self performSegueWithIdentifier:@"Play Game" sender:button];
+        } else if (self.multiplayerReady) {
+            [self performSegueWithIdentifier:@"Play Multiplayer" sender:button];
+        }
     }
-    self.selected = !self.selected;
 }
 
 - (void)cancelBarButtonTouched {
@@ -171,14 +206,7 @@
                 picker.transform = CGAffineTransformMakeScale(1.0, 1.0);
             } completion:nil];
         }
-//        counter += .2;
     }
-}
-
-#pragma mark - UIPopoverPresentationControllerDelegate Methods
-
-- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
-    return UIModalPresentationNone;
 }
 
 #pragma mark - UIPickerViewDataSource
@@ -188,23 +216,43 @@
 }
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return [self.settings.onePlayerNumberOfCardsOptionStrings count];
+    if (self.onePlayer) {
+        return [self.settings.onePlayerNumberOfCardsOptionStrings count];
+    } else {
+        return [self.settings.multiplayerNumberOfCardsOptionStrings count];
+    }
 }
 
 #pragma mark - UIPickerViewDelegate
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    return self.settings.onePlayerNumberOfCardsOptionStrings[row];
+    if (self.onePlayer) {
+        return self.settings.onePlayerNumberOfCardsOptionStrings[row];
+    } else {
+        return self.settings.multiplayerNumberOfCardsOptionStrings[row];
+    }
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    self.settings.onePlayerNumberOfCards = self.settings.onePlayerNumberOfCardsOptionStrings[row];
+    if (self.onePlayer) {
+        self.settings.onePlayerNumberOfCards = self.settings.onePlayerNumberOfCardsOptionStrings[row];
+    } else {
+        self.settings.multiplayerNumberOfCards = self.settings.multiplayerNumberOfCardsOptionStrings[row];
+    }
 }
 
 -(void)updatePickerView {
-    NSInteger row = [self.settings.onePlayerNumberOfCardsOptionStrings indexOfObject:self.settings.onePlayerNumberOfCards];
-    [self.pickerView selectRow:row inComponent:0 animated:YES];
+    NSInteger row;
+    if (self.onePlayer) {
+        row = [self.settings.onePlayerNumberOfCardsOptionStrings indexOfObject:self.settings.onePlayerNumberOfCards];
+        [self.pickerView selectRow:row inComponent:0 animated:YES];
+    } else {
+        row = [self.settings.multiplayerNumberOfCardsOptionStrings indexOfObject:self.settings.multiplayerNumberOfCards];
+        [self.pickerView selectRow:row inComponent:0 animated:YES];
+    }
 }
+
+#pragma mark - Segue
 
 -(void)prepareCardFitViewController:(CardFitViewController *)cfvc toPlayWithNumOfCards:(NSUInteger)numOfCards {
     if (!self.settings.jokers) {
@@ -214,12 +262,32 @@
     cfvc.title = @"CardFitGame";
 }
 
+-(void)prepareMultiPlayerCardFitViewController:(MultiPlayerCardFitViewController *)mpcfvc toPlayWithNumOfCards:(NSUInteger)numOfCards {
+    if (!self.settings.jokers) {
+        numOfCards = numOfCards - ((numOfCards/54) * 2);
+    }
+    mpcfvc.numberOfCards = numOfCards;
+    mpcfvc.title = @"CardFitGame";
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    //sender is button use that
-    if ([segue.identifier isEqualToString:@"Play Game"]) {
-        if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) {
-            CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
-            [self prepareCardFitViewController:cfvc toPlayWithNumOfCards:[[self.settings.numberOfCardsOptionValues valueForKey:self.settings.onePlayerNumberOfCards] intValue]];
+    if ([sender isKindOfClass:[UIButton class]]) {
+        if ((UIButton *)sender == self.nextButton) {
+            if ([segue.identifier isEqualToString:@"Play Game"]) {
+                if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) {
+                    CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
+                    [self prepareCardFitViewController:cfvc toPlayWithNumOfCards:[[self.settings.numberOfCardsOptionValues valueForKey:self.settings.onePlayerNumberOfCards] intValue]];
+                }
+            } else if ([segue.identifier isEqualToString:@"Play Multiplayer"]) {
+                if ([segue.destinationViewController isKindOfClass:[MultiPlayerCardFitViewController class]]) {
+                    MultiPlayerCardFitViewController *mpcfvc = (MultiPlayerCardFitViewController *)segue.destinationViewController;
+                    self.networkingEngine = [[MultiplayerNetworking alloc] init];
+                    self.networkingEngine.delegate = mpcfvc;
+                    mpcfvc.networkingEngine = self.networkingEngine;
+                    [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
+                    [self prepareMultiPlayerCardFitViewController:mpcfvc toPlayWithNumOfCards:[[self.settings.numberOfCardsOptionValues valueForKey:self.settings.multiplayerNumberOfCards] intValue]];
+                }
+            }
         }
     }
 }

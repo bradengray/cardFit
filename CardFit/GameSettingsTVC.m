@@ -14,10 +14,13 @@
 #import "SWRevealViewController.h"
 #import "GameSettingsDetailTVC.h"
 #import "SettingsChangedNotification.h"
+#import "Settings.h"
 
 @interface GameSettingsTVC () <GameSettingsDelegate>
 
 @property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+@property (nonatomic, strong) Settings *settings;
+@property (nonatomic, strong) NSArray *data;
 
 @end
 
@@ -27,6 +30,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.settings = [self createSettings];
+    self.data = self.settings.data;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.sidebarButton setTarget:self.revealViewController];
     [self.sidebarButton setAction:@selector(revealToggle:)];
@@ -55,7 +60,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.sectionsArray[section];
+    return self.settings.sectionsArray[section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -63,27 +68,27 @@
     static NSString *cellIdentifier;
     UITableViewCell *cell;
     
-    if ([[cellDictionary objectForKey:PROTOTYPE_CELL_KEY] isEqualToString:PROTOTYPE_CELL_1]) {
-        cellIdentifier = PROTOTYPE_CELL_1;
+    if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_1]) {
+        cellIdentifier = CELL_1;
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.text = [cellDictionary objectForKey:TEXTLABEL_TITLE_KEY];
         cell.detailTextLabel.text = [cellDictionary objectForKey:TEXTLABEL_DESCRIPTION_KEY];
         
-    } else if ([[cellDictionary objectForKey:PROTOTYPE_CELL_KEY] isEqualToString:PROTOTYPE_CELL_2]) {
-        cellIdentifier = PROTOTYPE_CELL_2;
+    } else if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_2]) {
+        cellIdentifier = CELL_2;
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
         cell.accessoryView = switchView;
-        [switchView setOn:[[cellDictionary objectForKey:PROTOTYPE_CELL_2_BOOL_KEY] boolValue] animated:NO];
+        [switchView setOn:[[cellDictionary objectForKey:CELL_BOOL_KEY] boolValue] animated:NO];
         [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
         
         cell.textLabel.text = [cellDictionary objectForKey:TEXTLABEL_TITLE_KEY];
-    } else if ([[cellDictionary objectForKey:PROTOTYPE_CELL_KEY] isEqualToString:PROTOTYPE_CELL_3]) {
-        cellIdentifier = PROTOTYPE_CELL_3;
+    } else if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_3]) {
+        cellIdentifier = CELL_3;
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
@@ -96,8 +101,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedIndexPath = indexPath;
     NSDictionary *dictionary = [self.data[indexPath.section] objectAtIndex:indexPath.row];
-    if ([[dictionary objectForKey:PROTOTYPE_CELL_KEY] isEqualToString:PROTOTYPE_CELL_3]) {
-        [self restoreDefaultDictionary];
+    if ([[dictionary objectForKey:CELL_KEY] isEqualToString:CELL_3]) {
+        [Settings resetDefaults];
+        [self settingsChanged];
     } else {
         [self performSegueWithIdentifier:SETTINGS_DETAIL_SEGUE_IDENTIFER sender:tableView];
     }
@@ -105,38 +111,28 @@
 
 
 - (void)switchChanged:(UISwitch *)switchView {
-    [self switchChangedTo:switchView.on];
+    [self.settings switchChanged:switchView.on];
+    [self settingsChanged];
+}
+
+- (void)settingsChanged {
+    self.data = self.settings.data;
 }
 
 #pragma mark- Abstract Methods 
 
-- (void)switchChangedTo:(BOOL)on { //Abstract
-    return;
-}
-
-- (void)storeNewSettingsDictionary:(NSDictionary *)dictionary { //Abstract
-    return;
-}
-
-- (NSArray *)numbers { //Abstract
+- (Settings *)createSettings { //Abstract
     return nil;
-}
-
-- (NSArray *)values { //Abstract
-    return nil;
-}
-
-- (void)restoreDefaultDictionary { //Abstract
-    return;
 }
 
 #pragma mark - GameSettingsDelegate
 
 - (void)settingsChanged:(NSDictionary *)dictionary {
-    [self storeNewSettingsDictionary:dictionary];
+    [self.settings storeNewSettings:dictionary];
+    self.data = self.settings.data;
     dictionary = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row];
-    NSDictionary *userInfo = @{SettingsChangedForDictionary : dictionary};
-    [[NSNotificationCenter defaultCenter] postNotificationName:SettingsChangedForDictionaryNotification
+    NSDictionary *userInfo = @{SettingsChanged : dictionary};
+    [[NSNotificationCenter defaultCenter] postNotificationName:SettingsChangedNotification
                                                         object:self
                                                       userInfo:userInfo];
 }
@@ -150,8 +146,8 @@
                 GameSettingsDetailTVC *gsdtvc = (GameSettingsDetailTVC *)segue.destinationViewController;
                 gsdtvc.settings = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row];
                 gsdtvc.delegate = self;
-                gsdtvc.numbers = [self numbers];
-                gsdtvc.values = [self values];
+                gsdtvc.numbers = self.settings.numbers;
+                gsdtvc.values = self.settings.values;
             }
         }
     }

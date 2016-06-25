@@ -6,10 +6,9 @@
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import "PlayingCardDeck.h"
-#import "PlayingCard.h"
+#import "CardFitPlayingCardDeck.h"
 
-@implementation PlayingCardDeck
+@implementation CardFitPlayingCardDeck
 
 #pragma mark - Initialization
 
@@ -18,11 +17,11 @@
     
     //Cycle through number of decks, suits, ranks, and jokers to create a deck or decks of cards.
     for (int decks = 0; decks < numberOfDecks; decks++) {
-        for (int suit = 0; suit <= [PlayingCard maxSuit]; suit++) {
-            for (int rank = 1; rank <= [PlayingCard maxRank]; rank++) {
+        for (int suit = 0; suit <= [CardFitPlayingCard maxSuit]; suit++) {
+            for (int rank = 1; rank <= [CardFitPlayingCard maxRank]; rank++) {
                 if (rank != 14 || (rank == 14 && suit < 2)) {
                     if (rank !=14 || (rank == 14 && jokers)) {
-                        PlayingCard *card = [[PlayingCard alloc] init];
+                        CardFitPlayingCard *card = [[CardFitPlayingCard alloc] init];
                         card.rank = rank;
                         card.suit = suit;
                         [self addCard:card];
