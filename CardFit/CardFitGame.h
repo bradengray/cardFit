@@ -15,7 +15,7 @@
 
 @property (nonatomic, readonly) NSInteger score; //Returns a score for the game based on totalReps and gameTime (totalReps / gametime) * 100.
 @property (nonatomic, strong) NSString *gameTime; //Returns a string containing the current time elapsed during gameplay.
-@property (nonatomic) NSInteger totalReps; //Accumulates the total number of reps that have happened to date in game.
+@property (nonatomic) NSInteger totalPoints; //Accumulates the total number of reps that have happened to date in game.
 @property (nonatomic) BOOL paused; //pauses the timer in the game.
 
 //- (Card *)drawCardAtIndex:(NSUInteger)index; //Draws a card for the deck in the game at a specific index.

@@ -6,13 +6,9 @@
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "SettingsTVC.h"
 #import "Settings.h"
 
-@interface GameSettingsTVC : UITableViewController
-
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
-
-- (Settings *)createSettings; //Abstract
+@interface GameSettingsTVC : SettingsTVC
 
 @end

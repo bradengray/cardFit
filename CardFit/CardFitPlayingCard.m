@@ -68,17 +68,17 @@
 
 #pragma mark - Properties
 
-- (NSUInteger)reps {
+- (NSUInteger)points {
     if (self.rank == 1) {
-        return self.settings.acesReps;
+        return self.settings.acesPoints;
     } else if (self.rank == 11) {
-        return self.settings.jacksReps;
+        return self.settings.jacksPoints;
     } else if (self.rank == 12) {
-        return self.settings.queensReps;
+        return self.settings.queensPoints;
     } else if (self.rank == 13) {
-        return self.settings.kingsReps;
+        return self.settings.kingsPoints;
     } else if (self.rank == 14) {
-        return self.settings.jokersReps;
+        return self.settings.jokersPoints;
     } else {
         return self.rank;
     }

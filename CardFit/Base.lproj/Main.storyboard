@@ -122,10 +122,10 @@
             </objects>
             <point key="canvasLocation" x="940" y="370"/>
         </scene>
-        <!--Game Settings DetailTVC-->
+        <!--Playing Card Detail SettingsTVC-->
         <scene sceneID="Dhi-Fn-KUs">
             <objects>
-                <tableViewController id="Qnk-aJ-wZ5" customClass="GameSettingsDetailTVC" sceneMemberID="viewController">
+                <tableViewController id="Qnk-aJ-wZ5" customClass="PlayingCardDetailSettingsTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="RF6-UC-kg5">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -335,7 +335,7 @@
                         <barButtonItem key="leftBarButtonItem" image="list" id="Uqp-Lk-rtF"/>
                     </navigationItem>
                     <connections>
-                        <outlet property="sidebarButton" destination="Uqp-Lk-rtF" id="0w1-lF-u9J"/>
+                        <outlet property="sidebarButton" destination="Uqp-Lk-rtF" id="ocW-Ar-in6"/>
                         <segue destination="Qnk-aJ-wZ5" kind="show" identifier="Show Settings Detail" id="jKm-2o-Fc7"/>
                     </connections>
                 </tableViewController>

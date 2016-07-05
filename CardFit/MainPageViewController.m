@@ -58,6 +58,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerAuthenticated) name:LocalPlayerIsAuthenticated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentMatchMakerViewController) name:PresentGKMatchMakerViewController object:nil];
 }
 
 #pragma mark - Properties
@@ -90,6 +91,10 @@
     self.multiplayerReady = YES;
     self.multiPlayerButton.enabled = YES;
     self.multiPlayerButton.titleLabel.alpha = 1.0;
+}
+
+- (void)presentMatchMakerViewController {
+    [self performSegueWithIdentifier:@"Play Multiplayer" sender:self.nextButton];
 }
 
 - (void)dealloc {

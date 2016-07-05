@@ -29,9 +29,14 @@
 @property (nonatomic) NSUInteger acesReps;
 @property (nonatomic) NSUInteger jokersReps;
 
+//Integers that hold the number of points for the listed ranks. All Cards numbered 2-10 have a point value equal to rank.
+@property (nonatomic) NSUInteger jacksPoints;
+@property (nonatomic) NSUInteger queensPoints;
+@property (nonatomic) NSUInteger kingsPoints;
+@property (nonatomic) NSUInteger acesPoints;
+@property (nonatomic) NSUInteger jokersPoints;
+
 //Bool for whether or not deck should have jokers;
 @property (nonatomic) BOOL jokers;
-@property (nonatomic) BOOL aceExerciseAndRepsLabel;
-@property (nonatomic) BOOL jokerExerciseAndRepsLabel;
 
 @end

@@ -44,6 +44,7 @@
 + (void)resetDefaults;
 //- (NSString *)labelForObject:(id)object;
 - (NSString *)labelForSuit:(NSUInteger)suit andRank:(NSUInteger)rank; //Abstract
+- (NSString *)alertLabelForString:(NSString *)string forKey:(NSString *)key; //Abstract
 - (void)storeNewSettings:(NSDictionary *)settings; //Abstract
 - (void)switchChanged:(BOOL)on;
 

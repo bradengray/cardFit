@@ -17,6 +17,7 @@
 #define EXERCISE @"Exercise"
 #define REPS @"Reps"
 #define DEFAULTS @"Restore Defaults"
+#define POINTS @"Points"
 
 //Keys for Cards
 #define JACK @"Jack"
@@ -26,8 +27,6 @@
 #define JOKER @"Joker"
 
 #define JOKERS_OPTIONS @"Play With Jokers"
-#define ACE_EXERCISE_AND_REPS_LABEL @"Ace Label Options"
-#define JOKER_EXERCISE_AND_REPS_LABEL @"Joker Label Options"
 
 //Keys for exercises
 #define SPADES_EXCERCISE_KEY @"Spades Exercise Key"
@@ -43,6 +42,13 @@
 #define KINGS_REPS_KEY @"Kings Reps Key"
 #define ACES_REPS_KEY @"Aces Reps Key"
 #define JOKERS_REPS_KEY @"Jokers Reps Key"
+
+//Keys for points.
+#define JACKS_POINTS_KEY @"Jacks Points Key"
+#define QUEENS_POINTS_KEY @"Queen Points Key"
+#define KINGS_POINTS_KEY @"King Points Key"
+#define ACES_POINTS_KEY @"Aces Points Key"
+#define JOKERS_POINTS_KEY @"Jokers Points Key"
 
 //Keys for OnePlayer, MultiPlayer number of cards and Jokers boolean value.
 #define JOKERS_BOOLEAN_KEY @"Jokers Boolean Key"
@@ -108,11 +114,11 @@
 }
 
 - (NSArray *)values {
-    return @[REPS, EXERCISE, CELL_BOOL_KEY, CARD_LABEL];
+    return @[POINTS, REPS, EXERCISE, CELL_BOOL_KEY, CARD_LABEL];
 }
 
 - (NSArray *)numbers {
-    return @[REPS];
+    return @[POINTS, REPS];
 }
 
 #pragma mark - Section Arrays
@@ -160,25 +166,25 @@
 }
 
 - (NSDictionary *)jack {
-    return @{TEXTLABEL_TITLE_KEY : JACK, REPS : [NSString stringWithFormat:@"%ld", self.jacksReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
+    return @{TEXTLABEL_TITLE_KEY : JACK, POINTS : [NSString stringWithFormat:@"%ld", self.jacksPoints], REPS : [NSString stringWithFormat:@"%ld", self.jacksReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
 }
 
 - (NSDictionary *)queen {
-    return @{TEXTLABEL_TITLE_KEY : QUEEN, REPS : [NSString stringWithFormat:@"%ld", self.queensReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
+    return @{TEXTLABEL_TITLE_KEY : QUEEN, POINTS : [NSString stringWithFormat:@"%ld", self.queensPoints], REPS : [NSString stringWithFormat:@"%ld", self.queensReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
 }
 
 - (NSDictionary *)king {
-    return @{TEXTLABEL_TITLE_KEY : KING, REPS : [NSString stringWithFormat:@"%ld", self.kingsReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
+    return @{TEXTLABEL_TITLE_KEY : KING, POINTS : [NSString stringWithFormat:@"%ld", self.kingsPoints], REPS : [NSString stringWithFormat:@"%ld", self.kingsReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : REPS};
 }
 
 - (NSDictionary *)ace {
-    return @{TEXTLABEL_TITLE_KEY : ACE, EXERCISE : self.acesExerciseString, REPS : [NSString stringWithFormat:@"%ld", self.acesReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, REPS], CELL_BOOL_KEY : [NSNumber numberWithBool:self.aceExerciseAndRepsLabel], CARD_LABEL : [self labelForKey:ACE]};
+    return @{TEXTLABEL_TITLE_KEY : ACE, EXERCISE : self.acesExerciseString, POINTS : [NSString stringWithFormat:@"%ld", self.acesPoints], REPS : [NSString stringWithFormat:@"%ld", self.acesReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, REPS], CARD_LABEL : [self labelForKey:ACE]};
 }
 
 - (NSDictionary *)joker {
-    return @{TEXTLABEL_TITLE_KEY : JOKER, EXERCISE : self.jokersExerciseString, REPS : [NSString stringWithFormat:@"%ld", self.jokersReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, REPS], CELL_BOOL_KEY : [NSNumber numberWithBool:self.jokerExerciseAndRepsLabel], CARD_LABEL : [self labelForKey:JOKER]};
+    return @{TEXTLABEL_TITLE_KEY : JOKER, EXERCISE : self.jokersExerciseString, POINTS : [NSString stringWithFormat:@"%ld", self.jokersPoints], REPS : [NSString stringWithFormat:@"%ld", self.jokersReps], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, REPS], CARD_LABEL : [self labelForKey:JOKER]};
 }
-  
+
 - (NSDictionary *)jokerOption {
     return @{TEXTLABEL_TITLE_KEY : JOKERS_OPTIONS, CELL_BOOL_KEY : [NSNumber numberWithBool:self.jokers], CELL_KEY : CELL_2};
 }
@@ -187,7 +193,8 @@
     NSString *title = [settings objectForKey:TEXTLABEL_TITLE_KEY];
     NSString *exercise = [settings objectForKey:EXERCISE];
     NSUInteger reps = [(NSString *)[settings objectForKey:REPS] integerValue];
-    BOOL labelBool = [[settings objectForKey:CELL_BOOL_KEY] boolValue];
+    NSUInteger points = [(NSString *) [settings objectForKey:POINTS] integerValue];
+//    BOOL labelBool = [[settings objectForKey:CELL_BOOL_KEY] boolValue];
 
     if ([title isEqualToString:SPADE]) {
         self.spadesExerciseString = exercise;
@@ -199,18 +206,23 @@
         self.diamondsExerciseString = exercise;
     } else if ([title isEqualToString:JACK]) {
         self.jacksReps = reps;
+        self.jacksPoints = points;
     } else if ([title isEqualToString:QUEEN]) {
         self.queensReps = reps;
+        self.queensPoints = points;
     } else if ([title isEqualToString:KING]) {
         self.kingsReps = reps;
+        self.kingsPoints = points;
     } else if ([title isEqualToString:ACE]) {
         self.acesExerciseString = exercise;
         self.acesReps = reps;
-        self.aceExerciseAndRepsLabel = labelBool;
+        self.acesPoints = points;
+//        self.aceExerciseAndRepsLabel = labelBool;
     } else if ([title isEqualToString:JOKER]) {
         self.jokersExerciseString = exercise;
         self.jokersReps = reps;
-        self.jokerExerciseAndRepsLabel = labelBool;
+        self.jokersPoints = points;
+//        self.jokerExerciseAndRepsLabel = labelBool;
     } else {
         NSLog(@"Error No Setting");
     }
@@ -238,16 +250,16 @@
     } else if ([key isEqualToString:KING]) {
         return [NSString stringWithFormat:@"%ld", self.kingsReps];
     } else if ([key isEqualToString:ACE]) {
-        if (self.aceExerciseAndRepsLabel) {
-            return [NSString stringWithFormat:@"%ld %@", self.acesReps, self.acesExerciseString];
-        } else {
+        if (self.acesReps == 0) {
             return [NSString stringWithFormat:@"%@", self.acesExerciseString];
+        } else {
+            return [NSString stringWithFormat:@"%ld %@", self.acesReps, self.acesExerciseString];
         }
     } else if ([key isEqualToString:JOKER]) {
-        if (self.jokerExerciseAndRepsLabel) {
-            return [NSString stringWithFormat:@"%ld %@", self.jokersReps, self.jokersExerciseString];
+        if (self.jokersReps == 0) {
+            return [NSString stringWithFormat:@"%@", self.jokersExerciseString];
         } else {
-           return [NSString stringWithFormat:@"%@", self.jokersExerciseString]; 
+           return [NSString stringWithFormat:@"%ld %@", self.jokersReps, self.jokersExerciseString];
         }
     } else {
         return @"Error no string for label";
@@ -263,7 +275,11 @@
     } else if (rank <= 10) {
         return [NSString stringWithFormat:@"%ld %@", rank, [self labelForKey:suitKey]];
     } else {
-        return [NSString stringWithFormat:@"%@ %@", [self labelForKey:rankKey], [self labelForKey:suitKey]];
+        if ([[self labelForKey:rankKey] integerValue] == 0) {
+            return [NSString stringWithFormat:@"%@", [self labelForKey:suitKey]];
+        } else {
+            return [NSString stringWithFormat:@"%@ %@", [self labelForKey:rankKey], [self labelForKey:suitKey]];
+        }
     }
 }
 
@@ -294,6 +310,45 @@
         return DIAMOND;
     } else {
         return @"";
+    }
+}
+
+#pragma mark - Alert Label
+
+#define MAX_NUMBER_VALUE 1000
+#define MINIMUM_STRING_LENGTH 15
+
+- (NSString *)alertLabelForString:(NSString *)string forKey:(NSString *)key {
+    if ([string isEqualToString:@""]) {
+        if ([key isEqualToString:REPS]) {
+            return nil;
+        } else {
+            return @"Entry Required";
+        }
+    } else {
+        if ([self.numbers containsObject:key]) {
+            if ([string integerValue] >= MAX_NUMBER_VALUE) {
+                return [NSString stringWithFormat:@"Value Must Be Less Than %d", MAX_NUMBER_VALUE];
+            } else if ([string integerValue] < 0) {
+                if ([string integerValue] == 0) {
+                    if ([key isEqualToString:POINTS]) {
+                        return @"Reps Must be Greater Than 0";
+                    } else {
+                        return nil;
+                    }
+                } else {
+                    return @"Reps Must be Greater Than 0";
+                }
+            } else {
+                return nil;
+            }
+        } else {
+            if ([string length] > MINIMUM_STRING_LENGTH) {
+                return [NSString stringWithFormat:@"Exercise Must Contain Less Than %d Characters", MINIMUM_STRING_LENGTH];
+            } else {
+                return nil;
+            }
+        }
     }
 }
 
@@ -444,7 +499,7 @@
 
 - (NSUInteger)jokersReps { //Returns integer value for jokers reps or default value.
     if (self.save) {
-        return [self valueForKey:JOKERS_REPS_KEY withDefaultValue:50];
+        return [self valueForKey:JOKERS_REPS_KEY withDefaultValue:0];
     } else {
         return _jokersReps;
     }
@@ -490,7 +545,95 @@
     }
 }
 
-#pragma mark = Boolean Properties
+#pragma mark - Points Propertins
+
+@synthesize jacksPoints = _jacksPoints;
+@synthesize queensPoints = _queensPoints;
+@synthesize kingsPoints = _kingsPoints;
+@synthesize acesPoints = _acesPoints;
+@synthesize jokersPoints = _jokersPoints;
+
+- (NSUInteger)jacksPoints {
+    if (self.save) {
+        return [self valueForKey:JACKS_POINTS_KEY withDefaultValue:12];
+    } else {
+        return _jacksPoints;
+    }
+}
+
+- (NSUInteger)queensPoints {
+    if (self.save) {
+        return [self valueForKey:QUEENS_POINTS_KEY withDefaultValue:15];
+    } else {
+        return _queensReps;
+    }
+}
+
+- (NSUInteger)kingsPoints {
+    if (self.save) {
+        return [self valueForKey:KINGS_POINTS_KEY withDefaultValue:20];
+    } else {
+        return _kingsReps;
+    }
+}
+
+- (NSUInteger)acesPoints {
+    if (self.save) {
+        return [self valueForKey:ACES_POINTS_KEY withDefaultValue:25];
+    } else {
+        return _acesPoints;
+    }
+}
+
+- (NSUInteger)jokersPoints {
+    if (self.save) {
+        return [self valueForKey:JOKERS_POINTS_KEY withDefaultValue:50];
+    } else {
+        return _jokersPoints;
+    }
+}
+
+- (void)setJacksPoints:(NSUInteger)jacksPoints {
+    if (self.save) {
+        [self setNSUIntegerValue:jacksPoints forKey:JACKS_POINTS_KEY];
+    } else {
+        _jacksPoints = jacksPoints;
+    }
+}
+
+- (void)setQueensPoints:(NSUInteger)queensPoints {
+    if (self.save) {
+        [self setNSUIntegerValue:queensPoints forKey:QUEENS_POINTS_KEY];
+    } else {
+        _queensPoints = queensPoints;
+    }
+}
+
+- (void)setKingsPoints:(NSUInteger)kingsPoints {
+    if (self.save) {
+        [self setNSUIntegerValue:kingsPoints forKey:KINGS_POINTS_KEY];
+    } else {
+        _kingsPoints = kingsPoints;
+    }
+}
+
+- (void)setAcesPoints:(NSUInteger)acesPoints {
+    if (self.save) {
+        [self setNSUIntegerValue:acesPoints forKey:ACES_POINTS_KEY];
+    } else {
+        _acesPoints = acesPoints;
+    }
+}
+
+- (void)setJokersPoints:(NSUInteger)jokersPoints {
+    if (self.save) {
+        [self setNSUIntegerValue:jokersPoints forKey:JOKERS_POINTS_KEY];
+    } else {
+        _jokersPoints = jokersPoints;
+    }
+}
+
+#pragma mark - Boolean Properties
 
 - (BOOL)jokers { //Returns a boolean value for whether or not a game should have jokers used.
     NSUInteger number = [self valueForKey:JOKERS_BOOLEAN_KEY withDefaultValue:[[NSNumber numberWithBool:YES] integerValue]];
@@ -500,26 +643,6 @@
 - (void)setJokers:(BOOL)jokers { //Sets a boolean value for whether or not a game should have jokers in NSUserdefaults.
     NSNumber *number = [NSNumber numberWithBool:jokers];
     [self setNSUIntegerValue:[number integerValue] forKey:JOKERS_BOOLEAN_KEY];
-}
-
-- (BOOL)aceExerciseAndRepsLabel { //Returns a boolean value for whether or not a game should have jokers used.
-    NSUInteger number = [self valueForKey:ACE_EXERCISE_AND_REPS_LABEL withDefaultValue:[[NSNumber numberWithBool:YES] integerValue]];
-    return [[NSNumber numberWithInteger:number] boolValue];
-}
-
-- (void)setAceExerciseAndRepsLabel:(BOOL)aceExerciseAndRepsLabel { //Sets a boolean value for whether or not a game should have jokers in NSUserdefaults.
-    NSNumber *number = [NSNumber numberWithBool:aceExerciseAndRepsLabel];
-    [self setNSUIntegerValue:[number integerValue] forKey:ACE_EXERCISE_AND_REPS_LABEL];
-}
-
-- (BOOL)jokerExerciseAndRepsLabel { //Returns a boolean value for whether or not a game should have jokers used.
-    NSUInteger number = [self valueForKey:JOKER_EXERCISE_AND_REPS_LABEL withDefaultValue:[[NSNumber numberWithBool:NO] integerValue]];
-    return [[NSNumber numberWithInteger:number] boolValue];
-}
-
-- (void)setJokerExerciseAndRepsLabel:(BOOL)jokerExerciseAndRepsLabel { //Sets a boolean value for whether or not a game should have jokers in NSUserdefaults.
-    NSNumber *number = [NSNumber numberWithBool:jokerExerciseAndRepsLabel];
-    [self setNSUIntegerValue:[number integerValue] forKey:JOKER_EXERCISE_AND_REPS_LABEL];
 }
 
 @end

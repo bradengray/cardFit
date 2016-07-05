@@ -278,8 +278,8 @@
     CardFitCard *card = [self.game drawCard];
     self.cardCounter++;
     NSLog(@"%ld", self.cardCounter);
-    self.game.totalReps = card.reps; //[[self repsForCard:card] intValue];
-    NSLog(@"Reps: %ld", self.game.totalReps);
+    self.game.totalPoints = card.points; //[[self repsForCard:card] intValue];
+    NSLog(@"Points: %ld", self.game.totalPoints);
     if (!card) {
         NSLog(@"No more Cards");
     }
@@ -297,7 +297,7 @@
 - (void)endGame {
     NSRange range = NSMakeRange(0, 1);
     NSDictionary *attributes = [self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld Reps:%ld", self.game.score, self.game.totalReps] attributes:attributes];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld Points:%ld", self.game.score, self.game.totalPoints] attributes:attributes];
     self.taskLabel.attributedText = attributedString;
     [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
     self.pauseButton.enabled = NO;
