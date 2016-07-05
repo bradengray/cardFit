@@ -146,4 +146,8 @@
     return;
 }
 
+- (NSString *)alertLabelForString:(NSString *)string forKey:(NSString *)key { //Abstract
+    return nil;
+}
+
 @end

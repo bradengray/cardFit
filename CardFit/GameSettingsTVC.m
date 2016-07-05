@@ -6,15 +6,12 @@
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-//#define SETTINGS_DETAIL_SEGUE_IDENTIFIER @"Show Settings Detail"
-
 #define SETTINGS_DETAIL_SEGUE_IDENTIFER @"Show Settings Detail"
 
 #import "GameSettingsTVC.h"
 #import "SWRevealViewController.h"
 #import "GameSettingsDetailTVC.h"
 #import "SettingsChangedNotification.h"
-#import "Settings.h"
 
 @interface GameSettingsTVC () <GameSettingsDelegate>
 
@@ -119,12 +116,6 @@
     self.data = self.settings.data;
 }
 
-#pragma mark- Abstract Methods 
-
-- (Settings *)createSettings { //Abstract
-    return nil;
-}
-
 #pragma mark - GameSettingsDelegate
 
 - (void)settingsChanged:(NSDictionary *)dictionary {
@@ -144,10 +135,8 @@
         if ([segue.identifier isEqualToString:SETTINGS_DETAIL_SEGUE_IDENTIFER]) {
             if ([segue.destinationViewController isKindOfClass:[GameSettingsDetailTVC class]]) {
                 GameSettingsDetailTVC *gsdtvc = (GameSettingsDetailTVC *)segue.destinationViewController;
-                gsdtvc.settings = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row];
+                gsdtvc.settingsDetailDictionary = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row];
                 gsdtvc.delegate = self;
-                gsdtvc.numbers = self.settings.numbers;
-                gsdtvc.values = self.settings.values;
             }
         }
     }

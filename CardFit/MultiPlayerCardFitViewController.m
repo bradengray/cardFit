@@ -320,7 +320,7 @@
 - (void)endGame {
     NSRange range = NSMakeRange(0, 1);
     NSDictionary *attributes = [self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Reps:%ld", self.game.totalReps] attributes:attributes];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Points:%ld", self.game.totalPoints] attributes:attributes];
     self.taskLabel.attributedText = attributedString;
     [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
     self.pauseButton.enabled = NO;
@@ -440,7 +440,7 @@
         [self.cardView removeFromSuperview];
         self.cardView = nil;
         self.currentCard = [self drawRandomCard];
-        self.game.totalReps = self.currentCard.reps; //[[self repsForCard:self.currentCard] integerValue];
+        self.game.totalPoints = self.currentCard.points; //[[self repsForCard:self.currentCard] integerValue];
         self.currentCard.selected = YES;
         [self updateUI];
     } else {
@@ -457,7 +457,7 @@
     if (self.started) {
         [self.cardView removeFromSuperview];
         self.cardView = nil;
-        self.game.totalReps = self.currentCard.reps; //[[self repsForCard:self.currentCard] intValue];
+        self.game.totalPoints = self.currentCard.points; //[[self repsForCard:self.currentCard] intValue];
         self.currentCard.selected = YES;
         [self updateUI];
     } else {

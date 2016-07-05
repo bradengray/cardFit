@@ -76,12 +76,12 @@
     return _gameTime;
 }
 
-- (void)setTotalReps:(NSInteger)totalReps { //adds to reps to existing number of reps.
-    _totalReps += totalReps;
+- (void)setTotalPoints:(NSInteger)totalPoints { //adds new points to existing number of points.
+    _totalPoints += totalPoints;
 }
 
 - (NSInteger)score { //Score is totalReps / time * 100
-    _score = self.totalReps / self.timer.timeElapsed *100;
+    _score = self.totalPoints / self.timer.timeElapsed *100;
     return _score;
 }
 

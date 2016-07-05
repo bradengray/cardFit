@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @import GameKit;
+@import MultipeerConnectivity;
 
 @protocol GameKitHelperDelegate
 
@@ -19,8 +20,9 @@
 
 extern NSString *const PresentAuthenticationViewController;
 extern NSString *const LocalPlayerIsAuthenticated;
+extern NSString *const PresentGKMatchMakerViewController;
 
-@interface GameKitHelper : NSObject <GKMatchmakerViewControllerDelegate, GKMatchDelegate, GKInviteEventListener>
+@interface GameKitHelper : NSObject <GKMatchmakerViewControllerDelegate, GKMatchDelegate, GKLocalPlayerListener>
 
 @property (nonatomic, strong) NSMutableDictionary *playersDictionary;
 

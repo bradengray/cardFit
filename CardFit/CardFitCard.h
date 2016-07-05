@@ -11,6 +11,6 @@
 @interface CardFitCard : Card
 
 @property (nonatomic, strong) NSString *label;
-@property (nonatomic, readonly) NSUInteger reps;
+@property (nonatomic, readonly) NSUInteger points;
 
 @end

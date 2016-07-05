@@ -12,6 +12,7 @@
 
 @property (nonatomic) BOOL enableGameCenter;
 @property (nonatomic) BOOL matchStarted;
+@property (nonatomic, strong) GKInvite *pendingInvite;
 
 @end
 
@@ -19,11 +20,13 @@
 
 NSString *const PresentAuthenticationViewController = @"present_authentication_view_controller";
 NSString *const LocalPlayerIsAuthenticated = @"local_player_authencticated";
+NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_controller";
 
 - (id)init {
     self = [super init];
     if (self) {
         self.enableGameCenter = YES;
+        [[GKLocalPlayer localPlayer] registerListener:self];
     }
     return self;
 }
@@ -56,6 +59,9 @@ NSString *const LocalPlayerIsAuthenticated = @"local_player_authencticated";
             //5
             self.enableGameCenter = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:LocalPlayerIsAuthenticated object:nil];
+//            [[GKMatchmaker sharedMatchmaker] startBrowsingForNearbyPlayersWithHandler:^(GKPlayer * _Nonnull player, BOOL reachable) {
+//                NSLog(@"Player: %@", player.playerID);
+//            }];
         } else {
             //6
             self.enableGameCenter = NO;
@@ -116,15 +122,27 @@ NSString *const LocalPlayerIsAuthenticated = @"local_player_authencticated";
     self.match = nil;
     self.delegate = delegate;
     [viewController dismissViewControllerAnimated:NO completion:nil];
+    GKMatchmakerViewController *mmvc;
     
-    GKMatchRequest *request = [[GKMatchRequest alloc] init];
-    request.minPlayers = minPlayers;
-    request.maxPlayers = maxPlayers;
+    if (self.pendingInvite != nil) {
+        mmvc = [[GKMatchmakerViewController alloc] initWithInvite:self.pendingInvite];
+    } else {
+        
+        GKMatchRequest *request = [[GKMatchRequest alloc] init];
+        request.minPlayers = minPlayers;
+        request.maxPlayers = maxPlayers;
+        request.inviteMessage = @"What's Up Doc";
+        request.recipientResponseHandler = ^(GKPlayer *player, GKInviteRecipientResponse response){
+            NSLog(@"I'm saying I'm Saying I do.");
+        };
+        
+        mmvc = [[GKMatchmakerViewController alloc] initWithMatchRequest:request];
+    }
     
-    GKMatchmakerViewController *mmvc = [[GKMatchmakerViewController alloc] initWithMatchRequest:request];
     mmvc.matchmakerDelegate = self;
-    
     [viewController presentViewController:mmvc animated:YES completion:nil];
+    
+    self.pendingInvite = nil;
 }
 
 #pragma mark - MatchMakerViewControllerDelegate
@@ -205,10 +223,15 @@ NSString *const LocalPlayerIsAuthenticated = @"local_player_authencticated";
     [self.delegate matchEnded];
 }
 
-#pragma mark - GKInviteEventListener
+#pragma mark - GKLocalPlayerListener
+
+- (void)player:(GKPlayer *)player didAcceptInvite:(GKInvite *)invite {
+    self.pendingInvite = invite;
+    [[NSNotificationCenter defaultCenter] postNotificationName:PresentGKMatchMakerViewController object:nil];
+}
 
 - (void)player:(GKPlayer *)player didRequestMatchWithRecipients:(NSArray<GKPlayer *> *)recipientPlayers {
-    NSLog(@"Sing");
+    NSLog(@"Did request invite");
 }
 
 @end

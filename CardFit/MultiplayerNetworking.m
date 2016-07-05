@@ -49,12 +49,6 @@ typedef struct {
     Message message;
 } MessageDrawCard;
 
-//typedef struct {
-//    Message message;
-//    int details1;
-//    int details2;
-//} MessageCard;
-
 typedef struct {
     Message message;
     BOOL player1Won;
@@ -138,19 +132,9 @@ typedef struct {
 }
 
 - (void)sendGameInfo:(id)gameInfo {
-//    PlayingCardSettings *settings = (PlayingCardSettings *)gameInfo;
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:gameInfo];
     [self sendData:data];
 }
-
-//- (void)sendGameDetail:(NSDictionary *)gameDetail {
-//    MessageCard message;
-//    message.message.messageType = kMessageTypeCard;
-//    message.details1 = [[gameDetail objectForKey:DETAILS_1_KEY] intValue];
-//    message.details2 = [[gameDetail objectForKey:DETAILS_2_KEY] intValue];
-//    NSData *data = [NSData dataWithBytes:&message length:sizeof(MessageCard)];
-//    [self sendData:data];
-//}
 
 #pragma mark - Receive Data
 
@@ -255,12 +239,7 @@ typedef struct {
         [self.delegate matchReady];
     } else if (message->messageType == kMessageTypeGameStart) {
         [self.delegate gameStarted];
-    } //else if (message->messageType == kMessageTypeCard) {
-//        MessageCard *messageCard = (MessageCard *)[data bytes];
-//        NSDictionary *dictionary = @{DETAILS_1_KEY : @(messageCard->details1), DETAILS_2_KEY : @(messageCard->details2)};
-//        NSLog(@"Back D1: %u, D2: %u", messageCard->details1, messageCard->details2);
-//        [self.delegate card:dictionary];
-     else if (message->messageType == kMessageTypeDrawCard) {
+    } else if (message->messageType == kMessageTypeDrawCard) {
         NSLog(@"Draw Card message received");
         [self.delegate drawCard];
     } else if (message->messageType == kMessageTypeGameOver) {
