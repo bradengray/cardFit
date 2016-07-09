@@ -114,7 +114,7 @@
                         <outlet property="nextButton" destination="sHe-1P-TEz" id="wWX-Yh-Ocr"/>
                         <outlet property="onePlayerButton" destination="rK9-mw-M5q" id="OpO-u1-NTB"/>
                         <outlet property="pickerView" destination="0tY-gL-Cs6" id="N0s-ip-CcQ"/>
-                        <segue destination="0Vb-B9-XkA" kind="show" identifier="Play Multiplayer" id="W7b-Sn-n9d"/>
+                        <segue destination="0Vb-B9-XkA" kind="show" identifier="Play Game" id="W7b-Sn-n9d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XeE-Ap-kxB" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -156,58 +156,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LQi-M5-aev" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1688" y="1100"/>
-        </scene>
-        <!--Playing Card Fit View Controller-->
-        <scene sceneID="tne-QT-ifu">
-            <objects>
-                <viewController id="BYZ-38-t0r" customClass="PlayingCardFitViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oVn-Nw-mba">
-                                <rect key="frame" x="279" y="289" width="42" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="uMt-89-irR">
-                                <rect key="frame" x="20" y="72" width="560" height="2.5"/>
-                            </progressView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="oVn-Nw-mba" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="1kp-NH-J3V"/>
-                            <constraint firstItem="uMt-89-irR" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="56P-NK-pkk"/>
-                            <constraint firstItem="uMt-89-irR" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="60b-br-zsV"/>
-                            <constraint firstItem="uMt-89-irR" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="NG0-Dr-Y7T"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="uMt-89-irR" secondAttribute="leading" id="OZb-a2-mkM"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="uMt-89-irR" secondAttribute="leading" id="OrH-nD-ZOo"/>
-                            <constraint firstItem="oVn-Nw-mba" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="a86-BG-lPw"/>
-                            <constraint firstItem="uMt-89-irR" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="qgK-7A-hog"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="uMt-89-irR" secondAttribute="leading" id="roJ-49-Wil"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="60b-br-zsV"/>
-                                <exclude reference="OZb-a2-mkM"/>
-                                <exclude reference="OrH-nD-ZOo"/>
-                                <exclude reference="qgK-7A-hog"/>
-                            </mask>
-                        </variation>
-                    </view>
-                    <connections>
-                        <outlet property="countDownLabel" destination="oVn-Nw-mba" id="SSg-SB-KqV"/>
-                        <outlet property="progress" destination="uMt-89-irR" id="UeZ-6E-8yM"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1688" y="370"/>
         </scene>
         <!--Reveal View Controller-->
         <scene sceneID="wry-Z8-6sV">
@@ -397,10 +345,10 @@
             </objects>
             <point key="canvasLocation" x="216" y="1100"/>
         </scene>
-        <!--MultiPCF View Controller-->
+        <!--Playing Card Fit View Controller-->
         <scene sceneID="Aei-8n-maz">
             <objects>
-                <viewController id="0Vb-B9-XkA" customClass="MultiPCFViewController" sceneMemberID="viewController">
+                <viewController id="0Vb-B9-XkA" customClass="PlayingCardFitViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="R4Z-QW-SWe"/>
                         <viewControllerLayoutGuide type="bottom" id="3hT-NN-LDU"/>
@@ -429,13 +377,13 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="countDownLabel" destination="qVO-s9-RZi" id="ueY-Ow-s9L"/>
-                        <outlet property="progress" destination="Iwc-hG-TBB" id="gDA-Ze-MW2"/>
+                        <outlet property="countDownLabel" destination="qVO-s9-RZi" id="TA2-WR-DaK"/>
+                        <outlet property="progress" destination="Iwc-hG-TBB" id="uLQ-iZ-LE6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g1u-cF-R4l" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1688" y="-394"/>
+            <point key="canvasLocation" x="1688" y="370"/>
         </scene>
     </scenes>
     <resources>
