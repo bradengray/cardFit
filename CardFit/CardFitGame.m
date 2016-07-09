@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSMutableArray *cards; //of cards
 @property (nonatomic, strong) Deck *deck; //Instance of Deck.h
 @property (nonatomic, strong) Timer *timer; //Instance of Timer.h
+@property (nonatomic) NSInteger totalNumOfCards;
 
 @end
 
@@ -24,6 +25,7 @@
 
 - (instancetype)initWithCardCount:(NSUInteger)cardCount withDeck:(Deck *)deck { //designated initializer
     self = [super init];
+    self.totalNumOfCards = cardCount;
     
     //Draw cards from the deck given based on the cardCount.
     if (self) {
@@ -83,6 +85,10 @@
 - (NSInteger)score { //Score is totalReps / time * 100
     _score = self.totalPoints / self.timer.timeElapsed *100;
     return _score;
+}
+
+- (float)progress {
+    return 1.0 - (((float)[self.cards count] + 1.0) / (float)self.totalNumOfCards);
 }
 
 #pragma mark - Methods

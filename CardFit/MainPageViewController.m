@@ -23,7 +23,7 @@
 @property (nonatomic, strong) MultiplayerNetworking *networkingEngine;
 @property (nonatomic, strong) UIBarButtonItem *sidebarButton;
 @property (nonatomic) BOOL selected;
-@property (nonatomic) BOOL onePlayer;
+@property (nonatomic) BOOL multiPlayer;
 @property (nonatomic) BOOL multiplayerReady;
 
 @end
@@ -122,12 +122,12 @@
     
     if (!self.selected) {
         if (button == self.multiPlayerButton) {
-            self.onePlayer = NO;
+            self.multiPlayer = YES;
             self.pickerView.dataSource = nil;
             self.pickerView.dataSource = self;
             [self updatePickerView];
         } else if (button == self.onePlayerButton) {
-            self.onePlayer = YES;
+            self.multiPlayer = NO;
             self.pickerView.dataSource = nil;
             self.pickerView.dataSource = self;
             [self updatePickerView];
@@ -150,11 +150,12 @@
         }];
         self.selected = !self.selected;
     } else {
-        if (self.onePlayer) {
-            [self performSegueWithIdentifier:@"Play Game" sender:button];
-        } else if (self.multiplayerReady) {
-            [self performSegueWithIdentifier:@"Play Multiplayer" sender:button];
-        }
+//        if (self.onePlayer) {
+//            [self performSegueWithIdentifier:@"Play Game" sender:button];
+//        } else if (self.multiplayerReady) {
+//            [self performSegueWithIdentifier:@"Play Multiplayer" sender:button];
+//        }
+        [self performSegueWithIdentifier:@"Play Multiplayer" sender:button];
     }
 }
 
@@ -221,7 +222,7 @@
 }
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    if (self.onePlayer) {
+    if (!self.multiPlayer) {
         return [self.settings.onePlayerNumberOfCardsOptionStrings count];
     } else {
         return [self.settings.multiplayerNumberOfCardsOptionStrings count];
@@ -231,7 +232,7 @@
 #pragma mark - UIPickerViewDelegate
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    if (self.onePlayer) {
+    if (!self.multiPlayer) {
         return self.settings.onePlayerNumberOfCardsOptionStrings[row];
     } else {
         return self.settings.multiplayerNumberOfCardsOptionStrings[row];
@@ -239,7 +240,7 @@
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    if (self.onePlayer) {
+    if (!self.multiPlayer) {
         self.settings.onePlayerNumberOfCards = self.settings.onePlayerNumberOfCardsOptionStrings[row];
     } else {
         self.settings.multiplayerNumberOfCards = self.settings.multiplayerNumberOfCardsOptionStrings[row];
@@ -248,7 +249,7 @@
 
 -(void)updatePickerView {
     NSInteger row;
-    if (self.onePlayer) {
+    if (!self.multiPlayer) {
         row = [self.settings.onePlayerNumberOfCardsOptionStrings indexOfObject:self.settings.onePlayerNumberOfCards];
         [self.pickerView selectRow:row inComponent:0 animated:YES];
     } else {
@@ -273,6 +274,7 @@
     }
     mpcfvc.numberOfCards = numOfCards;
     mpcfvc.title = @"CardFitGame";
+    mpcfvc.multiplayer = self.multiPlayer;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -286,10 +288,12 @@
             } else if ([segue.identifier isEqualToString:@"Play Multiplayer"]) {
                 if ([segue.destinationViewController isKindOfClass:[MultiPlayerCardFitViewController class]]) {
                     MultiPlayerCardFitViewController *mpcfvc = (MultiPlayerCardFitViewController *)segue.destinationViewController;
-                    self.networkingEngine = [[MultiplayerNetworking alloc] init];
-                    self.networkingEngine.delegate = mpcfvc;
-                    mpcfvc.networkingEngine = self.networkingEngine;
-                    [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
+                    if (self.multiPlayer) {
+                        self.networkingEngine = [[MultiplayerNetworking alloc] init];
+                        self.networkingEngine.delegate = mpcfvc;
+                        mpcfvc.networkingEngine = self.networkingEngine;
+                        [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
+                    }
                     [self prepareMultiPlayerCardFitViewController:mpcfvc toPlayWithNumOfCards:[[self.settings.numberOfCardsOptionValues valueForKey:self.settings.multiplayerNumberOfCards] intValue]];
                 }
             }

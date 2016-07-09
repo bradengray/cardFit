@@ -19,7 +19,7 @@
 @implementation CardFitLayoutView
 
 #define SUBVIEW_HEIGHT_SCALE_PERCENTAGE .120
-#define MINIMUM_VOFFSET 20
+#define MINIMUM_VOFFSET 40
 
 - (CGFloat)subViewScaledHeight {
     return ((self.size.height * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE)) - MINIMUM_VOFFSET);

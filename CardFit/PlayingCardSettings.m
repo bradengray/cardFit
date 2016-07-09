@@ -80,6 +80,12 @@
     [aCoder encodeInteger:self.kingsReps forKey:KINGS_REPS_KEY];
     [aCoder encodeInteger:self.acesReps forKey:ACES_REPS_KEY];
     [aCoder encodeInteger:self.jokersReps forKey:JOKERS_REPS_KEY];
+    
+    [aCoder encodeInteger:self.jacksPoints forKey:JACKS_POINTS_KEY];
+    [aCoder encodeInteger:self.queensPoints forKey:QUEENS_POINTS_KEY];
+    [aCoder encodeInteger:self.kingsPoints forKey:KINGS_POINTS_KEY];
+    [aCoder encodeInteger:self.acesPoints forKey:ACES_POINTS_KEY];
+    [aCoder encodeInteger:self.jokersPoints forKey:JOKERS_POINTS_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -99,6 +105,12 @@
     settings.kingsReps = [aDecoder decodeIntegerForKey:KINGS_REPS_KEY];
     settings.acesReps = [aDecoder decodeIntegerForKey:ACES_REPS_KEY];
     settings.jokersReps = [aDecoder decodeIntegerForKey:JOKERS_REPS_KEY];
+    
+    settings.jacksPoints = [aDecoder decodeIntegerForKey:JACKS_POINTS_KEY];
+    settings.queensPoints = [aDecoder decodeIntegerForKey:QUEENS_POINTS_KEY];
+    settings.kingsPoints = [aDecoder decodeIntegerForKey:KINGS_POINTS_KEY];
+    settings.acesPoints = [aDecoder decodeIntegerForKey:ACES_POINTS_KEY];
+    settings.jokersPoints = [aDecoder decodeIntegerForKey:JOKERS_POINTS_KEY];
     
     return settings;
 }

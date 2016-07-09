@@ -22,6 +22,7 @@
 @property (nonatomic, strong) UILabel *taskLabel;
 @property (weak, nonatomic) IBOutlet UILabel *countDownLabel;
 @property (nonatomic, strong) UILabel *timerLabel;
+@property (weak, nonatomic) IBOutlet UIProgressView *progress;
 
 @property (nonatomic) NSUInteger counter;
 @property (nonatomic) BOOL rotated;
@@ -276,6 +277,7 @@
 
 - (CardFitCard *)drawRandomCard {
     CardFitCard *card = [self.game drawCard];
+    [self.progress setProgress:self.game.progress];
     self.cardCounter++;
     NSLog(@"%ld", self.cardCounter);
     self.game.totalPoints = card.points; //[[self repsForCard:card] intValue];
@@ -295,6 +297,7 @@
 }
 
 - (void)endGame {
+    [self.progress setProgress:1.0];
     NSRange range = NSMakeRange(0, 1);
     NSDictionary *attributes = [self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld Points:%ld", self.game.score, self.game.totalPoints] attributes:attributes];

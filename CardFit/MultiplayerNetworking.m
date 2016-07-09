@@ -24,6 +24,7 @@ typedef NS_ENUM(NSUInteger, MessageType) {
     kMessageTypeGameReady,
     kMessageTypeGameStart,
     kMessageTypeDrawCard,
+    kMessageProgressChanged,
     kMessageTypeCard,
     kMessageTypeGameOver
 };
@@ -48,6 +49,11 @@ typedef struct {
 typedef struct {
     Message message;
 } MessageDrawCard;
+
+typedef struct {
+    Message message;
+    float progress;
+} MessageProgressChanged;
 
 typedef struct {
     Message message;
@@ -114,6 +120,14 @@ typedef struct {
     MessageDrawCard message;
     message.message.messageType = kMessageTypeDrawCard;
     NSData *data = [NSData dataWithBytes:&message length:sizeof(MessageDrawCard)];
+    [self sendData:data];
+}
+
+- (void)sendProgress:(float)currentProgress {
+    MessageProgressChanged message;
+    message.message.messageType = kMessageProgressChanged;
+    message.progress = currentProgress;
+    NSData *data = [NSData dataWithBytes:&message length:sizeof(MessageProgressChanged)];
     [self sendData:data];
 }
 
@@ -242,6 +256,10 @@ typedef struct {
     } else if (message->messageType == kMessageTypeDrawCard) {
         NSLog(@"Draw Card message received");
         [self.delegate drawCard];
+    } else if (message->messageType == kMessageProgressChanged) {
+        NSLog(@"Progress Changed");
+        MessageProgressChanged *progressMessage = (MessageProgressChanged *)[data bytes];
+        [self.delegate progress:progressMessage->progress];
     } else if (message->messageType == kMessageTypeGameOver) {
         NSLog(@"Game over message received");
         [self.delegate matchEnded];
