@@ -10,7 +10,6 @@
 #import "SWRevealViewController.h"
 #import "PlayingCardSettings.h"
 #import "CardFitViewController.h"
-#import "MultiPlayerCardFitViewController.h"
 #import "GameKitHelper.h"
 #import "MultiplayerNetworking.h"
 
@@ -150,12 +149,7 @@
         }];
         self.selected = !self.selected;
     } else {
-//        if (self.onePlayer) {
-//            [self performSegueWithIdentifier:@"Play Game" sender:button];
-//        } else if (self.multiplayerReady) {
-//            [self performSegueWithIdentifier:@"Play Multiplayer" sender:button];
-//        }
-        [self performSegueWithIdentifier:@"Play Multiplayer" sender:button];
+        [self performSegueWithIdentifier:@"Play Game" sender:button];
     }
 }
 
@@ -260,43 +254,43 @@
 
 #pragma mark - Segue
 
+//-(void)prepareCardFitViewController:(CardFitViewController *)cfvc toPlayWithNumOfCards:(NSUInteger)numOfCards {
+//    if (!self.settings.jokers) {
+//        numOfCards = numOfCards - ((numOfCards/54) * 2);
+//    }
+//    cfvc.numberOfCards = numOfCards;
+//    cfvc.title = @"CardFitGame";
+//}
+
 -(void)prepareCardFitViewController:(CardFitViewController *)cfvc toPlayWithNumOfCards:(NSUInteger)numOfCards {
     if (!self.settings.jokers) {
         numOfCards = numOfCards - ((numOfCards/54) * 2);
     }
     cfvc.numberOfCards = numOfCards;
     cfvc.title = @"CardFitGame";
-}
-
--(void)prepareMultiPlayerCardFitViewController:(MultiPlayerCardFitViewController *)mpcfvc toPlayWithNumOfCards:(NSUInteger)numOfCards {
-    if (!self.settings.jokers) {
-        numOfCards = numOfCards - ((numOfCards/54) * 2);
-    }
-    mpcfvc.numberOfCards = numOfCards;
-    mpcfvc.title = @"CardFitGame";
-    mpcfvc.multiplayer = self.multiPlayer;
+    cfvc.multiplayer = self.multiPlayer;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([sender isKindOfClass:[UIButton class]]) {
         if ((UIButton *)sender == self.nextButton) {
-            if ([segue.identifier isEqualToString:@"Play Game"]) {
+//            if ([segue.identifier isEqualToString:@"Play Game"]) {
+//                if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) {
+//                    CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
+//                    [self prepareCardFitViewController:cfvc toPlayWithNumOfCards:[[self.settings.numberOfCardsOptionValues valueForKey:self.settings.onePlayerNumberOfCards] intValue]];
+//                }
+//            } else if ([segue.identifier isEqualToString:@"Play Multiplayer"]) {
                 if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) {
                     CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
-                    [self prepareCardFitViewController:cfvc toPlayWithNumOfCards:[[self.settings.numberOfCardsOptionValues valueForKey:self.settings.onePlayerNumberOfCards] intValue]];
-                }
-            } else if ([segue.identifier isEqualToString:@"Play Multiplayer"]) {
-                if ([segue.destinationViewController isKindOfClass:[MultiPlayerCardFitViewController class]]) {
-                    MultiPlayerCardFitViewController *mpcfvc = (MultiPlayerCardFitViewController *)segue.destinationViewController;
                     if (self.multiPlayer) {
                         self.networkingEngine = [[MultiplayerNetworking alloc] init];
-                        self.networkingEngine.delegate = mpcfvc;
-                        mpcfvc.networkingEngine = self.networkingEngine;
+                        self.networkingEngine.delegate = cfvc;
+                        cfvc.networkingEngine = self.networkingEngine;
                         [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
                     }
-                    [self prepareMultiPlayerCardFitViewController:mpcfvc toPlayWithNumOfCards:[[self.settings.numberOfCardsOptionValues valueForKey:self.settings.multiplayerNumberOfCards] intValue]];
+                    [self prepareCardFitViewController:cfvc toPlayWithNumOfCards:[[self.settings.numberOfCardsOptionValues valueForKey:self.settings.onePlayerNumberOfCards] intValue]];
                 }
-            }
+//            }
         }
     }
 }
