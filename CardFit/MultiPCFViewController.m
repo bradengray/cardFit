@@ -51,7 +51,7 @@
     return self.playingCardSettings;
 }
 
-- (void)settings:(id)settings {
+- (void)recievedSettings:(id)settings {
     if ([settings isKindOfClass:[PlayingCardSettings class]]) {
         self.playingCardSettings = (PlayingCardSettings *)settings;
     }

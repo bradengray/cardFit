@@ -114,7 +114,6 @@
                         <outlet property="nextButton" destination="sHe-1P-TEz" id="wWX-Yh-Ocr"/>
                         <outlet property="onePlayerButton" destination="rK9-mw-M5q" id="OpO-u1-NTB"/>
                         <outlet property="pickerView" destination="0tY-gL-Cs6" id="N0s-ip-CcQ"/>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="Play Game" id="Xsq-V3-m60"/>
                         <segue destination="0Vb-B9-XkA" kind="show" identifier="Play Multiplayer" id="W7b-Sn-n9d"/>
                     </connections>
                 </viewController>
@@ -176,15 +175,34 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="uMt-89-irR">
+                                <rect key="frame" x="20" y="72" width="560" height="2.5"/>
+                            </progressView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="oVn-Nw-mba" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="1kp-NH-J3V"/>
+                            <constraint firstItem="uMt-89-irR" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="56P-NK-pkk"/>
+                            <constraint firstItem="uMt-89-irR" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="60b-br-zsV"/>
+                            <constraint firstItem="uMt-89-irR" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" id="NG0-Dr-Y7T"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="uMt-89-irR" secondAttribute="leading" id="OZb-a2-mkM"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="uMt-89-irR" secondAttribute="leading" id="OrH-nD-ZOo"/>
                             <constraint firstItem="oVn-Nw-mba" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="a86-BG-lPw"/>
+                            <constraint firstItem="uMt-89-irR" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="qgK-7A-hog"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="uMt-89-irR" secondAttribute="leading" id="roJ-49-Wil"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="60b-br-zsV"/>
+                                <exclude reference="OZb-a2-mkM"/>
+                                <exclude reference="OrH-nD-ZOo"/>
+                                <exclude reference="qgK-7A-hog"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="countDownLabel" destination="oVn-Nw-mba" id="SSg-SB-KqV"/>
+                        <outlet property="progress" destination="uMt-89-irR" id="UeZ-6E-8yM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -397,15 +415,22 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Iwc-hG-TBB">
+                                <rect key="frame" x="20" y="72" width="560" height="2.5"/>
+                            </progressView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Iwc-hG-TBB" firstAttribute="top" secondItem="R4Z-QW-SWe" secondAttribute="bottom" constant="8" id="PNc-Tb-TDF"/>
+                            <constraint firstItem="Iwc-hG-TBB" firstAttribute="centerX" secondItem="oHC-AA-L3G" secondAttribute="centerX" id="Sqy-lk-nd6"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="Iwc-hG-TBB" secondAttribute="leading" id="f8r-Su-LjL"/>
                             <constraint firstItem="qVO-s9-RZi" firstAttribute="centerX" secondItem="oHC-AA-L3G" secondAttribute="centerX" id="koP-Db-402"/>
                             <constraint firstItem="qVO-s9-RZi" firstAttribute="centerY" secondItem="oHC-AA-L3G" secondAttribute="centerY" id="kzh-Tl-R65"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="countDownLabel" destination="qVO-s9-RZi" id="ueY-Ow-s9L"/>
+                        <outlet property="progress" destination="Iwc-hG-TBB" id="gDA-Ze-MW2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g1u-cF-R4l" sceneMemberID="firstResponder"/>

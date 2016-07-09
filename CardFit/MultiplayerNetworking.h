@@ -18,6 +18,7 @@
 - (void)gameStarted;
 - (void)isPlayerOne;
 - (void)drawCard;
+- (void)progress:(float)currentProgress;
 - (void)gameInfo:(id)GameInfo;
 //- (void)card:(NSDictionary *)dictionary;
 - (void)matchEnded;
@@ -29,7 +30,7 @@
 @property (nonatomic, assign) id<MultiplayerNetworkingProtocol> delegate;
 
 - (void)sendGameInfo:(id)gameInfo;
-//- (void)sendGameDetail:(NSDictionary *)gameDetail;
+- (void)sendProgress:(float)currentProgress;
 - (void)startGame;
 - (void)gameEnded;
 - (void)drawCard;

@@ -20,10 +20,11 @@
 @property (nonatomic) NSUInteger minCardWidth;
 @property (nonatomic) NSUInteger numberOfCards;
 @property (nonatomic, strong) MultiplayerNetworking *networkingEngine;
+@property (nonatomic) BOOL multiplayer;
 
 - (Deck *)createDeck; //abstract
 - (id)settings; //abstract
-- (void)settings:(id)settings; //abstract
+- (void)recievedSettings:(id)settings; //abstract
 - (UIView *)createCardViewWithCard:(Card *)card; //abstract
 - (void)updateCardView:(UIView *)cardView withCard:(Card *)card; //abstract
 
