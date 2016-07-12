@@ -1,5 +1,5 @@
 //
-//  DefaultPlayingCard.m
+//  CardFitPlayingCard.m
 //  CardFit
 //
 //  Created by Braden Gray on 3/28/16.
@@ -22,11 +22,13 @@
 
 #pragma mark - NSCoding Protocol
 
+//Called when NSCoder encodes this object using NSKeyedArchiver
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeInteger:self.suit forKey:SUIT_KEY];
     [aCoder encodeInteger:self.rank forKey:RANK_KEY];
 }
 
+//Called when NSCoder decodes this object using NSKeyedUnarchiver
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
         self.suit = [aDecoder decodeIntegerForKey:SUIT_KEY];
@@ -37,6 +39,7 @@
 
 #pragma mark - Initialization
 
+//Creates a shared instance of our playing Card Settings
 - (PlayingCardSettings *)settings {
     return [PlayingCardSettings sharedPlayingCardSettings];
 }
@@ -68,6 +71,7 @@
 
 #pragma mark - Properties
 
+//Returns points for our card from playing card settings based on it's rank
 - (NSUInteger)points {
     if (self.rank == 1) {
         return self.settings.acesPoints;
@@ -84,6 +88,7 @@
     }
 }
 
+//Returns a label for our card from our playing card settings
 - (NSString *)label {
     return [self.settings labelForSuit:self.suit andRank:self.rank];
 }

@@ -13,19 +13,19 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    //Listen to radio station for message to present authentication view controller
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAuthenticationViewController) name:PresentAuthenticationViewController object:nil];
-    
+    //Start authenticating local player
     [[GameKitHelper sharedGameKitHelper] authenticateLocalPlayer];
 }
 
-- (void)showAuthenticationViewController {
+- (void)showAuthenticationViewController { //Called when radio station sends message to present Authentification view controller
     GameKitHelper *gameKitHelper = [GameKitHelper sharedGameKitHelper];
-    
+    //Present authentification view controller
     [self.topViewController presentViewController:gameKitHelper.authenticationViewController animated:YES completion:nil];
 }
 
-- (void)dealloc {
+- (void)dealloc { //Stop listening to radio station
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

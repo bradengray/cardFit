@@ -10,4 +10,6 @@
 
 @implementation CardFitCard
 
+//I did not put any defaults for a cardFit Card since the setters and getters are already set.
+
 @end

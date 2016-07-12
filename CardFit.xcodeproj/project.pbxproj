@@ -33,14 +33,12 @@
 		F25C7BFA1CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F25C7BF91CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m */; };
 		F25C7C011CF1EF1500BF7EAE /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F25C7C001CF1EF1500BF7EAE /* SWRevealViewController.m */; };
 		F25C7C041CF27E9400BF7EAE /* SideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F25C7C031CF27E9400BF7EAE /* SideMenuViewController.m */; };
-		F28B5F4C1CFA3BAD0005997D /* LayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = F28B5F4B1CFA3BAD0005997D /* LayoutView.m */; };
 		F28B78001CAA14C600023B3D /* PlayingCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = F28B77FF1CAA14C600023B3D /* PlayingCardView.m */; };
 		F299D6FB1CDFF22C009EE988 /* Timer.m in Sources */ = {isa = PBXBuildFile; fileRef = F299D6FA1CDFF22C009EE988 /* Timer.m */; };
 		F29AD2FE1CBC8FF3003F18A5 /* PlayingCardSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = F29AD2FD1CBC8FF3003F18A5 /* PlayingCardSettings.m */; };
 		F2AF13021D0CB8BA00C057E5 /* CardFitCard.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AF13011D0CB8BA00C057E5 /* CardFitCard.m */; };
 		F2DADE941D0FA50B001740A8 /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = F2DADE931D0FA50B001740A8 /* Settings.m */; };
 		F2EA33EF1CC5B4BF0018CE5F /* CardFitGame.m in Sources */ = {isa = PBXBuildFile; fileRef = F2EA33EE1CC5B4BF0018CE5F /* CardFitGame.m */; };
-		F2F6D3FA1D272EFB002A2F75 /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2F6D3F91D272EFB002A2F75 /* MultipeerConnectivity.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,8 +111,6 @@
 		F25C7C021CF27E9400BF7EAE /* SideMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideMenuViewController.h; sourceTree = "<group>"; };
 		F25C7C031CF27E9400BF7EAE /* SideMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideMenuViewController.m; sourceTree = "<group>"; };
 		F28B5F431CFA1F530005997D /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
-		F28B5F4A1CFA3BAD0005997D /* LayoutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayoutView.h; sourceTree = "<group>"; };
-		F28B5F4B1CFA3BAD0005997D /* LayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayoutView.m; sourceTree = "<group>"; };
 		F28B77FE1CAA14C600023B3D /* PlayingCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardView.h; sourceTree = "<group>"; };
 		F28B77FF1CAA14C600023B3D /* PlayingCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardView.m; sourceTree = "<group>"; };
 		F299D6F91CDFF22C009EE988 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
@@ -127,7 +123,6 @@
 		F2DADE931D0FA50B001740A8 /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
 		F2EA33ED1CC5B4BF0018CE5F /* CardFitGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardFitGame.h; sourceTree = "<group>"; };
 		F2EA33EE1CC5B4BF0018CE5F /* CardFitGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardFitGame.m; sourceTree = "<group>"; };
-		F2F6D3F91D272EFB002A2F75 /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,7 +130,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F2F6D3FA1D272EFB002A2F75 /* MultipeerConnectivity.framework in Frameworks */,
 				F200D5041CFA788E00981BC7 /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,7 +165,6 @@
 		F245CBC31CA9F35F00F034F5 = {
 			isa = PBXGroup;
 			children = (
-				F2F6D3F91D272EFB002A2F75 /* MultipeerConnectivity.framework */,
 				F28B5F431CFA1F530005997D /* GameKit.framework */,
 				F245CBCE1CA9F35F00F034F5 /* CardFit */,
 				F245CBE81CA9F35F00F034F5 /* CardFitTests */,
@@ -267,8 +260,6 @@
 				F28B77FF1CAA14C600023B3D /* PlayingCardView.m */,
 				F23D55371CB70DD800F7727B /* CardFitLayoutView.h */,
 				F23D55381CB70DD800F7727B /* CardFitLayoutView.m */,
-				F28B5F4A1CFA3BAD0005997D /* LayoutView.h */,
-				F28B5F4B1CFA3BAD0005997D /* LayoutView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -447,7 +438,6 @@
 				F2EA33EF1CC5B4BF0018CE5F /* CardFitGame.m in Sources */,
 				F23D553C1CBB15AB00F7727B /* MainPageViewController.m in Sources */,
 				F245CC101CA9FD8B00F034F5 /* CardFitPlayingCardDeck.m in Sources */,
-				F28B5F4C1CFA3BAD0005997D /* LayoutView.m in Sources */,
 				F245CBD41CA9F35F00F034F5 /* AppDelegate.m in Sources */,
 				F28B78001CAA14C600023B3D /* PlayingCardView.m in Sources */,
 				F200D5091CFA7DF700981BC7 /* GameKitHelper.m in Sources */,

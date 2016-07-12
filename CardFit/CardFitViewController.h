@@ -1,5 +1,5 @@
 //
-//  MultiPlayerCardFitViewController.h
+//  CardFitViewController.h
 //  CardFit
 //
 //  Created by Braden Gray on 5/30/16.
@@ -13,19 +13,24 @@
 
 @interface CardFitViewController : UIViewController <MultiplayerNetworkingProtocol>
 
-@property (nonatomic) CGFloat cardAspectRatio;
-@property (nonatomic) NSUInteger maxCardHeight;
-@property (nonatomic) NSUInteger maxCardWidth;
-@property (nonatomic) NSUInteger minCardHeight;
-@property (nonatomic) NSUInteger minCardWidth;
-@property (nonatomic) NSUInteger numberOfCards;
-@property (nonatomic, strong) MultiplayerNetworking *networkingEngine;
-@property (nonatomic) BOOL multiplayer;
+//Required Set in subclass viewDidLoad
+@property (nonatomic) CGFloat cardAspectRatio; //Sets aspect ration for Card
+@property (nonatomic) NSUInteger maxCardHeight; //Sets max card height
+@property (nonatomic) NSUInteger maxCardWidth; //Sets max card width
+//Optional Set in subclass viewDidLoad
+@property (nonatomic) NSUInteger minCardHeight; //Sets min card height
+@property (nonatomic) NSUInteger minCardWidth; //Sets min card Width
 
-- (Deck *)createDeck; //abstract
-- (id)settings; //abstract
-- (void)recievedSettings:(id)settings; //abstract
-- (UIView *)createCardViewWithCard:(Card *)card; //abstract
-- (void)updateCardView:(UIView *)cardView withCard:(Card *)card; //abstract
+//Required for multiplayer
+@property (nonatomic, strong) MultiplayerNetworking *networkingEngine; //Networking engine for multiplayer
+@property (nonatomic) BOOL multiplayer; //Required to be set for multiplayer games
+
+//Required
+- (Deck *)createDeck; //abstract Creates deck for game play
+- (id)settings; //abstract Returns settings object
+- (void)recievedSettings:(id)settings; //abstract called if new settings object recieved in multiplayer
+- (UIView *)createCardViewWithCard:(Card *)card; //abstract create view for card
+- (void)updateCardView:(UIView *)cardView withCard:(Card *)card; //abstract update cardview if selected
+- (NSUInteger)numberOfCards; //abstract returns number of cards for game play
 
 @end

@@ -10,7 +10,7 @@
 
 @implementation SettingsTVC
 
-- (Settings *)createSettings {//Abstract
+- (Settings *)createSettings {//Abstract 
     return nil;
 }
 

@@ -68,7 +68,6 @@
         formattedString = [NSString stringWithFormat:@"%02d:%02d:%02d:%02d", hours, minutes, seconds, miliseconds];
     } else if (minutes > 0) {
         formattedString = [NSString stringWithFormat:@"%02d:%02d:%02d", minutes, seconds, miliseconds];
-//        formattedString = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
     } else if (seconds > 0) {
         formattedString = [NSString stringWithFormat:@"%02d:%02d", seconds, miliseconds];
     } else {

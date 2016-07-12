@@ -10,7 +10,7 @@
 
 @interface CardFitCard : Card
 
-@property (nonatomic, strong) NSString *label;
-@property (nonatomic, readonly) NSUInteger points;
+@property (nonatomic, strong) NSString *label; //Label for Card
+@property (nonatomic, readonly) NSUInteger points; //Points for Card
 
 @end

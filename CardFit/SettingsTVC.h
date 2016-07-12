@@ -13,6 +13,6 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
-- (Settings *)createSettings; //Abstract
+- (Settings *)createSettings; //Abstract create settings object in sub class
 
 @end

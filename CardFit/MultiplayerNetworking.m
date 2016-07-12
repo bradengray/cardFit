@@ -214,6 +214,10 @@ typedef struct {
     [_delegate matchEnded];
 }
 
+- (void)matchCanceled {
+    [_delegate matchCanceled];
+}
+
 - (void)myMatch:(GKMatch *)match didRecieveData:(NSData *)data fromPlayer:(GKPlayer *)player {
     //1
     Message *message = (Message *)[data bytes];
