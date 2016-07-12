@@ -14,6 +14,7 @@
 
 - (void)matchStarted;
 - (void)matchEnded;
+- (void)matchCanceled;
 - (void)myMatch:(GKMatch *)match didRecieveData:(NSData *)data fromPlayer:(GKPlayer *)player;
 
 @end

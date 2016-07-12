@@ -59,9 +59,7 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
             //5
             self.enableGameCenter = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:LocalPlayerIsAuthenticated object:nil];
-//            [[GKMatchmaker sharedMatchmaker] startBrowsingForNearbyPlayersWithHandler:^(GKPlayer * _Nonnull player, BOOL reachable) {
-//                NSLog(@"Player: %@", player.playerID);
-//            }];
+
         } else {
             //6
             self.enableGameCenter = NO;
@@ -131,10 +129,6 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
         GKMatchRequest *request = [[GKMatchRequest alloc] init];
         request.minPlayers = minPlayers;
         request.maxPlayers = maxPlayers;
-        request.inviteMessage = @"What's Up Doc";
-        request.recipientResponseHandler = ^(GKPlayer *player, GKInviteRecipientResponse response){
-            NSLog(@"I'm saying I'm Saying I do.");
-        };
         
         mmvc = [[GKMatchmakerViewController alloc] initWithMatchRequest:request];
     }
@@ -150,6 +144,7 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
 // The user has cancelled matchmaking
 - (void)matchmakerViewControllerWasCancelled:(GKMatchmakerViewController *)viewController {
     [viewController dismissViewControllerAnimated:YES completion:nil];
+    [self.delegate matchCanceled];
 }
 
 // Matchmaking has failed with error

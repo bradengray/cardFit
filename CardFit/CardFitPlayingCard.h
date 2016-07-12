@@ -1,5 +1,5 @@
 //
-//  DefaultPlayingCard.h
+//  CardFitPlayingCard.h
 //  CardFit
 //
 //  Created by Braden Gray on 3/28/16.

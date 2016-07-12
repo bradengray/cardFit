@@ -127,6 +127,7 @@
     return @{TWENTY_CARDS : @5, TWENTY_FIVE_CARDS : @25, THIRTY_CARDS : @30, THIRTY_FIVE_CARDS : @35, FORTY_CARDS : @40, FORTY_FIVE_CARDS : @45, ONE_DECK : @54, TWO_DECKS : @108, THREE_DECKS : @162, FOUR_DECKS : @216, SIX_DECKS : @324, EIGHT_DECKS : @432, TEN_DECKS : @540};
 }
 
+//Resets the NSUserDefaults
 + (void)resetDefaults {
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
@@ -134,7 +135,7 @@
 
 #pragma mark - Abtracts
 
-- (NSString *)labelForSuit:(NSUInteger)suit andRank:(NSUInteger)rank {
+- (NSString *)labelForSuit:(NSUInteger)suit andRank:(NSUInteger)rank { //Abstract
     return nil;
 }
 

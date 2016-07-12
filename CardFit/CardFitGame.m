@@ -87,8 +87,8 @@
     return _score;
 }
 
-- (float)progress {
-    return 1.0 - (((float)[self.cards count] + 1.0) / (float)self.totalNumOfCards);
+- (float)progress { //Returns current progress of game
+    return 1.0 - ((float)[self.cards count] / (float)self.totalNumOfCards);
 }
 
 #pragma mark - Methods

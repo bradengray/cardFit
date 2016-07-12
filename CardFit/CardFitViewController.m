@@ -1,5 +1,5 @@
 //
-//  MultiPlayerCardFitViewController.m
+//  CardFitViewController.m
 //  CardFit
 //
 //  Created by Braden Gray on 5/30/16.
@@ -42,6 +42,8 @@
 //Called when view will appear
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    //Hide progress bar
+    self.progress.hidden = YES;
     //Hide the Navigation Bar
     self.navigationController.navigationBar.hidden = YES;
     //Hide the Count Down Label
@@ -91,20 +93,10 @@
 - (CardFitGame *)game {
     if (!_game) {
         //Use designated initializer to create game
-        _game = [[CardFitGame alloc] initWithCardCount:self.numberOfCards withDeck:[self createDeck]];
+        _game = [[CardFitGame alloc] initWithCardCount:[self numberOfCards] withDeck:[self createDeck]];
     }
     //Return result
     return _game;
-}
-
-//Lazy Instatiate numberOfCards
--(NSUInteger)numberOfCards {
-    if (!_numberOfCards) {
-        //Set default to 20 cards
-        _numberOfCards = 20;
-    }
-    //Return result
-    return _numberOfCards;
 }
 
 //Getter for playerOne
@@ -188,6 +180,8 @@
 - (void)setUpUIForGameStart {
     //Create Pause button
     [self createButton];
+    //Show progress bar
+    self.progress.hidden = NO;
     //Check to see if player One
     if (self.playerOne) {
         //Draw a card
@@ -395,12 +389,12 @@
 
 //Draw card from game
 - (CardFitCard *)drawRandomCard {
-    //Draw a card from game
-    CardFitCard *card = [self.game drawCard];
     //Set progress for player one
     [self.progress setProgress:self.game.progress];
     //Set progress for all other players
     [self.networkingEngine sendProgress:self.game.progress];
+    //Draw a card from game
+    CardFitCard *card = [self.game drawCard];
     //Return Card
     return card;
 }
@@ -426,7 +420,7 @@
 //Called when game is ended
 - (void)endGame {
     //Set progress
-    [self.progress setProgress:1.0];
+    [self.progress setProgress:self.game.progress];
     //Get range for task label attributed text
     NSRange range = NSMakeRange(0, 1);
     //Get dictionary of attributes for that range
@@ -716,6 +710,14 @@
     [self endGame];
 }
 
+//Called when match making is canceled
+- (void)matchCanceled {
+    //Pop view controller
+    [self.navigationController popViewControllerAnimated:YES];
+    //Show navigation bar
+    self.navigationController.navigationBar.hidden = NO;
+}
+
 #pragma mark - Abstract Methods
 
 - (Deck *)createDeck { //abstract
@@ -736,6 +738,10 @@
 
 - (void)updateCardView:(UIView *)cardView withCard:(Card *)card { // abstract
     return;
+}
+
+- (NSUInteger)numberOfCards { //abstract
+    return 0;
 }
 
 @end

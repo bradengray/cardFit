@@ -22,6 +22,7 @@
 - (void)gameInfo:(id)GameInfo;
 //- (void)card:(NSDictionary *)dictionary;
 - (void)matchEnded;
+- (void)matchCanceled;
 
 @end
 

@@ -12,36 +12,36 @@
 
 #pragma mark - Properties
 
-- (void)setSuit:(NSUInteger)suit {
+- (void)setSuit:(NSUInteger)suit { //Sets suit and redraws view
     _suit = suit;
     [self setNeedsDisplay];
 }
 
-- (void)setRank:(NSUInteger)rank {
+- (void)setRank:(NSUInteger)rank { //Sets rank and redraws view
     _rank = rank;
     [self setNeedsDisplay];
 }
 
-- (void)setFaceUp:(BOOL)faceUp {
+- (void)setFaceUp:(BOOL)faceUp { //Sets faceUp and redraws view
     _faceUp = faceUp;
     [self setNeedsDisplay];
 }
 
-- (NSString *)rankAsString {
+- (NSString *)rankAsString { //Returns string value for rank
     return @[@"?", @"A", @"2", @"3", @"4", @"5", @"6", @"7", @"8", @"9", @"10", @"J", @"Q", @"K", @"JOKER"] [self.rank];
 }
 
-- (NSString *)suitAsString {
+- (NSString *)suitAsString { //Returns string value for rank
     return @[@"♠️", @"♥️", @"♣️", @"♦️"] [self.suit];
 }
 
 #pragma mark - Drawing
 
-#define CORNER_FONT_STANDARD_HEIGHT 240.0
-#define CORNER_RADIUS 30.0
-#define FACE_CARD_IMAGE_SCALE_FACTOR 0.100
+#define CORNER_FONT_STANDARD_HEIGHT 240.0 //Standard height of card
+#define CORNER_RADIUS 30.0 //Used as scale factor for corner radius
+#define FACE_CARD_IMAGE_SCALE_FACTOR 0.100 //Used as scale factor for card images
 
-- (CGFloat)cornerScaleFactor {
+- (CGFloat)cornerScaleFactor { //
     return self.bounds.size.height / CORNER_FONT_STANDARD_HEIGHT;
 }
 
@@ -53,8 +53,8 @@
     return [self cornerRadius] / 3.0;
 }
 
-- (void)drawRect:(CGRect)rect {
-        
+- (void)drawRect:(CGRect)rect { //Draws Card
+    //Draws boundary of card card with BezierPath
     UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:[self cornerRadius]];
     
     [roundedRect addClip];
@@ -63,35 +63,42 @@
     [roundedRect fill];
     
     [[UIColor blackColor] setStroke];
+    roundedRect.lineWidth = 3.0;
     [roundedRect stroke];
     
+    //Draws the contents of the card
     if (self.faceUp) {
         UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@", [self rankAsString]]];
-        if (faceImage) {
+        if (faceImage) { //Inserts image for face card
             CGRect imageRect = CGRectInset(self.bounds, self.bounds.size.width * FACE_CARD_IMAGE_SCALE_FACTOR, self.bounds.size.height * FACE_CARD_IMAGE_SCALE_FACTOR);
             [faceImage drawInRect:imageRect];
-        } else {
+        } else { //Draw pips
             [self drawPips];
         }
-        [self drawCorners];
-    } else {
+        [self drawCorners]; //Draw corners
+    } else { //Set card face down
         [[UIImage imageNamed:@"cardback"] drawInRect:self.bounds];
     }
 }
 
-- (void)drawCorners {
+- (void)drawCorners { //Draws corner text on cards
+    //Set alignment center
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
+    //Create font
     UIFont *cornerFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     cornerFont = [cornerFont fontWithSize:cornerFont.pointSize * [self cornerScaleFactor]];
+    //Set attributed text with attributes
     NSAttributedString *cornterText = [[NSAttributedString alloc] initWithString:[self cornerTextString] attributes:@{NSFontAttributeName : cornerFont, NSParagraphStyleAttributeName : paragraphStyle, NSForegroundColorAttributeName : [self fontColor]}];
     
+    //Create Rect in corners for text based on text size and draw
     CGRect textbounds;
     textbounds.origin = CGPointMake([self cornerOffset], [self cornerOffset]);
     textbounds.size = cornterText.size;
     [cornterText drawInRect:textbounds];
     
+    //Rotate Context and draw opposite corner
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
     CGContextTranslateCTM(context, self.bounds.size.width, self.bounds.size.height);
@@ -100,10 +107,10 @@
     [self popContext];
 }
 
-- (NSString *)cornerTextString {
-    if (!(self.rank == 14)) {
+- (NSString *)cornerTextString { //Returns String for corner text
+    if (!(self.rank == 14)) {//Draws any corner except joker
         return [NSString stringWithFormat:@"%@\n%@", [self rankAsString], [self suitAsString]];
-    } else {
+    } else { //Draws joker
         NSString *rankString = [self rankAsString];
         NSString *charachterString = @"";
         for (int i = 0; i < [rankString length]; i++) {
@@ -113,7 +120,7 @@
     }
 }
 
-- (UIColor *)fontColor {
+- (UIColor *)fontColor { //Returns font color for card based on suit
     if (self.suit == 0 || self.suit == 2) {
         return [UIColor blackColor];
     } else {
@@ -123,13 +130,14 @@
 
 #pragma mark - Draw Pips
 
+//Pip offsets
 #define PIP_HOFFSET_PERCENTAGE 0.200
 #define PIP_VOFFSET1_PERCENTAGE 0.100
 #define PIP_VOFFSET2_PERCENTAGE 0.150
 #define PIP_VOFFSET3_PERCENTAGE 0.200
 #define PIP_VOFFSET4_PERCENTAGE 0.300
 
-- (void)drawPips {
+- (void)drawPips { //Draws pips vased on rank
     if (self.rank == 1 || self.rank == 3 || self.rank == 5 || self.rank == 9) {
         [self drawPipsWithHorizontalOffset:0 verticalOffset:0 mirroredVertically:NO];
     }
@@ -153,8 +161,9 @@
     }
 }
 
-#define PIP_FONT_SCALE_FACTOR 0.0085
+#define PIP_FONT_SCALE_FACTOR 0.0085 //Used as pip scale factor based on view height
 
+//Called for drawing pips bool value for drawing pips mirrored on card
 - (void)drawPipsWithHorizontalOffset:(CGFloat)hoffset verticalOffset:(CGFloat)voffset mirroredVertically:(BOOL)mirroredVertically {
     [self drawPipsWithHorizontalOffset:hoffset verticalOffset:voffset upsideDown:NO];
     if (mirroredVertically) {
@@ -162,10 +171,12 @@
     }
 }
 
+//Called for drawing pips the bool upside down will rotate the context of the entire view
 - (void)drawPipsWithHorizontalOffset:(CGFloat)hoffset verticalOffset:(CGFloat)voffset upsideDown:(BOOL)upsideDown {
-    if (upsideDown) {
+    if (upsideDown) { //Flip context if upside down
         [self pushContextAndRotateUpsideDown];
     }
+    //Create point from middle to draw text and draw at point
     CGPoint middle = CGPointMake(self.bounds.size.width/2.0 - .5, self.bounds.size.height/2.0);
     UIFont *pipFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     pipFont = [pipFont fontWithSize:[pipFont pointSize] * self.bounds.size.width * PIP_FONT_SCALE_FACTOR];
@@ -173,39 +184,39 @@
     CGSize pipSize = [attributesSuit size];
     CGPoint pipOrigin = CGPointMake(middle.x - pipSize.width/2.0 - hoffset*self.bounds.size.width, middle.y - pipSize.height/2.0 - voffset*self.bounds.size.height);
     [attributesSuit drawAtPoint:pipOrigin];
-    if (hoffset) {
+    if (hoffset) { //If horizontal offset adjust and draw new pip at new point
         pipOrigin.x += hoffset*2.0*self.bounds.size.width;
         [attributesSuit drawAtPoint:pipOrigin];
-    }
+    } //If upside down pop context
     if (upsideDown) {
         [self popContext];
     }
 }
 
-- (void)pushContextAndRotateUpsideDown {
+- (void)pushContextAndRotateUpsideDown { //Called to flip the context of the view
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSaveGState(context);
     CGContextTranslateCTM(context, self.bounds.size.width, self.bounds.size.height);
     CGContextRotateCTM(context, M_PI);
 }
 
-- (void)popContext {
+- (void)popContext { //Called to return view context to normal
     CGContextRestoreGState(UIGraphicsGetCurrentContext());
 }
 
 #pragma mark - Initialization
 
-- (void)setUp {
+- (void)setUp { //Sets background color to nil and sets content mode to redraw
     self.backgroundColor = nil;
     self.opaque = NO;
     self.contentMode = UIViewContentModeRedraw;
 }
 
-- (void)awakeFromNib {
+- (void)awakeFromNib { //Sets up for when cards are loaded from nib
     [self setUp];
 }
 
-- (void)layoutSubviews {
+- (void)layoutSubviews { //Sets up for when cards are layed out in subview
     [self setUp];
 }
 
