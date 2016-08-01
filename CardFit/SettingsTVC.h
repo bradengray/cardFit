@@ -11,7 +11,7 @@
 
 @interface SettingsTVC : UITableViewController
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton; // Navigation button for side menu
 
 - (Settings *)createSettings; //Abstract create settings object in sub class
 

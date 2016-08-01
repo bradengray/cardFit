@@ -63,7 +63,7 @@
     [roundedRect fill];
     
     [[UIColor blackColor] setStroke];
-    roundedRect.lineWidth = 3.0;
+    roundedRect.lineWidth = 2.0;
     [roundedRect stroke];
     
     //Draws the contents of the card
@@ -213,6 +213,7 @@
 }
 
 - (void)awakeFromNib { //Sets up for when cards are loaded from nib
+    [super awakeFromNib];
     [self setUp];
 }
 

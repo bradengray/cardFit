@@ -9,46 +9,42 @@
 #import "SideMenuViewController.h"
 #import "GameSettingsTVC.h"
 
+#define BUTTON_TITLE_ONE @"Main Menu"
+#define BUTTON_TITLE_TWO @"Game Options"
+
 @interface SideMenuViewController ()
-@property (weak, nonatomic) IBOutlet UIButton *mainMenuButton; //Button for main menu
-@property (weak, nonatomic) IBOutlet UIButton *optionsButton; //Button for game options
-@property (nonatomic) NSUInteger counter; //Counts
+@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *buttons;
 
 @end
 
 @implementation SideMenuViewController
 
-#warning consider adding prepare for segue
 - (void)viewDidLoad { //Called when view loads
     [super viewDidLoad];
     //Set up buttons
-    [self setUpButton:self.mainMenuButton];
-    [self setUpButton:self.optionsButton];
+    [self setUpButtons];
 }
 
 - (void)viewWillAppear:(BOOL)animated { //Called when view appears
     [super viewWillAppear:animated];
     //Animate buttons to dissapear
-    self.mainMenuButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
-    self.optionsButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
-    NSArray *buttons = @[self.mainMenuButton, self.optionsButton];
-    //Animate buttons to reappear
-    [self animateButtons:buttons];
-}
-
-#warning re-write counter don't need it
-- (NSUInteger)counter { //Return counter and set default to 0
-    if (!_counter) {
-        _counter = 0;
+    for (UIButton *button in self.buttons) {
+        button.transform = CGAffineTransformMakeScale(0.01, 0.01);
     }
-    return _counter;
+    //Animate buttons to reappear
+    [self animateButtons:self.buttons];
 }
 
-- (void)setUpButton:(UIButton *)button { //Set up button
-    [button setBackgroundColor:self.view.backgroundColor];
-    [button setAttributedTitle:[self buttonAttributedTitle] forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
-    [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+- (void)setUpButtons {
+    int counter = 0;
+    for (UIButton *button in self.buttons) { //Set up buttons
+        button.tag = counter;
+        [button setBackgroundColor:self.view.backgroundColor];
+        [button setAttributedTitle:[self buttonAttributedTitleForButton:button] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
+        [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+        counter++;
+    }
 }
 
 - (void)buttonTouchDown:(UIButton *)button { //Called when button touched
@@ -61,13 +57,12 @@
     }];
 }
 
-- (NSAttributedString *)buttonAttributedTitle { //Returns title string for button
+- (NSAttributedString *)buttonAttributedTitleForButton:(UIButton *)button { //Returns title string for button
     NSString *title;
-    if (self.counter == 0) {
-        title = @"Main Menu";
-        self.counter++;
+    if (button.tag == 0) {
+        title = BUTTON_TITLE_ONE;
     } else {
-        title = @"Game Options";
+        title = BUTTON_TITLE_TWO;
     }
     //Set font
     UIFont *font = [[UIFont alloc] init];

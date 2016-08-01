@@ -59,21 +59,22 @@
     }
 }
 
+- (void)dealloc { //Stop listening to radio stations
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark - Radio Station Methods
 
-- (void)playerAuthenticated {
+- (void)playerAuthenticated { //Called when player is authenticated
+    //Enable multiplayer game
     self.multiplayerReady = YES;
     self.multiPlayerButton.enabled = YES;
     self.multiPlayerButton.titleLabel.alpha = 1.0;
 }
 
-- (void)presentMatchMakerViewController {
+- (void)presentMatchMakerViewController { //Called when MatchMakerViewController is wanted
     self.multiPlayer = YES;
     [self performSegueWithIdentifier:@"Play Game" sender:self.nextButton];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Properties

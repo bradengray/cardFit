@@ -11,7 +11,7 @@
 
 @implementation PlayingCardDetailSettingsTVC
 
-- (Settings *)createSettings {
+- (Settings *)createSettings { //Return Playing Card Settings
     return [PlayingCardSettings sharedPlayingCardSettings];
 }
 

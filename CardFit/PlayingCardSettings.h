@@ -21,15 +21,18 @@
 @property (nonatomic, strong) NSString *clubsExerciseString;
 @property (nonatomic, strong) NSString *heartsExerciseString;
 @property (nonatomic, strong) NSString *diamondsExerciseString;
+@property (nonatomic, strong) NSString *jacksExerciseString;
+@property (nonatomic, strong) NSString *queensExerciseString;
+@property (nonatomic, strong) NSString *kingsExerciseString;
 @property (nonatomic, strong) NSString *acesExerciseString;
 @property (nonatomic, strong) NSString *jokersExerciseString;
 
 //Integers that hold the number of reps for the listed ranks. All cards numbered 2-10 have a rep value equal to the rank.
-@property (nonatomic) NSUInteger jacksReps;
-@property (nonatomic) NSUInteger queensReps;
-@property (nonatomic) NSUInteger kingsReps;
-@property (nonatomic) NSUInteger acesReps;
-@property (nonatomic) NSUInteger jokersReps;
+//@property (nonatomic) NSUInteger jacksReps;
+//@property (nonatomic) NSUInteger queensReps;
+//@property (nonatomic) NSUInteger kingsReps;
+//@property (nonatomic) NSUInteger acesReps;
+//@property (nonatomic) NSUInteger jokersReps;
 
 //Integers that hold the number of points for the listed ranks. All Cards numbered 2-10 have a point value equal to rank.
 @property (nonatomic) NSUInteger jacksPoints;
