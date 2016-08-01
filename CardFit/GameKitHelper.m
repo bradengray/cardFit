@@ -13,6 +13,7 @@
 @property (nonatomic) BOOL enableGameCenter;
 @property (nonatomic) BOOL matchStarted;
 @property (nonatomic, strong) GKInvite *pendingInvite;
+@property (nonatomic, strong) GKGameSession *session;
 
 @end
 
@@ -27,6 +28,7 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
     if (self) {
         self.enableGameCenter = YES;
         [[GKLocalPlayer localPlayer] registerListener:self];
+        [GKGameSession addEventListener:self];
     }
     return self;
 }
@@ -115,14 +117,14 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
     if (!self.enableGameCenter) {
         return;
     }
-    
+
     self.matchStarted = NO;
     self.match = nil;
-    self.delegate = delegate;
-    [viewController dismissViewControllerAnimated:NO completion:nil];
+    self.delegate = delegate; //networking engine
+    [viewController dismissViewControllerAnimated:NO completion:nil]; //mian page
     GKMatchmakerViewController *mmvc;
     
-    if (self.pendingInvite != nil) {
+    if (self.pendingInvite != nil) { //no invites
         mmvc = [[GKMatchmakerViewController alloc] initWithInvite:self.pendingInvite];
     } else {
         
@@ -227,6 +229,12 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
 
 - (void)player:(GKPlayer *)player didRequestMatchWithRecipients:(NSArray<GKPlayer *> *)recipientPlayers {
     NSLog(@"Did request invite");
+}
+
+#pragma mark = GKGameSessionEventListener
+
+- (void)player:(GKCloudPlayer *)player requestedSessionWithPlayers:(NSArray<GKCloudPlayer *> *)players {
+    //Nothing Yet
 }
 
 @end

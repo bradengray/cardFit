@@ -13,7 +13,7 @@
 
 #pragma mark - Initialization
 
-- (Settings *)createSettings {
+- (Settings *)createSettings { //Return Playing Card Settings object to super class
     return [PlayingCardSettings sharedPlayingCardSettings];
 }
 

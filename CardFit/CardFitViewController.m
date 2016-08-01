@@ -39,6 +39,7 @@
 
 #pragma mark - ViewController Life Cycle
 
+
 //Called when view will appear
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];

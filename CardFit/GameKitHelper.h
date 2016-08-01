@@ -23,7 +23,7 @@ extern NSString *const PresentAuthenticationViewController;
 extern NSString *const LocalPlayerIsAuthenticated;
 extern NSString *const PresentGKMatchMakerViewController;
 
-@interface GameKitHelper : NSObject <GKMatchmakerViewControllerDelegate, GKMatchDelegate, GKLocalPlayerListener>
+@interface GameKitHelper : NSObject <GKMatchmakerViewControllerDelegate, GKMatchDelegate, GKLocalPlayerListener, GKGameSessionEventListener>
 
 @property (nonatomic, strong) NSMutableDictionary *playersDictionary;
 
