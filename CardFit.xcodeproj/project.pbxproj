@@ -19,6 +19,8 @@
 		F214A4EC1D200FE60006978C /* PlayingCardDetailSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F214A4EB1D200FE60006978C /* PlayingCardDetailSettingsTVC.m */; };
 		F23D55391CB70DD800F7727B /* CardFitLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = F23D55381CB70DD800F7727B /* CardFitLayoutView.m */; };
 		F23D553C1CBB15AB00F7727B /* MainPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23D553B1CBB15AB00F7727B /* MainPageViewController.m */; };
+		F24324FF1D4EEAFA000E4A12 /* SettingsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F24324FE1D4EEAFA000E4A12 /* SettingsCell.m */; };
+		F24325021D4EEE84000E4A12 /* PlayingCardSettingsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F24325011D4EEE84000E4A12 /* PlayingCardSettingsCell.m */; };
 		F245CBD11CA9F35F00F034F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F245CBD01CA9F35F00F034F5 /* main.m */; };
 		F245CBD41CA9F35F00F034F5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F245CBD31CA9F35F00F034F5 /* AppDelegate.m */; };
 		F245CBDA1CA9F35F00F034F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F245CBD81CA9F35F00F034F5 /* Main.storyboard */; };
@@ -81,6 +83,10 @@
 		F23D55381CB70DD800F7727B /* CardFitLayoutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardFitLayoutView.m; sourceTree = "<group>"; };
 		F23D553A1CBB15AB00F7727B /* MainPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainPageViewController.h; sourceTree = "<group>"; };
 		F23D553B1CBB15AB00F7727B /* MainPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainPageViewController.m; sourceTree = "<group>"; };
+		F24324FD1D4EEAFA000E4A12 /* SettingsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsCell.h; sourceTree = "<group>"; };
+		F24324FE1D4EEAFA000E4A12 /* SettingsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsCell.m; sourceTree = "<group>"; };
+		F24325001D4EEE84000E4A12 /* PlayingCardSettingsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardSettingsCell.h; sourceTree = "<group>"; };
+		F24325011D4EEE84000E4A12 /* PlayingCardSettingsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardSettingsCell.m; sourceTree = "<group>"; };
 		F245CBCC1CA9F35F00F034F5 /* CardFit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CardFit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F245CBD01CA9F35F00F034F5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		F245CBD21CA9F35F00F034F5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -244,6 +250,10 @@
 				F2DADE931D0FA50B001740A8 /* Settings.m */,
 				F29AD2FC1CBC8FF3003F18A5 /* PlayingCardSettings.h */,
 				F29AD2FD1CBC8FF3003F18A5 /* PlayingCardSettings.m */,
+				F24324FD1D4EEAFA000E4A12 /* SettingsCell.h */,
+				F24324FE1D4EEAFA000E4A12 /* SettingsCell.m */,
+				F24325001D4EEE84000E4A12 /* PlayingCardSettingsCell.h */,
+				F24325011D4EEE84000E4A12 /* PlayingCardSettingsCell.m */,
 				F2EA33ED1CC5B4BF0018CE5F /* CardFitGame.h */,
 				F2EA33EE1CC5B4BF0018CE5F /* CardFitGame.m */,
 				F299D6F91CDFF22C009EE988 /* Timer.h */,
@@ -431,6 +441,7 @@
 			files = (
 				F214A4E91D200B4B0006978C /* SettingsTVC.m in Sources */,
 				F2DADE941D0FA50B001740A8 /* Settings.m in Sources */,
+				F24324FF1D4EEAFA000E4A12 /* SettingsCell.m in Sources */,
 				F29AD2FE1CBC8FF3003F18A5 /* PlayingCardSettings.m in Sources */,
 				F200D50C1CFA856100981BC7 /* GameNavigationController.m in Sources */,
 				F299D6FB1CDFF22C009EE988 /* Timer.m in Sources */,
@@ -455,6 +466,7 @@
 				F200D5141CFC84CD00981BC7 /* CardFitViewController.m in Sources */,
 				F2016C021CEE6E4F0079887E /* GameSettingsTVC.m in Sources */,
 				F23D55391CB70DD800F7727B /* CardFitLayoutView.m in Sources */,
+				F24325021D4EEE84000E4A12 /* PlayingCardSettingsCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

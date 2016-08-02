@@ -12,6 +12,7 @@
 #import "SWRevealViewController.h"
 #import "GameSettingsDetailTVC.h"
 #import "SettingsChangedNotification.h"
+#import "SettingsCell.h"
 
 @interface GameSettingsTVC () <GameSettingsDelegate>
 
@@ -64,20 +65,20 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath { //Creates cell for row
     //Get dictionary for selected cell
-    NSDictionary *cellDictionary = [self.data[indexPath.section] objectAtIndex:indexPath.row];
+//    NSDictionary *cellDictionary = [self.data[indexPath.section] objectAtIndex:indexPath.row];
+    SettingsCell *settingsCell = [self.data[indexPath.section] objectAtIndex:indexPath.row];
     static NSString *cellIdentifier;
     UITableViewCell *cell;
-    //Check which prototype cell to use
-    if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_1]) {
+    if ([settingsCell.cellIdentifier isEqualToString:CELL_1]) {
         //Cell one is a standard cell with a title and disclosure indicator
         cellIdentifier = CELL_1;
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text = [cellDictionary objectForKey:TEXTLABEL_TITLE_KEY];
-        cell.detailTextLabel.text = [cellDictionary objectForKey:TEXTLABEL_DESCRIPTION_KEY];
+        cell.textLabel.text = settingsCell.title;
+        cell.detailTextLabel.text = settingsCell.detailDescription;
         
-    } else if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_2]) {
+    } else if ([settingsCell.cellIdentifier isEqualToString:CELL_2]) {
         //Cell two is a cell with a title and a switch
         cellIdentifier = CELL_2;
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -85,26 +86,57 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
         cell.accessoryView = switchView;
-        [switchView setOn:[[cellDictionary objectForKey:CELL_BOOL_KEY] boolValue] animated:NO];
+        [switchView setOn:settingsCell.cellBool animated:NO];
         [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
         
-        cell.textLabel.text = [cellDictionary objectForKey:TEXTLABEL_TITLE_KEY];
-    } else if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_3]) {
+        cell.textLabel.text = settingsCell.title;
+    } else if ([settingsCell.cellIdentifier isEqualToString:CELL_3]) {
         //Cell three is a cell with a centered blue title and is treated like a button for resetting defaults
         cellIdentifier = CELL_3;
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
-        cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:[cellDictionary objectForKey:TEXTLABEL_TITLE_KEY] attributes:@{NSForegroundColorAttributeName : [UIColor blueColor]}];
+        cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:settingsCell.title attributes:@{NSForegroundColorAttributeName : [UIColor blueColor]}];
     }
+    //Check which prototype cell to use
+//    if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_1]) {
+//        //Cell one is a standard cell with a title and disclosure indicator
+//        cellIdentifier = CELL_1;
+//        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//        
+//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//        cell.textLabel.text = [cellDictionary objectForKey:TEXTLABEL_TITLE_KEY];
+//        cell.detailTextLabel.text = [cellDictionary objectForKey:TEXTLABEL_DESCRIPTION_KEY];
+//        
+//    } else if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_2]) {
+//        //Cell two is a cell with a title and a switch
+//        cellIdentifier = CELL_2;
+//        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//        
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
+//        cell.accessoryView = switchView;
+//        [switchView setOn:[[cellDictionary objectForKey:CELL_BOOL_KEY] boolValue] animated:NO];
+//        [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+//        
+//        cell.textLabel.text = [cellDictionary objectForKey:TEXTLABEL_TITLE_KEY];
+//    } else if ([[cellDictionary objectForKey:CELL_KEY] isEqualToString:CELL_3]) {
+//        //Cell three is a cell with a centered blue title and is treated like a button for resetting defaults
+//        cellIdentifier = CELL_3;
+//        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+//        
+//        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+//        cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:[cellDictionary objectForKey:TEXTLABEL_TITLE_KEY] attributes:@{NSForegroundColorAttributeName : [UIColor blueColor]}];
+//    }
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath { //Called when cell is selected
     self.selectedIndexPath = indexPath;
-    NSDictionary *dictionary = [self.data[indexPath.section] objectAtIndex:indexPath.row];
-    if ([[dictionary objectForKey:CELL_KEY] isEqualToString:CELL_3]) { //If cell 3 reset defaults
+//    NSDictionary *dictionary = [self.data[indexPath.section] objectAtIndex:indexPath.row];
+    SettingsCell *settingsCell = [self.data[indexPath.section] objectAtIndex:indexPath.row];
+    if ([settingsCell.cellIdentifier isEqualToString:CELL_3]) { //If cell 3 reset defaults
         [Settings resetDefaults];
         [self settingsChanged]; //Reset tableview
     } else { //If any other cell got to detailed settings
@@ -124,16 +156,27 @@
 
 #pragma mark - GameSettingsDelegate
 
-- (void)settingsChanged:(NSDictionary *)dictionary { //Called when detailed settings changes a settings value
-    [self.settings storeNewSettings:dictionary]; //Store new settings
+- (void)settingsChanged:(SettingsCell *)settingsCell { //Called when detailed settings changes a settings value
+    [self.settings storeNewSettings:settingsCell]; //Store new settings
     [self settingsChanged]; //Set data array
-    dictionary = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row]; //Get new settings dictionary
+    settingsCell = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row]; //Get new settings dictionary
     //Post notification with new settings dictionary
-    NSDictionary *userInfo = @{SettingsChanged : dictionary};
+    NSDictionary *userInfo = @{SettingsChanged : settingsCell};
     [[NSNotificationCenter defaultCenter] postNotificationName:SettingsChangedNotification
                                                         object:self
                                                       userInfo:userInfo];
 }
+
+//- (void)settingsChanged:(NSDictionary *)dictionary { //Called when detailed settings changes a settings value
+//    [self.settings storeNewSettings:dictionary]; //Store new settings
+//    [self settingsChanged]; //Set data array
+//    dictionary = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row]; //Get new settings dictionary
+//    //Post notification with new settings dictionary
+//    NSDictionary *userInfo = @{SettingsChanged : dictionary};
+//    [[NSNotificationCenter defaultCenter] postNotificationName:SettingsChangedNotification
+//                                                        object:self
+//                                                      userInfo:userInfo];
+//}
 
 #pragma mark - Segue
 
@@ -143,7 +186,7 @@
             if ([segue.destinationViewController isKindOfClass:[GameSettingsDetailTVC class]]) {
                 //Segue to detailed settings
                 GameSettingsDetailTVC *gsdtvc = (GameSettingsDetailTVC *)segue.destinationViewController;
-                gsdtvc.settingsDetailDictionary = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row];
+                gsdtvc.settingsCell = [self.data[self.selectedIndexPath.section] objectAtIndex:self.selectedIndexPath.row];
                 gsdtvc.delegate = self;
             }
         }

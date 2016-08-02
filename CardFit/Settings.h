@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SettingsCell.h"
 
 //Keys for prototype Cells in our TableViewController
 #define CELL_KEY @"Cell"
@@ -52,7 +53,7 @@
 //Abstract used to return a string for alert messages. The key used should be a key from your data dictionary
 - (NSString *)alertLabelForString:(NSString *)string forKey:(NSString *)key; //Abstract
 //Abstract used to store new settings the dictionary provided should be a dictionary from your data
-- (void)storeNewSettings:(NSDictionary *)settings; //Abstract
+- (void)storeNewSettings:(SettingsCell *)settings; //Abstract
 //Abstract used to communicate if a settings cell has been changed.
 - (void)switchChanged:(BOOL)on; //Abstract
 
