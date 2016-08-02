@@ -7,6 +7,7 @@
 //
 
 #import "PlayingCardSettings.h"
+#import "PlayingCardSettingsCell.h"
 
 //Keys for Suits
 #define SPADE @"♠️"
@@ -46,6 +47,7 @@
 //#define JOKERS_REPS_KEY @"Jokers Reps Key"
 
 //Keys for points.
+#define EXERCISE_AND_POINTS @"Exercise and Points"
 #define POINTS @"Points"
 #define JACKS_POINTS_KEY @"Jacks Points Key"
 #define QUEENS_POINTS_KEY @"Queen Points Key"
@@ -55,6 +57,11 @@
 
 //Keys for OnePlayer, MultiPlayer number of cards and Jokers boolean value.
 #define JOKERS_BOOLEAN_KEY @"Jokers Boolean Key"
+
+//Keys for footer Instructions
+#define FOOTER_INSTRUCTIONS_1 @"For the default your number of reps will be the number points and the exercise will be the suit exercise. Points will also be the weighted value of this card. If you change the exercise you should explicitly state the number of reps you want."
+#define FOOTER_INSTRUCTIONS_2 @"Create exercise for suit. Reps will be based on the card you draw."
+#define FOOTER_INSTRUCTIONS_3 @"Points will be the weighted value of this card. You must list the number of reps you want\n\nEx: 20 Jumping Jacks."
 
 @implementation PlayingCardSettings
 
@@ -177,72 +184,211 @@
     return @[[self jokerOption]];
 }
 
-#pragma mark - Row Dictionaries
+#pragma mark - Row SettingsCells
 
 //Dictionary for our default button
-- (NSDictionary *)defaultButtons {
-    return @{TEXTLABEL_TITLE_KEY : DEFAULTS, CELL_KEY : CELL_3};
+- (PlayingCardSettingsCell *)defaultButtons {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = DEFAULTS;
+    cell.cellIdentifier = CELL_3;
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : DEFAULTS, CELL_KEY : CELL_3};
 }
 
 //Dictionary for our spade suit
-- (NSDictionary *)spade {
-    return @{TEXTLABEL_TITLE_KEY : SPADE, EXERCISE : self.spadesExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+- (PlayingCardSettingsCell *)spade {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = SPADE;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE;
+    cell.SettingsDetail2 = self.spadesExerciseString;
+    cell.footerInstrucions = FOOTER_INSTRUCTIONS_2;
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : SPADE, EXERCISE : self.spadesExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
 }
 
 //Dictionary for our club suit
-- (NSDictionary *)club {
-    return @{TEXTLABEL_TITLE_KEY : CLUB, EXERCISE : self.clubsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+- (PlayingCardSettingsCell *)club {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];    cell.title = CLUB;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE;
+    cell.SettingsDetail2 = self.clubsExerciseString;
+    cell.footerInstrucions = FOOTER_INSTRUCTIONS_2;
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : CLUB, EXERCISE : self.clubsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
 }
 
 //Dictionary for our heart suit
-- (NSDictionary *)heart {
-    return @{TEXTLABEL_TITLE_KEY : HEART, EXERCISE : self.heartsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+- (PlayingCardSettingsCell *)heart {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = HEART;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE;
+    cell.SettingsDetail2 = self.heartsExerciseString;
+    cell.footerInstrucions = FOOTER_INSTRUCTIONS_2;
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : HEART, EXERCISE : self.heartsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
 }
 
 //Dictionary for our diamond suit
-- (NSDictionary *)diamond {
-    return @{TEXTLABEL_TITLE_KEY : DIAMOND, EXERCISE : self.diamondsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+- (PlayingCardSettingsCell *)diamond {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = DIAMOND;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE;
+    cell.SettingsDetail2 = self.diamondsExerciseString;
+    cell.footerInstrucions = FOOTER_INSTRUCTIONS_2;
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : DIAMOND, EXERCISE : self.diamondsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
 }
 
 #warning TOOK OUT REPS FROM ALL 5   AND CARD_LABEL
 //Dictionary for our jack card
-- (NSDictionary *)jack {
-    return @{TEXTLABEL_TITLE_KEY : JACK, POINTS : [NSString stringWithFormat:@"%ld", self.jacksPoints], EXERCISE : self.jacksExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+- (PlayingCardSettingsCell *)jack {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = JACK;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE_AND_POINTS;
+    cell.settingsDetail1 = [NSString stringWithFormat:@"%ld", self.jacksPoints];
+    cell.SettingsDetail2 = self.jacksExerciseString;
+    cell.footerInstrucions = [NSString stringWithFormat:@"%@\n\nEx: %ld %@", FOOTER_INSTRUCTIONS_1, self.jacksPoints, self.spadesExerciseString];
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : JACK, POINTS : [NSString stringWithFormat:@"%ld", self.jacksPoints], EXERCISE : self.jacksExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
 }
 
 //Dictionary for our queen card
-- (NSDictionary *)queen {
-    return @{TEXTLABEL_TITLE_KEY : QUEEN, POINTS : [NSString stringWithFormat:@"%ld", self.queensPoints], EXERCISE : self.queensExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+- (PlayingCardSettingsCell *)queen {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = QUEEN;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE_AND_POINTS;
+    cell.settingsDetail1 = [NSString stringWithFormat:@"%ld", self.queensPoints];
+    cell.SettingsDetail2 = self.queensExerciseString;
+    cell.footerInstrucions = [NSString stringWithFormat:@"%@\n\nEx: %ld %@", FOOTER_INSTRUCTIONS_1, self.queensPoints, self.spadesExerciseString];
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : QUEEN, POINTS : [NSString stringWithFormat:@"%ld", self.queensPoints], EXERCISE : self.queensExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
 }
 
 //Dictionary for our king card
-- (NSDictionary *)king {
-    return @{TEXTLABEL_TITLE_KEY : KING, POINTS : [NSString stringWithFormat:@"%ld", self.kingsPoints], EXERCISE : self.kingsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+- (PlayingCardSettingsCell *)king {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = KING;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE_AND_POINTS;
+    cell.settingsDetail1 = [NSString stringWithFormat:@"%ld", self.kingsPoints];
+    cell.SettingsDetail2 = self.kingsExerciseString;
+    cell.footerInstrucions = [NSString stringWithFormat:@"%@\n\nEx: %ld %@", FOOTER_INSTRUCTIONS_1, self.kingsPoints, self.spadesExerciseString];
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : KING, POINTS : [NSString stringWithFormat:@"%ld", self.kingsPoints], EXERCISE : self.kingsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
 }
 
 //Dictionary for our ace card
-- (NSDictionary *)ace {
-    return @{TEXTLABEL_TITLE_KEY : ACE, EXERCISE : self.acesExerciseString, POINTS : [NSString stringWithFormat:@"%ld", self.acesPoints], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+- (PlayingCardSettingsCell *)ace {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = ACE;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE_AND_POINTS;
+    cell.settingsDetail1 = [NSString stringWithFormat:@"%ld", self.acesPoints];
+    cell.SettingsDetail2 = self.acesExerciseString;
+    cell.footerInstrucions = FOOTER_INSTRUCTIONS_3;
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : ACE, EXERCISE : self.acesExerciseString, POINTS : [NSString stringWithFormat:@"%ld", self.acesPoints], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
 }
 
 //Dictionary for our joker card
-- (NSDictionary *)joker {
-    return @{TEXTLABEL_TITLE_KEY : JOKER, EXERCISE : self.jokersExerciseString, POINTS : [NSString stringWithFormat:@"%ld", self.jokersPoints], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+- (PlayingCardSettingsCell *)joker {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = JOKER;
+    cell.cellIdentifier = CELL_1;
+    cell.detailDescription = EXERCISE_AND_POINTS;
+    cell.settingsDetail1 = [NSString stringWithFormat:@"%ld", self.jokersPoints];
+    cell.SettingsDetail2 = self.jokersExerciseString;
+    cell.footerInstrucions = FOOTER_INSTRUCTIONS_3;
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : JOKER, EXERCISE : self.jokersExerciseString, POINTS : [NSString stringWithFormat:@"%ld", self.jokersPoints], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
 }
 
 //Dictionary for our cell containing switch giving option of whether our cards will have jokers or not
-- (NSDictionary *)jokerOption {
-    return @{TEXTLABEL_TITLE_KEY : JOKERS_OPTIONS, CELL_BOOL_KEY : [NSNumber numberWithBool:self.jokers], CELL_KEY : CELL_2};
+- (PlayingCardSettingsCell *)jokerOption {
+    PlayingCardSettingsCell *cell = [[PlayingCardSettingsCell alloc] init];
+    cell.title = JOKERS_OPTIONS;
+    cell.cellIdentifier = CELL_2;
+    cell.cellBool = self.jokers;
+    return cell;
+//    return @{TEXTLABEL_TITLE_KEY : JOKERS_OPTIONS, CELL_BOOL_KEY : [NSNumber numberWithBool:self.jokers], CELL_KEY : CELL_2};
 }
+
+//#pragma mark - Row Dictionaries
+//
+////Dictionary for our default button
+//- (NSDictionary *)defaultButtons {
+//    return @{TEXTLABEL_TITLE_KEY : DEFAULTS, CELL_KEY : CELL_3};
+//}
+//
+////Dictionary for our spade suit
+//- (NSDictionary *)spade {
+//    return @{TEXTLABEL_TITLE_KEY : SPADE, EXERCISE : self.spadesExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+//}
+//
+////Dictionary for our club suit
+//- (NSDictionary *)club {
+//    return @{TEXTLABEL_TITLE_KEY : CLUB, EXERCISE : self.clubsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+//}
+//
+////Dictionary for our heart suit
+//- (NSDictionary *)heart {
+//    return @{TEXTLABEL_TITLE_KEY : HEART, EXERCISE : self.heartsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+//}
+//
+////Dictionary for our diamond suit
+//- (NSDictionary *)diamond {
+//    return @{TEXTLABEL_TITLE_KEY : DIAMOND, EXERCISE : self.diamondsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : EXERCISE};
+//}
+//
+//#warning TOOK OUT REPS FROM ALL 5   AND CARD_LABEL
+////Dictionary for our jack card
+//- (NSDictionary *)jack {
+//    return @{TEXTLABEL_TITLE_KEY : JACK, POINTS : [NSString stringWithFormat:@"%ld", self.jacksPoints], EXERCISE : self.jacksExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+//}
+//
+////Dictionary for our queen card
+//- (NSDictionary *)queen {
+//    return @{TEXTLABEL_TITLE_KEY : QUEEN, POINTS : [NSString stringWithFormat:@"%ld", self.queensPoints], EXERCISE : self.queensExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+//}
+//
+////Dictionary for our king card
+//- (NSDictionary *)king {
+//    return @{TEXTLABEL_TITLE_KEY : KING, POINTS : [NSString stringWithFormat:@"%ld", self.kingsPoints], EXERCISE : self.kingsExerciseString, CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+//}
+//
+////Dictionary for our ace card
+//- (NSDictionary *)ace {
+//    return @{TEXTLABEL_TITLE_KEY : ACE, EXERCISE : self.acesExerciseString, POINTS : [NSString stringWithFormat:@"%ld", self.acesPoints], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+//}
+//
+////Dictionary for our joker card
+//- (NSDictionary *)joker {
+//    return @{TEXTLABEL_TITLE_KEY : JOKER, EXERCISE : self.jokersExerciseString, POINTS : [NSString stringWithFormat:@"%ld", self.jokersPoints], CELL_KEY : CELL_1, TEXTLABEL_DESCRIPTION_KEY : [NSString stringWithFormat:@"%@ and %@", EXERCISE, POINTS]};
+//}
+//
+////Dictionary for our cell containing switch giving option of whether our cards will have jokers or not
+//- (NSDictionary *)jokerOption {
+//    return @{TEXTLABEL_TITLE_KEY : JOKERS_OPTIONS, CELL_BOOL_KEY : [NSNumber numberWithBool:self.jokers], CELL_KEY : CELL_2};
+//}
 
 #pragma mark Abstract Methods
 
 //Stores the settings for a data dictionary
-- (void)storeNewSettings:(NSDictionary *)settings { //Abstract
-    NSString *title = [settings objectForKey:TEXTLABEL_TITLE_KEY];
-    NSString *exercise = [settings objectForKey:EXERCISE];
-//    NSUInteger reps = [(NSString *)[settings objectForKey:REPS] integerValue];
-    NSUInteger points = [(NSString *) [settings objectForKey:POINTS] integerValue];
+- (void)storeNewSettings:(SettingsCell *)settings { //Abstract
+//    NSString *title = [settings objectForKey:TEXTLABEL_TITLE_KEY];
+//    NSString *exercise = [settings objectForKey:EXERCISE];
+////    NSUInteger reps = [(NSString *)[settings objectForKey:REPS] integerValue];
+//    NSUInteger points = [(NSString *) [settings objectForKey:POINTS] integerValue];
+    NSString *title = settings.title;
+    NSString *exercise = settings.SettingsDetail2;
+    //    NSUInteger reps = [(NSString *)[settings objectForKey:REPS] integerValue];
+    NSUInteger points = [settings.settingsDetail1 integerValue];
+
 
     if ([title isEqualToString:SPADE]) {
         self.spadesExerciseString = exercise;
@@ -655,7 +801,7 @@
 //    }
 //}
 
-#pragma mark - Points Propertins
+#pragma mark - Points Properties
 
 //Setters and Getters written for all points properties
 @synthesize jacksPoints = _jacksPoints;
