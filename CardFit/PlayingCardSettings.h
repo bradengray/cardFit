@@ -16,31 +16,6 @@
 //When decoding an PlayingCardSettings object it will replace your sharedSettings object and will not create a new object.
 +(instancetype)sharedPlayingCardSettings;
 
-//Strings that hold the names of the exercies for the listed suits and ranks.
-@property (nonatomic, strong) NSString *spadesExerciseString;
-@property (nonatomic, strong) NSString *clubsExerciseString;
-@property (nonatomic, strong) NSString *heartsExerciseString;
-@property (nonatomic, strong) NSString *diamondsExerciseString;
-@property (nonatomic, strong) NSString *jacksExerciseString;
-@property (nonatomic, strong) NSString *queensExerciseString;
-@property (nonatomic, strong) NSString *kingsExerciseString;
-@property (nonatomic, strong) NSString *acesExerciseString;
-@property (nonatomic, strong) NSString *jokersExerciseString;
-
-//Integers that hold the number of reps for the listed ranks. All cards numbered 2-10 have a rep value equal to the rank.
-//@property (nonatomic) NSUInteger jacksReps;
-//@property (nonatomic) NSUInteger queensReps;
-//@property (nonatomic) NSUInteger kingsReps;
-//@property (nonatomic) NSUInteger acesReps;
-//@property (nonatomic) NSUInteger jokersReps;
-
-//Integers that hold the number of points for the listed ranks. All Cards numbered 2-10 have a point value equal to rank.
-@property (nonatomic) NSUInteger jacksPoints;
-@property (nonatomic) NSUInteger queensPoints;
-@property (nonatomic) NSUInteger kingsPoints;
-@property (nonatomic) NSUInteger acesPoints;
-@property (nonatomic) NSUInteger jokersPoints;
-
 //Bool for whether or not deck should have jokers;
 @property (nonatomic) BOOL jokers;
 

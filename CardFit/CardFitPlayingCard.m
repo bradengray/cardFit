@@ -73,19 +73,7 @@
 
 //Returns points for our card from playing card settings based on it's rank
 - (NSUInteger)points {
-    if (self.rank == 1) {
-        return self.settings.acesPoints;
-    } else if (self.rank == 11) {
-        return self.settings.jacksPoints;
-    } else if (self.rank == 12) {
-        return self.settings.queensPoints;
-    } else if (self.rank == 13) {
-        return self.settings.kingsPoints;
-    } else if (self.rank == 14) {
-        return self.settings.jokersPoints;
-    } else {
-        return self.rank;
-    }
+    return [self.settings pointsForRank:self.rank];
 }
 
 //Returns a label for our card from our playing card settings
