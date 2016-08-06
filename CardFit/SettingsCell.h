@@ -10,20 +10,15 @@
 
 @interface SettingsCell : NSObject
 
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *cellIdentifier;
-@property (nonatomic, strong) NSString *detailDescription;
-@property (nonatomic, strong) NSString *footerInstrucions;
-@property (nonatomic, strong) NSString *settingsDetail1;
-@property (nonatomic, strong) NSString *SettingsDetail2;
-@property (nonatomic) BOOL cellBool;
+@property (nonatomic, strong) NSString *title; //Title for cell
+@property (nonatomic, strong) NSString *value; //Value of cell
+@property (nonatomic, strong) NSString *cellIdentifier; //Cell identifier
+@property (nonatomic, strong) NSString *detailDescription; //Description for cell
+@property (nonatomic, strong) NSString *footerInstrucions; //Footer Notes
+@property (nonatomic, strong) NSArray *detailSettingsCells; //Of SettingsCells
+@property (nonatomic) BOOL cellBool; //Bool value for cell
 
 //Returns an array of settings objects that you wish to be used in a tableview this should be implemented in your subclass
-- (NSArray *)detailSettingsForSettingsCell:(SettingsCell *)settingsCell;
-- (SettingsCell *)setValue:(NSString *)value forIndex:(NSInteger)index;
-//Returns a string title for the value given
-- (NSString *)rowTitleForValue:(NSString *)value; //Abstract
-
-//- (NSString *)getTitleForSettingsDetail:(NSString *)detail; //Abstract
+- (SettingsCell *)setDetailSettingsValue:(NSString *)value forIndex:(NSInteger)index;
 
 @end

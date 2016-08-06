@@ -10,32 +10,18 @@
 
 @implementation SettingsCell
 
-- (NSArray *)detailSettingsForSettingsCell:(SettingsCell *)settingsCell {
-    NSMutableArray *detailSettings = [[NSMutableArray alloc] init];
-    if (settingsCell.settingsDetail1) {
-        [detailSettings addObject:settingsCell.settingsDetail1];
-    }
-    if (settingsCell.SettingsDetail2) {
-        [detailSettings addObject:settingsCell.SettingsDetail2];
-    }
-    return detailSettings;
-}
-
-- (SettingsCell *)setValue:(NSString *)value forIndex:(NSInteger)index {
-    if (index == 0) {
-        self.settingsDetail1 = value;
-    } else if (index == 1) {
-        self.SettingsDetail2 = value;
-    } else {
-        NSLog(@"Error in setValue:(NSString *)value forIndex:(int)index");
+//To acces value of settings cell in detailSettingsCell array
+- (SettingsCell *)setDetailSettingsValue:(NSString *)value forIndex:(NSInteger)index {
+    //Use introspectiont make sure objects are settings settings cells.
+    if ([self.detailSettingsCells[index] isKindOfClass:[SettingsCell class]]) {
+        //Create new array and replace old one.
+        NSMutableArray *array = [self.detailSettingsCells mutableCopy];
+        SettingsCell *cell = self.detailSettingsCells[index];
+        cell.value = value;
+        [array replaceObjectAtIndex:index withObject:cell];
+        self.detailSettingsCells = array;
     }
     return self;
-}
-
-#pragma mark - Abstract Methods
-
-- (NSString *)rowTitleForValue:(NSString *)value { //Abstract
-    return nil;
 }
 
 @end

@@ -7,12 +7,9 @@
 //
 
 #import "GameSettingsDetailTVC.h"
-#import "SettingsChangedNotification.h"
 
 @interface GameSettingsDetailTVC () <UITextFieldDelegate>
 
-@property (nonatomic, strong) NSArray *rows; //Stores array of dicionary keys for cells that will be created
-//@property (nonatomic, strong) NSDictionary *settingsDetailDictionary; //Settings Dictionary
 @property (nonatomic, strong) UITextField *currentTextField; //Tracks current selected text field
 @property (nonatomic) BOOL cancelEntry; //Tracks whether entry was canceled
 @property (nonatomic, strong) Settings *settings; //Settings object
@@ -23,38 +20,11 @@
 
 #pragma mark - View LifeCycle
 
-- (void)awakeFromNib { //Listen for radio station of new settings dictionary posted
-    [super awakeFromNib];
-    [[NSNotificationCenter defaultCenter] addObserverForName:SettingsChangedNotification
-                                                      object:nil
-                                                       queue:nil
-                                                  usingBlock:^(NSNotification * _Nonnull note) {
-                                                      //Set new settings dictionary
-                                                      self.settingsCell = note.userInfo[SettingsChanged];
-                                                  }];
-}
-
-- (void)dealloc { //Stop listening to radio station
-    [[NSNotificationCenter defaultCenter] removeObserver:SettingsChangedNotification];
-}
-
 - (void)viewDidLoad { //Called when view loads
     [super viewDidLoad];
     self.settings = [self createSettings]; //Create settings
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor]; //Set table view background color
 }
-
-//- (void)viewWillAppear:(BOOL)animated { //Called when view will appear
-//    [super viewWillAppear:animated];
-//    NSMutableArray *array = [[NSMutableArray alloc] init]; //Create local variable array
-//    for (NSString *string in self.settings.values) { //Add the keys to this array if they are contained in values
-//        //If the key is in values array then the cell should be created for that key
-//        if ([[_settingsDetailDictionary allKeys] containsObject:string]) {
-//            [array addObject:string];
-//        }
-//    }
-//    self.rows = array; //Set self.rows with local variable array
-//}
 
 - (void)viewDidAppear:(BOOL)animated { //Called When View Appears
     [super viewDidAppear:animated];
@@ -65,14 +35,8 @@
 
 - (void)setSettingsCell:(SettingsCell *)settingsCell {
     _settingsCell = settingsCell;
-    self.rows = [_settingsCell detailSettingsForSettingsCell:_settingsCell];
     [self.tableView reloadData];
 }
-
-//- (void)setSettingsDetailDictionary:(NSDictionary *)settingsDetailDictionary { //Set detail dictionary and reload tableview
-//    _settingsDetailDictionary = settingsDetailDictionary;
-//    [self.tableView reloadData];
-//}
 
 #pragma mark - UITableViewDelegate 
 
@@ -103,34 +67,6 @@
     }
     return footer;
 
-//        if ([[self.settingsDetailDictionary objectForKey:[self.rows objectAtIndex:1]] isEqualToString:@"Default"]) {
-//            //Create footer view
-//            UIView *footer = [[UIView alloc] initWithFrame:CGRectZero];
-//            footer.backgroundColor = [UIColor clearColor];
-//            
-//            //Create label for view
-//            UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 5, self.view.bounds.size.width - 15, 0)];
-//            label.numberOfLines = 0;
-//            label.lineBreakMode = NSLineBreakByWordWrapping;
-//            label.backgroundColor = [UIColor clearColor];
-//            //Set text for footer
-//            NSString *string = [NSString stringWithFormat:@"For the default exercise your number of reps will be your points and the exercise will be the suit exercise. If you change the exercise you should explicitly state the number of reps before the exercise.\n\nEx: %@ push-ups", [self.settingsDetailDictionary objectForKey:[self.rows objectAtIndex:0]]];
-//            UIFont *font = [UIFont systemFontOfSize:14.0];
-//            NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSFontAttributeName : font};
-//            label.attributedText = [[NSAttributedString alloc] initWithString:string attributes:attributes];
-//            label.textAlignment = NSTextAlignmentLeft;
-//            [label sizeToFit];
-//            
-//            //Add label to footer
-//            [footer addSubview:label];
-//            
-//            return footer;
-//        } else {
-//            return nil;
-//        }
-//    } else {
-//        return nil;
-//    }
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section { //Return Height for footer
@@ -138,7 +74,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section { //Number of rows in section of tableview
-    return [self.rows count];
+    return [self.settingsCell.detailSettingsCells count];
 }
 
 //Constraints for textfield cells
@@ -151,7 +87,7 @@
     static NSString *cellIdentifier;
     UITableViewCell *cell;
 
-    NSString *rowValue = [self.rows objectAtIndex:indexPath.row];
+    SettingsCell *detailSettingsCell = [self.settingsCell.detailSettingsCells objectAtIndex:indexPath.row];
 //    NSString *rowValue = [self.settingsDetailDictionary objectForKey:rowName];
     
     UIFont *font = [[UIFont alloc] init];
@@ -168,7 +104,7 @@
         }
     }
     //Setup Textfield
-    cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:[self.settingsCell rowTitleForValue:rowValue] attributes:@{NSFontAttributeName : font}];
+    cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:detailSettingsCell.title attributes:@{NSFontAttributeName : font}];
     if (!textField) {
         CGRect frame = CGRectMake (cell.textLabel.attributedText.size.width + TRAILING_SPACE, VOFFSET, CELL_WIDTH - (cell.textLabel.attributedText.size.width + TRAILING_SPACE), CELL_HEIGHT);
         textField = [[UITextField alloc] initWithFrame:frame];
@@ -177,26 +113,16 @@
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     //If cell contatins number then set keyboard to number pad and add accessory buttons
-    if ([rowValue isEqualToString:self.settingsCell.settingsDetail1]) {
+    if (detailSettingsCell.cellBool) {
         textField.keyboardType = UIKeyboardTypeNumberPad;
         textField.inputAccessoryView = [self numberToolBar];
     }
-    textField.text = rowValue;
+    textField.text = detailSettingsCell.value;
     textField.tag = indexPath.row;
     textField.delegate = self;
-//    if ([rowName isEqualToString:CARD_LABEL]) { //This is used to show what the label will read when changes are made
-//        textField.enabled = NO;
-//        cell.backgroundColor = [UIColor groupTableViewBackgroundColor];
-//    }
     
     return cell;
 }
-
-//- (void)switchChanged:(UISwitch *)switchView { //Switch changed Deprecated since adding points
-//    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] initWithDictionary:self.settingsDetailDictionary];
-//    [dictionary setObject:[NSNumber numberWithBool:switchView.on] forKey:CELL_BOOL_KEY];
-//    [self.delegate settingsChanged:dictionary];
-//}
 
 - (UIToolbar *)numberToolBar { //Adds accessory inputs for number pad "Apply" and "Cancel" buttons
     UIToolbar* numberToolbar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
@@ -243,9 +169,8 @@
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField { //Called when text field is dismissed
-//    NSString *key = [self.rows objectAtIndex:textField.tag];
     if (self.cancelEntry) { //If canceled reset textfield to original settings
-        textField.text = [self.rows objectAtIndex:textField.tag];
+        textField.text = [self.settingsCell.detailSettingsCells objectAtIndex:textField.tag];
     } else { //If not save new settings entry
         [self saveUserInputForTextField:textField];
     }
@@ -259,20 +184,17 @@
 
 - (void)saveUserInputForTextField:(UITextField *)textField { //Called when New settings should be saved
     //Get the dictionary key
-    NSString *value = [self.rows objectAtIndex:textField.tag];
+    SettingsCell *detailSettingsCell = [self.settingsCell.detailSettingsCells objectAtIndex:textField.tag];
     //Make sure entry is valid and check for alerts
-    NSString *alertString = [self.settings alertLabelForString:textField.text forKey:[self.settingsCell rowTitleForValue:value]];
+    NSString *alertString = [self.settings alertLabelForString:textField.text forKey:detailSettingsCell.title];
     //If alert message then sent alert and reset text field to orignal settings
     if (alertString) {
-        [self alert:value];
-        textField.text = value;
+        [self alert:alertString];
+        textField.text = detailSettingsCell.value;
     } else { //If not alert then save new settings by calling delegate
-//        NSMutableDictionary *dictionary = [self.settingsDetailDictionary mutableCopy];
-//        [dictionary setObject:textField.text forKey:key];
-//        [self.delegate settingsChanged:dictionary];
-        self.settingsCell = [self.settingsCell setValue:textField.text forIndex:textField.tag];
-        [self.delegate settingsChanged:self.settingsCell];
-//        [self.tableView reloadData];
+        self.settingsCell = [self.settingsCell setDetailSettingsValue:textField.text forIndex:textField.tag];
+//        [self.delegate settingsChanged:self.settingsCell];
+        [self.settings storeNewSettings:self.settingsCell];
     }
 }
 

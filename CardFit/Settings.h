@@ -10,16 +10,9 @@
 #import "SettingsCell.h"
 
 //Keys for prototype Cells in our TableViewController
-#define CELL_KEY @"Cell"
 #define CELL_1 @"Cell1"
 #define CELL_2 @"Cell2"
 #define CELL_3 @"Cell3"
-
-#define CELL_BOOL_KEY @"Bool Key"
-
-#define TEXTLABEL_TITLE_KEY @"Title"
-#define TEXTLABEL_DESCRIPTION_KEY @"Label Description"
-#define CARD_LABEL @"Card Label"
 
 @interface Settings : NSObject
 
@@ -27,10 +20,7 @@
 @property (nonatomic, strong) NSArray *data;
 //sectionsArray contains the names of the sections in your data array.
 @property (nonatomic, strong) NSArray *sectionsArray;
-//values holds the names of all dictionary keys that should be shown as cells in a tableview
-@property (nonatomic, strong) NSArray *values;
-//numbers hold the names of all dictionary keys that should be considered to be numeric in value. It is used to tell what type of keyboard your setting will be useing.
-@property (nonatomic, strong) NSArray *numbers;
+
 //save is a bool property that determines whether or not setting your variables with save to NSUserDefaults or not.
 @property (nonatomic) BOOL save;
 
@@ -56,6 +46,8 @@
 - (void)storeNewSettings:(SettingsCell *)settings; //Abstract
 //Abstract used to communicate if a settings cell has been changed.
 - (void)switchChanged:(BOOL)on; //Abstract
+//Abstract used to return the points for a specific rank.
+- (NSUInteger)pointsForRank:(NSUInteger)rank; //Abstract
 
 //Called for setters and getters of all settings properties using NSUserDefaults
 - (NSString *)valueForKey:(NSString *)key withDefaultString:(NSString *)defaultString;

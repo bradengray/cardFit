@@ -151,4 +151,8 @@
     return nil;
 }
 
+- (NSUInteger)pointsForRank:(NSUInteger)rank {
+    return 0;
+}
+
 @end
