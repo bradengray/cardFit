@@ -14,10 +14,9 @@
 
 //Adheres to UIPickerViewDelegate and UIPickerViewDataSource Protocols
 @interface MainPageViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
-@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *buttons;
-//@property (weak, nonatomic) IBOutlet UIButton *flyingSoloButton; //Outlet for multiplayer button
-//@property (weak, nonatomic) IBOutlet UIButton *withFriendsButton; //Outlet for singleplayer button
-//@property (weak, nonatomic) IBOutlet UIButton *nextButton; //Outlet for nextbutton
+@property (weak, nonatomic) IBOutlet UIButton *flyingSoloButton; //Outlet for multiplayer button
+@property (weak, nonatomic) IBOutlet UIButton *withFriendsButton; //Outlet for singleplayer button
+@property (weak, nonatomic) IBOutlet UIButton *nextButton; //Outlet for nextbutton
 @property (weak, nonatomic) IBOutlet UIPickerView *pickerView; //Pickerview for selecting number of cards
 @property (nonatomic, strong) Settings *settings; //Settings object
 @property (nonatomic, strong) MultiplayerNetworking *networkingEngine; //networking engine object
@@ -79,15 +78,14 @@
     //Set delegates and hide picker view nad next button
     self.pickerView.delegate = self;
     self.pickerView.hidden = YES;
-//    UIButton *nextButton = self.buttons[2];
-    [self getButtonAtIndex:2].hidden = YES;
+    self.pickerView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.7];
+    self.nextButton.hidden = YES;
     [self iCloudAlert];
 //    [self tomtom];
     //Set up buttons
-    [self setUpButtons];
-//    [self setUpButton:self.flyingSoloButton withTitle:@"FLYING SOLO"];
-//    [self setUpButton:self.withFriendsButton withTitle:@"WITH FRIENDS"];
-//    [self setUpButton:self.nextButton withTitle:@"Next"];
+    [self setUpButton:self.flyingSoloButton withTitle:@"F L Y I N G\nS O L O"];
+    [self setUpButton:self.withFriendsButton withTitle:@"W I T H\nF R I E N D S"];
+    [self setUpButton:self.nextButton withTitle:@"N E X T"];
     //Set up reveal view controller for side menu
     self.revealViewController.rightViewController = nil;
     [self setMenuBarButton];
@@ -106,22 +104,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerAuthenticated) name:LocalPlayerIsAuthenticated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentMatchMakerViewController) name:PresentGKMatchMakerViewController object:nil];
     //Check if player is authenticated to enable multiplayer selection
-    [self shouldEnableMultiplayer];
-//    if (!self.multiplayerReady) {
-////        self.withFriendsButton.enabled = NO;
-////        self.withFriendsButton.titleLabel.alpha = 0.15;
-//        [self shouldEnableMultiplayer]
-//    }
-}
-
-- (void)shouldEnableMultiplayer {
-    UIButton *button = [self getButtonAtIndex:1];
     if (!self.multiplayerReady) {
-        button.enabled = NO;
-        button.titleLabel.alpha = 0.15;
-    } else {
-        button.enabled = YES;
-        button.titleLabel.alpha = 1.0;
+        self.withFriendsButton.enabled = NO;
+        self.withFriendsButton.titleLabel.alpha = 0.15;
     }
 }
 
@@ -133,16 +118,14 @@
 
 - (void)playerAuthenticated { //Called when player is authenticated
     //Enable multiplayer game
-    [self shouldEnableMultiplayer];
-//    self.multiplayerReady = YES;
-//    self.withFriendsButton.enabled = YES;
-//    self.withFriendsButton.titleLabel.alpha = 1.0;
+    self.multiplayerReady = YES;
+    self.withFriendsButton.enabled = YES;
+    self.withFriendsButton.titleLabel.alpha = 1.0;
 }
 
 - (void)presentMatchMakerViewController { //Called when MatchMakerViewController is wanted
     self.multiPlayer = YES;
-//    UIButton *nextButton = self.buttons[2];
-    [self performSegueWithIdentifier:@"Play Game" sender:[self getButtonAtIndex:2]];
+    [self performSegueWithIdentifier:@"Play Game" sender:self.nextButton];
 }
 
 #pragma mark - Properties
@@ -184,47 +167,27 @@
     //Set game type to not selected
     self.selected = !self.selected;
     //Animate buttons
-    UIButton *flyingSoloButton = [self getButtonAtIndex:0];
-    UIButton *withFriendsButton = [self getButtonAtIndex:1];
-    UIButton *nextButton = [self getButtonAtIndex:2];
     [UIView animateWithDuration:0.15 animations:^{
-        nextButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
+        self.nextButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
         self.pickerView.transform = CGAffineTransformMakeScale(0.01, 0.01);
     } completion:^(BOOL finished) {
         //Hide pickerview and next button also setup navigation bar menu button
         [self setMenuBarButton];
         self.pickerView.hidden = YES;
-        nextButton.hidden = YES;
-//        [self.withFriendsButton setAttributedTitle:[self buttonAttributedTitleWithString:@"with Friends"] forState:UIControlStateNormal];
-        flyingSoloButton.hidden = NO;
-        withFriendsButton.hidden = NO;
-        NSArray *objects = @[flyingSoloButton, withFriendsButton];
+        self.nextButton.hidden = YES;
+        self.flyingSoloButton.hidden = NO;
+        self.withFriendsButton.hidden = NO;
+        NSArray *objects = @[self.flyingSoloButton, self.withFriendsButton];
         [self animateObjects:objects];
     }];
 }
 
-- (void)setUpButtons { //Set up button with title
-    int buttonTag = 0;
-    for (UIButton *button in self.buttons) {
-        button.tag = buttonTag;
-        [button setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.7]];
-        [button setAttributedTitle:[self buttonAttributedTitleForButton:(UIButton *)button] forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
-        [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-        buttonTag++;
-    }
+- (void)setUpButton:(UIButton *)button withTitle:(NSString *)title { //Set up button with title
+    [button setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.7]];
+    [button setAttributedTitle:[self buttonAttributedTitleWithString:title] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
+    [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
 }
-
-- (UIButton *)getButtonAtIndex:(int)index {
-    return self.buttons[index];
-}
-
-//- (void)setUpButton:(UIButton *)button withTitle:(NSString *)title { //Set up button with title
-//    [button setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.7]];
-//    [button setAttributedTitle:[self buttonAttributedTitleWithString:title] forState:UIControlStateNormal];
-//    [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
-//    [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-//}
 
 - (void)buttonTouchDown:(UIButton *)button { //Animates button when touched
     button.titleLabel.alpha = 0.15;
@@ -238,12 +201,12 @@
     //If game type not selected
     if (!self.selected) {
         //Decide if multiplayer or not and set datasources for picker views
-        if (button.tag == 1) {
+        if (button == self.withFriendsButton) {
             self.multiPlayer = YES;
             self.pickerView.dataSource = nil;
             self.pickerView.dataSource = self;
             [self updatePickerView];
-        } else if (button.tag == 0) {
+        } else if (button == self.flyingSoloButton) {
             self.multiPlayer = NO;
             self.pickerView.dataSource = nil;
             self.pickerView.dataSource = self;
@@ -251,16 +214,17 @@
         }
         //Animate buttons and picker views
         [UIView animateWithDuration:0.15 animations:^{
-            [self transformAllViewsSmall];
+            self.flyingSoloButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
+            self.withFriendsButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
+            self.pickerView.transform = CGAffineTransformMakeScale(0.01, 0.01);
+            self.nextButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
         } completion:^(BOOL finished) {
             [self setCancelBarButton];
-//            self.flyingSoloButton.hidden = YES;
-//            self.withFriendsButton.hidden = YES;
-            [self hideNextButtonAndPickerView:self.selected];
-//            [self.withFriendsButton setAttributedTitle:[self buttonAttributedTitleWithString:@"Next"] forState:UIControlStateNormal];
-//            self.pickerView.hidden = NO;
-//            self.nextButton.hidden = NO;
-            NSArray *objects = @[self.pickerView, [self getButtonAtIndex:2]];
+            self.flyingSoloButton.hidden = YES;
+            self.withFriendsButton.hidden = YES;
+            self.pickerView.hidden = NO;
+            self.nextButton.hidden = NO;
+            NSArray *objects = @[self.pickerView, self.nextButton];
             [self animateObjects:objects];
         }];
         //Set whether game type was chosen or not.
@@ -270,159 +234,45 @@
     }
 }
 
-- (void)hideNextButtonAndPickerView:(BOOL)selected {
-    if (!self) {
-        for (UIButton *button in self.buttons) {
-            if (button.tag != 2) {
-                button.hidden = YES;
-            }
-        }
-    } else {
-        for (UIButton *button in self.buttons) {
-            if (button.tag == 2) {
-                button.hidden = YES;
-            }
-            self.pickerView.hidden = YES;
-        }
-    }
+#define BUTTON_FONT_SCALE_FACTOR .0379
+#define BUTTON_FONT_SCALE_FACTOR2 .0616
+
+#define FONT @"Helvetica"
+#define FONT_BOLD @"Helvetica-Bold"
+
+- (UIFont *)getScaledFontBold:(BOOL)bold {
+    UIFont *font = [[UIFont alloc] init];
+    font = [UIFont fontWithName:bold ? FONT_BOLD : FONT size:1];
+    float scaleFactor = bold ? BUTTON_FONT_SCALE_FACTOR2 : BUTTON_FONT_SCALE_FACTOR;
+    font = [font fontWithSize:font.pointSize * (self.view.bounds.size.height * scaleFactor)];
+    return font;
 }
 
-- (void)transformAllViewsSmall {
-    static float size = 0.01;
-    for (UIButton *button in self.buttons) {
-        button.transform = CGAffineTransformMakeScale(size, size);
-    }
-        self.pickerView.transform = CGAffineTransformMakeScale(size, size);
+- (NSDictionary *)getAttributesDictionaryForFontBold:(BOOL)bold Centered:(BOOL)centered {
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.alignment = centered ? NSTextAlignmentCenter : NSTextAlignmentLeft;
+    return @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : [self getScaledFontBold:bold], NSParagraphStyleAttributeName : paragraphStyle};
 }
 
-#define BUTTON_FONT_SCALE_FACTOR .002
-#define BUTTON_FONT_SCALE_FACTOR2 .004
-
-- (NSString *)titleForButton:(UIButton *)button {
-    if (button.tag < 1) {
-        return @"FLYING SOLO";
-    } else if (button.tag == 1) {
-        return @"WITH FRIENDS";
-    } else {
-        return @"NEXT";
-    }
-}
-
-- (NSAttributedString *)buttonAttributedTitleForButton:(UIButton *)button { //Returns attributed string for button titles
-    NSArray *components = [[self titleForButton:button] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+- (NSAttributedString *)buttonAttributedTitleWithString:(NSString *)string { //Returns attributed string for button titles
+    NSArray *components = [string componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     BOOL twoWords = [components count] > 1 ? YES : NO;
     
     NSString *string1 = components[0];
-    NSUInteger length1 = [string1 length];
-    unichar buffer1[length1+1];
-    NSMutableString *newstring1 = [[NSMutableString alloc] init];
-    [string1 getCharacters:buffer1 range:NSMakeRange(0, length1)];
-    for (int i = 0; i < length1; i++) {
-        [newstring1 appendString:[NSString stringWithFormat:@"%C ", buffer1[i]]];
-    }
-    string1 = newstring1;
-    
-    
-    NSString *string2;
+    NSAttributedString *aString1;
     if (twoWords) {
-        string2 = components[1];
-        NSUInteger length2 = [string2 length];
-        unichar buffer2[length2+1];
-        NSMutableString *newstring2 = [[NSMutableString alloc] init];
-        [string2 getCharacters:buffer2 range:NSMakeRange(0, length2)];
-        for (int i = 0; i < length2; i++) {
-            [newstring2 appendString:[NSString stringWithFormat:@"%C ", buffer2[i]]];
-        }
-        string2 = newstring2;
-    }
-    
-    UIFont *font1 = [[UIFont alloc] init];
-    font1 = [UIFont fontWithName:@"Helvetica" size:16];
-    font1 = [font1 fontWithSize:font1.pointSize * (self.view.bounds.size.height * BUTTON_FONT_SCALE_FACTOR)];
-    
-    UIFont *font2 = [[UIFont alloc] init];
-    font2 = [UIFont fontWithName:@"Helvetica-Bold" size:16];
-    font2 = [font2 fontWithSize:font2.pointSize * (self.view.bounds.size.height * BUTTON_FONT_SCALE_FACTOR2)];
-    
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.alignment = NSTextAlignmentCenter;
-    
-    NSDictionary *attributes1 = @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : font1, NSParagraphStyleAttributeName : paragraphStyle};
-    
-    NSDictionary *attributes2 = @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : font2, NSParagraphStyleAttributeName : paragraphStyle};
-    
-    NSAttributedString *aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", string1] attributes:attributes1];
-    NSAttributedString *aString2;
-    if (twoWords) {
-        aString2 = [[NSAttributedString alloc] initWithString:string2 attributes:attributes2];
-    }
-    
-    NSMutableAttributedString *myString = [[NSMutableAttributedString alloc] init];
-    [myString appendAttributedString:aString1];
-    if (twoWords) {
+        NSString *string2 = components[1];
+        aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", string1] attributes:[self getAttributesDictionaryForFontBold:NO Centered:YES]];
+        NSAttributedString *aString2 = [[NSAttributedString alloc] initWithString:string2 attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]];
+        NSMutableAttributedString *myString = [aString1 mutableCopy];
         [myString appendAttributedString:aString2];
+        return myString;
+    } else {
+        aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", string1] attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]];
+        return aString1;
     }
-    
-    return myString;
-}
 
-//- (NSAttributedString *)buttonAttributedTitleWithString:(NSString *)string { //Returns attributed string for button titles
-//    NSArray *components = [string componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-//    BOOL twoWords = [components count] > 1 ? YES : NO;
-//    
-//    NSString *string1 = components[0];
-//    NSUInteger length1 = [string1 length];
-//    unichar buffer1[length1+1];
-//    NSMutableString *newstring1 = [[NSMutableString alloc] init];
-//    [string1 getCharacters:buffer1 range:NSMakeRange(0, length1)];
-//    for (int i = 0; i < length1; i++) {
-//        [newstring1 appendString:[NSString stringWithFormat:@"%C ", buffer1[i]]];
-//    }
-//    string1 = newstring1;
-//
-//    
-//    NSString *string2;
-//    if (twoWords) {
-//        string2 = components[1];
-//        NSUInteger length2 = [string2 length];
-//        unichar buffer2[length2+1];
-//        NSMutableString *newstring2 = [[NSMutableString alloc] init];
-//        [string2 getCharacters:buffer2 range:NSMakeRange(0, length2)];
-//        for (int i = 0; i < length2; i++) {
-//            [newstring2 appendString:[NSString stringWithFormat:@"%C ", buffer2[i]]];
-//        }
-//        string2 = newstring2;
-//    }
-//    
-//    UIFont *font1 = [[UIFont alloc] init];
-//    font1 = [UIFont fontWithName:@"Helvetica" size:16];
-//    font1 = [font1 fontWithSize:font1.pointSize * (self.view.bounds.size.height * BUTTON_FONT_SCALE_FACTOR)];
-//    
-//    UIFont *font2 = [[UIFont alloc] init];
-//    font2 = [UIFont fontWithName:@"Helvetica-Bold" size:16];
-//    font2 = [font2 fontWithSize:font2.pointSize * (self.view.bounds.size.height * BUTTON_FONT_SCALE_FACTOR2)];
-//    
-//    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-//    paragraphStyle.alignment = NSTextAlignmentCenter;
-//    
-//    NSDictionary *attributes1 = @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : font1, NSParagraphStyleAttributeName : paragraphStyle};
-//    
-//    NSDictionary *attributes2 = @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : font2, NSParagraphStyleAttributeName : paragraphStyle};
-//    
-//    NSAttributedString *aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", string1] attributes:attributes1];
-//    NSAttributedString *aString2;
-//    if (twoWords) {
-//        aString2 = [[NSAttributedString alloc] initWithString:string2 attributes:attributes2];
-//    }
-//    
-//    NSMutableAttributedString *myString = [[NSMutableAttributedString alloc] init];
-//    [myString appendAttributedString:aString1];
-//    if (twoWords) {
-//        [myString appendAttributedString:aString2];
-//    }
-//    
-//    return myString;
-//}
+}
 
 #pragma mark - Animations
 
@@ -465,13 +315,16 @@
 
 #pragma mark - UIPickerViewDelegate
 
--(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component { //Gets title for row
+- (NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
     //Check to see what gameType
+    NSString *string;
     if (!self.multiPlayer) {
-        return self.settings.onePlayerNumberOfCardsOptionStrings[row];
+        string = self.settings.onePlayerNumberOfCardsOptionStrings[row];
     } else {
-        return self.settings.multiplayerNumberOfCardsOptionStrings[row];
+        string = self.settings.multiplayerNumberOfCardsOptionStrings[row];
     }
+    
+    return [[NSAttributedString alloc] initWithString:string attributes:[self getAttributesDictionaryForFontBold:NO Centered:YES]];
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component { //Called when row selected
@@ -499,7 +352,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender { //Performs segue
     if ([sender isKindOfClass:[UIButton class]]) { //Check sender class
-        if ([(UIButton *)sender tag] == 2) { //Check sender
+        if ((UIButton *)sender == self.nextButton) { //Check sender
             if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) { //Check destination
                 CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
                 //Check to see what gameType

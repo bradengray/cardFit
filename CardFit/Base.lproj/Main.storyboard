@@ -109,10 +109,10 @@
                     </view>
                     <navigationItem key="navigationItem" title="Main Menu" id="Ud8-kO-wkU"/>
                     <connections>
+                        <outlet property="flyingSoloButton" destination="JyX-qk-CIV" id="sUc-fT-dLh"/>
+                        <outlet property="nextButton" destination="sHe-1P-TEz" id="4yT-dE-rCm"/>
                         <outlet property="pickerView" destination="0tY-gL-Cs6" id="N0s-ip-CcQ"/>
-                        <outletCollection property="buttons" destination="rK9-mw-M5q" id="OKt-fX-eFT"/>
-                        <outletCollection property="buttons" destination="JyX-qk-CIV" id="EdP-Aq-KR2"/>
-                        <outletCollection property="buttons" destination="sHe-1P-TEz" id="3fN-hC-h9e"/>
+                        <outlet property="withFriendsButton" destination="rK9-mw-M5q" id="v7F-gX-TOf"/>
                         <segue destination="0Vb-B9-XkA" kind="show" identifier="Play Game" id="W7b-Sn-n9d"/>
                     </connections>
                 </viewController>

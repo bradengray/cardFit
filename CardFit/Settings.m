@@ -15,19 +15,19 @@
 #define MULTIPLAYER_NUMBER_OF_CARDS_CHOSEN_KEY @"Two Player Number Of Cards Chosen Key"
 
 //Keys for number of cards options strings.
-#define TWENTY_CARDS @"20 Cards"
-#define TWENTY_FIVE_CARDS @"25 Cards"
-#define THIRTY_CARDS @"30 Cards"
-#define THIRTY_FIVE_CARDS @"35 Cards"
-#define FORTY_CARDS @"40 Cards"
-#define FORTY_FIVE_CARDS @"45 Cards"
-#define ONE_DECK @"One Deck"
-#define TWO_DECKS @"Two Decks"
-#define THREE_DECKS @"Three Decks"
-#define FOUR_DECKS @"Four Decks"
-#define SIX_DECKS @"Six Decks"
-#define EIGHT_DECKS @"Eight Decks"
-#define TEN_DECKS @"Ten Decks"
+#define TWENTY_CARDS @"20 CARDS"
+#define TWENTY_FIVE_CARDS @"25 CARDS"
+#define THIRTY_CARDS @"30 CARDS"
+#define THIRTY_FIVE_CARDS @"35 CARDS"
+#define FORTY_CARDS @"40 CARDS"
+#define FORTY_FIVE_CARDS @"45 CARDS"
+#define ONE_DECK @"ONE DECK"
+#define TWO_DECKS @"TWO DECKS"
+#define THREE_DECKS @"THREE DECKS"
+#define FOUR_DECKS @"FOUR DECKS"
+#define SIX_DECKS @"SIX DECKS"
+#define EIGHT_DECKS @"EIGHT DECKS"
+#define TEN_DECKS @"TEN DECKS"
 
 @implementation Settings
 
