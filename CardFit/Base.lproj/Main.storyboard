@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11173.2" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="mKd-mv-8Hy">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11198.2" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="mKd-mv-8Hy">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11143.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -45,7 +45,7 @@
                                     </attributedString>
                                 </state>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l4n-z9-poW"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l4n-z9-poW" userLabel="Center"/>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sHe-1P-TEz">
                                 <state key="normal" title="Button"/>
                             </button>
@@ -54,9 +54,13 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="l4n-z9-poW" firstAttribute="centerX" secondItem="cwN-S3-E16" secondAttribute="centerX" id="0cg-cK-Usu"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="sHe-1P-TEz" secondAttribute="leading" id="3wa-tX-vCQ"/>
                             <constraint firstItem="0tY-gL-Cs6" firstAttribute="centerX" secondItem="cwN-S3-E16" secondAttribute="centerX" id="6OY-wy-jOJ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="rK9-mw-M5q" secondAttribute="trailing" id="73J-NM-k9k"/>
                             <constraint firstItem="rK9-mw-M5q" firstAttribute="centerX" secondItem="cwN-S3-E16" secondAttribute="centerX" id="HHe-G4-sAd"/>
                             <constraint firstItem="JyX-qk-CIV" firstAttribute="centerY" secondItem="cwN-S3-E16" secondAttribute="centerY" id="Ic6-cu-YRa"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="sHe-1P-TEz" secondAttribute="trailing" id="KE2-A4-bhu"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="JyX-qk-CIV" secondAttribute="trailing" id="KK9-v4-viR"/>
                             <constraint firstItem="rK9-mw-M5q" firstAttribute="top" secondItem="l4n-z9-poW" secondAttribute="bottom" constant="70" id="KZC-Jk-OGf"/>
                             <constraint firstItem="sHe-1P-TEz" firstAttribute="top" secondItem="l4n-z9-poW" secondAttribute="bottom" constant="86" id="OGw-Hj-NRN"/>
                             <constraint firstItem="l4n-z9-poW" firstAttribute="top" secondItem="0tY-gL-Cs6" secondAttribute="bottom" constant="-72" id="Ooa-Kv-iqV"/>
@@ -74,6 +78,7 @@
                             <constraint firstItem="l4n-z9-poW" firstAttribute="top" secondItem="0tY-gL-Cs6" secondAttribute="bottom" constant="-55" id="gZh-Gh-Dvv"/>
                             <constraint firstItem="rK9-mw-M5q" firstAttribute="top" secondItem="l4n-z9-poW" secondAttribute="bottom" constant="45" id="iEF-eQ-QWF"/>
                             <constraint firstItem="0tY-gL-Cs6" firstAttribute="centerX" secondItem="JyX-qk-CIV" secondAttribute="centerX" id="jM0-2m-zdM"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="JyX-qk-CIV" secondAttribute="leading" id="jXi-gD-xT1"/>
                             <constraint firstItem="rK9-mw-M5q" firstAttribute="top" secondItem="0tY-gL-Cs6" secondAttribute="bottom" constant="20" id="lrN-GS-ELD"/>
                             <constraint firstItem="rK9-mw-M5q" firstAttribute="centerY" secondItem="cwN-S3-E16" secondAttribute="centerY" id="tIc-hA-Tlx"/>
                             <constraint firstItem="l4n-z9-poW" firstAttribute="top" secondItem="JyX-qk-CIV" secondAttribute="bottom" constant="67" id="wIF-3e-x84"/>
@@ -104,16 +109,16 @@
                     </view>
                     <navigationItem key="navigationItem" title="Main Menu" id="Ud8-kO-wkU"/>
                     <connections>
-                        <outlet property="multiPlayerButton" destination="JyX-qk-CIV" id="9lT-JA-vkg"/>
+                        <outlet property="flyingSoloButton" destination="JyX-qk-CIV" id="uWo-Da-30m"/>
                         <outlet property="nextButton" destination="sHe-1P-TEz" id="wWX-Yh-Ocr"/>
-                        <outlet property="onePlayerButton" destination="rK9-mw-M5q" id="OpO-u1-NTB"/>
                         <outlet property="pickerView" destination="0tY-gL-Cs6" id="N0s-ip-CcQ"/>
+                        <outlet property="withFriendsButton" destination="rK9-mw-M5q" id="agG-Se-N6Y"/>
                         <segue destination="0Vb-B9-XkA" kind="show" identifier="Play Game" id="W7b-Sn-n9d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XeE-Ap-kxB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="940" y="370"/>
+            <point key="canvasLocation" x="940" y="369.26536731634184"/>
         </scene>
         <!--Playing Card Detail SettingsTVC-->
         <scene sceneID="Dhi-Fn-KUs">
@@ -125,7 +130,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell1" id="N4V-pX-Bpc">
-                                <frame key="frameInset" minY="92" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="92" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="N4V-pX-Bpc" id="AZM-nR-vmo">
                                     <frame key="frameInset" width="375" height="43.5"/>
@@ -133,7 +138,7 @@
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell2" id="xVL-vH-vHy">
-                                <frame key="frameInset" minY="136" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="136" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xVL-vH-vHy" id="aWy-eb-lF7">
                                     <frame key="frameInset" width="375" height="43.5"/>
@@ -244,7 +249,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell1" textLabel="7YS-Qa-3jT" detailTextLabel="kws-g3-bf5" style="IBUITableViewCellStyleValue1" id="SUl-sX-XHH">
-                                <frame key="frameInset" minY="92" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="92" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SUl-sX-XHH" id="cnd-PI-Dlb">
                                     <frame key="frameInset" width="375" height="43.5"/>
@@ -268,7 +273,7 @@
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell2" id="QXx-Zz-luj">
-                                <frame key="frameInset" minY="136" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="136" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QXx-Zz-luj" id="QJa-RO-l2M">
                                     <frame key="frameInset" width="375" height="43.5"/>
@@ -276,7 +281,7 @@
                                 </tableViewCellContentView>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell3" id="EpQ-s0-PUI">
-                                <frame key="frameInset" minY="180" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="180" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EpQ-s0-PUI" id="1Ks-PF-WAJ">
                                     <frame key="frameInset" width="375" height="43.5"/>
@@ -345,7 +350,7 @@
                         <viewControllerLayoutGuide type="top" id="R4Z-QW-SWe"/>
                         <viewControllerLayoutGuide type="bottom" id="3hT-NN-LDU"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="oHC-AA-L3G">
+                    <view key="view" contentMode="scaleToFill" id="oHC-AA-L3G" customClass="FireWorksView">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -367,6 +372,7 @@
                     </view>
                     <connections>
                         <outlet property="countDownLabel" destination="qVO-s9-RZi" id="TA2-WR-DaK"/>
+                        <outlet property="fireWorksView" destination="oHC-AA-L3G" id="g0B-lv-P4T"/>
                         <outlet property="progress" destination="Iwc-hG-TBB" id="uLQ-iZ-LE6"/>
                     </connections>
                 </viewController>

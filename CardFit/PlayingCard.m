@@ -6,19 +6,19 @@
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import "CardFitPlayingCard.h"
-#import "PlayingCardSettings.h"
+#import "PlayingCard.h"
+//#import "PlayingCardSettings.h"
 
 #define SUIT_KEY @"Suit Key"
 #define RANK_KEY @"Rank Key"
 
-@interface CardFitPlayingCard ()
+@interface PlayingCard ()
 
-@property (nonatomic, strong) PlayingCardSettings *settings;
+//@property (nonatomic, strong) PlayingCardSettings *settings;
 
 @end
 
-@implementation CardFitPlayingCard
+@implementation PlayingCard
 
 #pragma mark - NSCoding Protocol
 
@@ -39,10 +39,10 @@
 
 #pragma mark - Initialization
 
-//Creates a shared instance of our playing Card Settings
-- (PlayingCardSettings *)settings {
-    return [PlayingCardSettings sharedPlayingCardSettings];
-}
+////Creates a shared instance of our playing Card Settings
+//- (PlayingCardSettings *)settings {
+//    return [PlayingCardSettings sharedPlayingCardSettings];
+//}
 
 #pragma mark - Class Methods
 
@@ -66,31 +66,31 @@
 
 - (NSString *)contents { //Overwrites inherited contents property from Card.h
     //Get's rank string and suit string for card and appends them together into one string for contents.
-    return [[CardFitPlayingCard validRankStrings][self.rank] stringByAppendingString:[CardFitPlayingCard validSuitStrings][self.suit]];
+    return [[PlayingCard validRankStrings][self.rank] stringByAppendingString:[PlayingCard validSuitStrings][self.suit]];
 }
 
 #pragma mark - Properties
 
-//Returns points for our card from playing card settings based on it's rank
-- (NSUInteger)points {
-    return [self.settings pointsForRank:self.rank];
-}
-
-//Returns a label for our card from our playing card settings
-- (NSString *)label {
-    return [self.settings labelForSuit:self.suit andRank:self.rank];
-}
+////Returns points for our card from playing card settings based on it's rank
+//- (NSUInteger)points {
+//    return [self.settings pointsForRank:self.rank];
+//}
+//
+////Returns a label for our card from our playing card settings
+//- (NSString *)label {
+//    return [self.settings labelForSuit:self.suit andRank:self.rank];
+//}
 
 //As long as suit is less than maxsuit then set suit.
 - (void)setSuit:(NSUInteger)suit {
-    if (suit <= [CardFitPlayingCard maxSuit]) {
+    if (suit <= [PlayingCard maxSuit]) {
         _suit = suit;
     }
 }
 
 //As long as rank is less than max Rank then set rank.
 - (void)setRank:(NSUInteger)rank {
-    if (rank <= [CardFitPlayingCard maxRank]) {
+    if (rank <= [PlayingCard maxRank]) {
         _rank = rank;
     }
 }

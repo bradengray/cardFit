@@ -15,10 +15,43 @@
 
 @implementation AppDelegate
 
+#define UBIQUITY_TOKEN @"com.apple.cardfit.UbiquityIdentityToken"
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(iCloudAccountAvailablityChanged:)
+                                                 name:NSUbiquityIdentityDidChangeNotification
+                                               object:nil];
+    
+    if ([self iCloudIsAvailable]) {
+        NSLog(@"iCloudIsAvailable");
+    } else {
+        NSLog(@"iCloudIsNotAvailable");
+    }
+    
     return YES;
+}
+
+- (void)iCloudAccountAvailablityChanged:(id)cloudToken {
+    //Check new cloud token against old
+}
+
+-(BOOL)iCloudIsAvailable {
+    id  currentiCloudToken = [[NSFileManager defaultManager] ubiquityIdentityToken];
+    if (currentiCloudToken) {
+        NSData *newTokenData =
+        [NSKeyedArchiver archivedDataWithRootObject: currentiCloudToken];
+        [[NSUserDefaults standardUserDefaults]
+         setObject: newTokenData
+         forKey: UBIQUITY_TOKEN];
+        return YES;
+    } else {
+        [[NSUserDefaults standardUserDefaults]
+         removeObjectForKey: UBIQUITY_TOKEN];
+        return NO;
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -36,6 +69,7 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    [self iCloudIsAvailable];
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 

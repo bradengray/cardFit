@@ -73,14 +73,22 @@
 @implementation PlayingCardSettings
 
 //Creates a shared instance of PlayingCardSettings
-+ (instancetype)sharedPlayingCardSettings {
-    static PlayingCardSettings *sharedPlayingCardSettings;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedPlayingCardSettings = [[PlayingCardSettings alloc] init];
-        sharedPlayingCardSettings.save = YES;
-    });
-    return sharedPlayingCardSettings;
+//+ (instancetype)sharedPlayingCardSettings {
+//    static PlayingCardSettings *sharedPlayingCardSettings;
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        sharedPlayingCardSettings = [[PlayingCardSettings alloc] init];
+//        sharedPlayingCardSettings.save = YES;
+//    });
+//    return sharedPlayingCardSettings;
+//}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.save = YES;
+    }
+    return self;
 }
 
 //Used by NSCoder to encode this object using NSKeyedArchiver
@@ -104,23 +112,23 @@
 //Used by NSCoder to decode this object using NSKeyedUnarchiver. It is important to note here that this object is decoded as the shared playing card settings and will not create a new object.
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
-    PlayingCardSettings *settings = [PlayingCardSettings sharedPlayingCardSettings];
+//    PlayingCardSettings *self = [PlayingCardSettings sharedPlayingCardSettings];
     
-    settings.save = [aDecoder decodeBoolForKey:@"Save"];
-    settings.spadesExerciseString = [aDecoder decodeObjectForKey:SPADES_EXCERCISE_KEY];
-    settings.clubsExerciseString = [aDecoder decodeObjectForKey:CLUBS_EXCERCISE_KEY];
-    settings.heartsExerciseString = [aDecoder decodeObjectForKey:HEARTS_EXCERCISE_KEY];
-    settings.diamondsExerciseString = [aDecoder decodeObjectForKey:DIAMONDS_EXCERCISE_KEY];
-    settings.acesExerciseString = [aDecoder decodeObjectForKey:ACES_EXERCISE_KEY];
-    settings.jokersExerciseString = [aDecoder decodeObjectForKey:JOKERS_EXERCISE_KEY];
+    self.save = [aDecoder decodeBoolForKey:@"Save"];
+    self.spadesExerciseString = [aDecoder decodeObjectForKey:SPADES_EXCERCISE_KEY];
+    self.clubsExerciseString = [aDecoder decodeObjectForKey:CLUBS_EXCERCISE_KEY];
+    self.heartsExerciseString = [aDecoder decodeObjectForKey:HEARTS_EXCERCISE_KEY];
+    self.diamondsExerciseString = [aDecoder decodeObjectForKey:DIAMONDS_EXCERCISE_KEY];
+    self.acesExerciseString = [aDecoder decodeObjectForKey:ACES_EXERCISE_KEY];
+    self.jokersExerciseString = [aDecoder decodeObjectForKey:JOKERS_EXERCISE_KEY];
     
-    settings.jacksPoints = [aDecoder decodeIntegerForKey:JACKS_POINTS_KEY];
-    settings.queensPoints = [aDecoder decodeIntegerForKey:QUEENS_POINTS_KEY];
-    settings.kingsPoints = [aDecoder decodeIntegerForKey:KINGS_POINTS_KEY];
-    settings.acesPoints = [aDecoder decodeIntegerForKey:ACES_POINTS_KEY];
-    settings.jokersPoints = [aDecoder decodeIntegerForKey:JOKERS_POINTS_KEY];
+    self.jacksPoints = [aDecoder decodeIntegerForKey:JACKS_POINTS_KEY];
+    self.queensPoints = [aDecoder decodeIntegerForKey:QUEENS_POINTS_KEY];
+    self.kingsPoints = [aDecoder decodeIntegerForKey:KINGS_POINTS_KEY];
+    self.acesPoints = [aDecoder decodeIntegerForKey:ACES_POINTS_KEY];
+    self.jokersPoints = [aDecoder decodeIntegerForKey:JOKERS_POINTS_KEY];
     
-    return settings;
+    return self;
 }
 
 #pragma mark - Settings

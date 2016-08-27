@@ -31,6 +31,7 @@ extern NSString *const PresentGKMatchMakerViewController;
 @property (nonatomic, readonly) NSError *lastError;
 
 @property (nonatomic, strong) GKMatch *match;
+@property (nonatomic, strong) GKGameSession *session;
 @property (nonatomic, strong) GKTurnBasedMatch *turnMatch;
 @property (nonatomic, assign) id <GameKitHelperDelegate> delegate;
 

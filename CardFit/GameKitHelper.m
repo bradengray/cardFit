@@ -13,11 +13,12 @@
 @property (nonatomic) BOOL enableGameCenter;
 @property (nonatomic) BOOL matchStarted;
 @property (nonatomic, strong) GKInvite *pendingInvite;
-@property (nonatomic, strong) GKGameSession *session;
 
 @end
 
 @implementation GameKitHelper
+
+#define DEFAULT_CONTAINER @"iCloud.com.graycode.cardfit"
 
 NSString *const PresentAuthenticationViewController = @"present_authentication_view_controller";
 NSString *const LocalPlayerIsAuthenticated = @"local_player_authencticated";
@@ -27,10 +28,24 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
     self = [super init];
     if (self) {
         self.enableGameCenter = YES;
+//        [GKGameSession createSessionInContainer:DEFAULT_CONTAINER
+//                                      withTitle:@"Game"
+//                            maxConnectedPlayers:2
+//                              completionHandler:^(GKGameSession * _Nullable session, NSError * _Nullable error) {
+//                                  if (error) {
+//                                      NSLog(@"Error:%@", error.localizedDescription);
+//                                  }
+//                                  NSLog(@"Session:%@", session.identifier);
+//                              }];
         [[GKLocalPlayer localPlayer] registerListener:self];
         [GKGameSession addEventListener:self];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[GKLocalPlayer localPlayer] unregisterListener:self];
+    [GKGameSession removeEventListener:self];
 }
 
 + (instancetype)sharedGameKitHelper {
@@ -117,7 +132,7 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
     if (!self.enableGameCenter) {
         return;
     }
-
+    
     self.matchStarted = NO;
     self.match = nil;
     self.delegate = delegate; //networking engine
@@ -158,11 +173,29 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
 // A peer-to-peer match has been found, the game should start
 - (void)matchmakerViewController:(GKMatchmakerViewController *)viewController didFindMatch:(GKMatch *)match {
     [viewController dismissViewControllerAnimated:YES completion:nil];
+    [GKGameSession createSessionInContainer:DEFAULT_CONTAINER
+                                  withTitle:@"Game"
+                        maxConnectedPlayers:2
+                          completionHandler:^(GKGameSession * _Nullable session, NSError * _Nullable error) {
+                              if (error) {
+                                  NSLog(@"Error: %@", error.localizedDescription);
+                              }
+                              NSLog(@"Session:%@", session.identifier);
+                              self.session = session;
+                          }];
     _match = match;
     _match.delegate = self;
     if (!self.matchStarted && match.expectedPlayerCount == 0) {
         NSLog(@"Ready to start match!");
         [self lookupPlayers];
+    }
+}
+
+- (BOOL)isICloudAvailable {
+    if ([[NSFileManager defaultManager] ubiquityIdentityToken]) {
+        return YES;
+    } else {
+        return NO;
     }
 }
 
@@ -233,8 +266,16 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
 
 #pragma mark = GKGameSessionEventListener
 
-- (void)player:(GKCloudPlayer *)player requestedSessionWithPlayers:(NSArray<GKCloudPlayer *> *)players {
-    //Nothing Yet
+- (void)session:(GKGameSession *)session didReceiveData:(NSData *)data fromPlayer:(GKCloudPlayer *)player {
+#warning send some data
+}
+
+- (void)session:(GKGameSession *)session player:(GKCloudPlayer *)player didChangeConnectionState:(GKConnectionState)newState {
+    if (newState == GKConnectionStateNotConnected) {
+        //Do Something
+    } else {
+        //Do Something Else
+    }
 }
 
 @end
