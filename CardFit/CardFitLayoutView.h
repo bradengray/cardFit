@@ -28,7 +28,7 @@
 
 //origin of Frame should be called after each change of orientation of superview
 - (CGRect)frameForCardView:(UIView *)cardView; //Returns a rect for the card
-- (CGRect)frameForStartButton:(UIButton *)button; //Returns a rect for the start button
+- (CGRect)frameForMainButton:(UIButton *)button; //Returns a rect for the start button
 - (CGRect)frameForTasklabel:(UILabel *)label; //Returns a rect for the task label
 - (CGRect)frameForTimerLabel:(UILabel *)label; //Returns a rect for the timer label
 

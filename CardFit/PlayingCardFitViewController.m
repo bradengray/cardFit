@@ -7,7 +7,7 @@
 //
 
 #import "PlayingCardFitViewController.h"
-#import "CardFitPlayingCardDeck.h"
+#import "PlayingCardDeck.h"
 #import "PlayingCardView.h"
 #import "PlayingCardSettings.h"
 
@@ -34,14 +34,17 @@
     self.playingCardSettings.save = YES;
 }
 
-- (PlayingCardSettings *) playingCardSettings { //Creates shared setting value
-    return [PlayingCardSettings sharedPlayingCardSettings];
+- (PlayingCardSettings *)playingCardSettings { //Creates shared setting value
+    if (!_playingCardSettings) {
+        _playingCardSettings = [[PlayingCardSettings alloc] init];
+    }
+    return _playingCardSettings;
 }
 
 #pragma mark - Abstract Methods
 
 - (Deck *)createDeck { //Creates deck for game play
-    return [[CardFitPlayingCardDeck alloc] initWithNumberOfCards:[self numberOfCards]];
+    return [[PlayingCardDeck alloc] initWithNumberOfCards:[self numberOfCards] withJokers:self.playingCardSettings.jokers];
 }
 
 - (id)settings { //Returns settings object
@@ -62,8 +65,8 @@
 
 - (void)updateCardView:(UIView *)cardView withCard:(Card *)card { //Updates Card view for card object
     if ([cardView isKindOfClass:[PlayingCardView class]]) {
-        if ([card isKindOfClass:[CardFitPlayingCard class]]) {
-            CardFitPlayingCard *playingCard = (CardFitPlayingCard *)card;
+        if ([card isKindOfClass:[PlayingCard class]]) {
+            PlayingCard *playingCard = (PlayingCard *)card;
             PlayingCardView *playingCardView = (PlayingCardView *)cardView;
             playingCardView.rank = playingCard.rank;
             playingCardView.suit = playingCard.suit;
@@ -86,6 +89,24 @@
     } else {
         return numberOfCards = numberOfCards - ((numberOfCards/54) * 2);
     }
+}
+
+- (NSUInteger)pointsForCard:(Card *)card { //Returns points for a given card
+    NSUInteger points;
+    if ([card isKindOfClass:[PlayingCard class]]) {
+        PlayingCard *playingCard = (PlayingCard *)card;
+        points = [self.playingCardSettings pointsForRank:playingCard.rank];
+    }
+    return points;
+}
+
+- (NSString *)labelForCard:(Card *)card { //Returns label for a given card
+    NSString *label;
+    if ([card isKindOfClass:[PlayingCard class]]) {
+        PlayingCard *playingCard = (PlayingCard *)card;
+        label = [self.playingCardSettings labelForSuit:playingCard.suit andRank:playingCard.rank];
+    }
+    return label;
 }
 
 @end

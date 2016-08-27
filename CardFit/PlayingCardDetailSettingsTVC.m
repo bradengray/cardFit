@@ -9,10 +9,25 @@
 #import "PlayingCardDetailSettingsTVC.h"
 #import "PlayingCardSettings.h"
 
+@interface PlayingCardDetailSettingsTVC ()
+
+@property (nonatomic, strong) PlayingCardSettings *playingCardSettings;
+
+@end
+
 @implementation PlayingCardDetailSettingsTVC
 
+#pragma mark - Initialization
+
+- (PlayingCardSettings *)playingCardSettings {
+    if (!_playingCardSettings) {
+        _playingCardSettings = [[PlayingCardSettings alloc] init];
+    }
+    return _playingCardSettings;
+}
+
 - (Settings *)createSettings { //Return Playing Card Settings
-    return [PlayingCardSettings sharedPlayingCardSettings];
+    return self.playingCardSettings;
 }
 
 @end

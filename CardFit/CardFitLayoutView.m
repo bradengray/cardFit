@@ -148,45 +148,20 @@
     return frame;
 }
 
-- (CGRect)frameForStartButton:(UIButton *)button { //Returns frame of start button
+- (CGRect)frameForMainButton:(UIButton *)button { //Returns frame of start button
     button.transform = [self rotate];
     CGRect frame = CGRectMake([self hoffset], [self voffset] + [self adjustedCardSize].height, [self adjustedCardSize].width, [self adjustedCardSize].height * SUBVIEW_HEIGHT_SCALE_PERCENTAGE);
     return frame;
 }
 
 - (CGRect)frameForTasklabel:(UILabel *)label { //Returns frame of task label
-    [self setLabel:label fontSizeForWidth:self.subViewSize.width];
-    CGRect frame = CGRectMake([self hoffset], ([self voffset] + [self adjustedCardSize].height / 2.0) - label.attributedText.size.height / 2.0, [self adjustedCardSize].width, label.attributedText.size.height);
-    if (self.rotated) {
-        [self setLabel:label fontSizeForWidth:self.subViewSize.height];
-    }
+    CGRect frame = CGRectMake([self hoffset], ([self voffset] + [self adjustedCardSize].height / 2.0) - label.attributedText.size.height / 2.0, [self adjustedCardSize].width, label.frame.size.height);
     return frame;
 }
 
 - (CGRect)frameForTimerLabel:(UILabel *)label { //Returns frame of timer label
     CGRect frame = CGRectMake([self hoffset] + [self adjustedCardSize].width / 2.0 - label.attributedText.size.width / 2.0, [self voffset] + [self adjustedCardSize].height - label.attributedText.size.height, label.attributedText.size.width, label.attributedText.size.height);
     return frame;
-}
-
-- (void)setLabel:(UILabel *)label fontSizeForWidth:(CGFloat)width { //Sets the font size of label based on label height
-    if (label.attributedText.size.width > width) {
-        label.numberOfLines = 2;
-        NSRange range = NSMakeRange(0, 1);
-        NSDictionary *attributes = [label.attributedText attributesAtIndex:0 effectiveRange:&range];
-        NSArray *textArray = [label.text componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        NSString *textString = @"";
-        int i = 0;
-        for (NSString *string in textArray) {
-            if (i > 0) {
-                textString = [textString stringByAppendingString:[NSString stringWithFormat:@"%@ ", string]];
-            } else {
-                textString = [textString stringByAppendingString:[NSString stringWithFormat:@"%@\n", string]];
-            }
-            i++;
-        }
-        NSAttributedString *attributedTextString = [[NSAttributedString alloc] initWithString:textString attributes:attributes];
-        label.attributedText = attributedTextString;
-    }
 }
 
 #pragma mark Properties

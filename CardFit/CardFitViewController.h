@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "Deck.h"
-#import "CardFitCard.h"
+#import "Card.h"
 #import "MultiplayerNetworking.h"
+#import "FireWorksView.h"
 
 @interface CardFitViewController : UIViewController <MultiplayerNetworkingProtocol>
+@property (strong, nonatomic) IBOutlet FireWorksView *fireWorksView;
 
 //Required Set in subclass viewDidLoad
 @property (nonatomic) CGFloat cardAspectRatio; //Sets aspect ration for Card
@@ -32,5 +34,7 @@
 - (UIView *)createCardViewWithCard:(Card *)card; //abstract create view for card
 - (void)updateCardView:(UIView *)cardView withCard:(Card *)card; //abstract update cardview if selected
 - (NSUInteger)numberOfCards; //abstract returns number of cards for game play
+- (NSUInteger)pointsForCard:(Card *)card; //abstract returns points for card
+- (NSString *)labelForCard:(Card *)card; //abstract returns label for card
 
 @end

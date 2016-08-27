@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 //#import "Card.h"
-#import "CardFitCard.h"
+#import "Card.h"
 #import "Deck.h"
 
 @interface CardFitGame : NSObject
@@ -20,7 +20,7 @@
 @property (nonatomic, readonly) float progress; //Tracks the current progress of the game
 
 //- (Card *)drawCardAtIndex:(NSUInteger)index; //Draws a card for the deck in the game at a specific index.
-- (CardFitCard *)drawCard; //Draws a card for the deck in the game.
+- (Card *)drawCard; //Draws a card for the deck in the game.
 - (instancetype)initWithCardCount:(NSUInteger)cardCount withDeck:(Deck *)deck; //designated Initializer
 
 @end

@@ -14,8 +14,8 @@
 
 //Adheres to UIPickerViewDelegate and UIPickerViewDataSource Protocols
 @interface MainPageViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
-@property (weak, nonatomic) IBOutlet UIButton *multiPlayerButton; //Outlet for multiplayer button
-@property (weak, nonatomic) IBOutlet UIButton *onePlayerButton; //Outlet for singleplayer button
+@property (weak, nonatomic) IBOutlet UIButton *flyingSoloButton; //Outlet for multiplayer button
+@property (weak, nonatomic) IBOutlet UIButton *withFriendsButton; //Outlet for singleplayer button
 @property (weak, nonatomic) IBOutlet UIButton *nextButton; //Outlet for nextbutton
 @property (weak, nonatomic) IBOutlet UIPickerView *pickerView; //Pickerview for selecting number of cards
 @property (nonatomic, strong) Settings *settings; //Settings object
@@ -31,15 +31,59 @@
 
 #pragma mark - View Life Cycle
 
+#define UBIQUITY_TOKEN @"com.apple.cardfit.UbiquityIdentityToken"
+
+- (void)iCloudAlert {
+    id currentiCloudToken = [[NSUserDefaults standardUserDefaults] objectForKey:UBIQUITY_TOKEN];
+    if (!currentiCloudToken) {// && firstLaunchWithiCloudAvailable) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Choose Storage Option"
+                                                                       message:@"Should documents be stored in iCloud and available on all your devices?"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Local Only"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Use iCloud"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+        [alert addAction:action1];
+        [alert addAction:action2];
+        
+        [self presentViewController:alert
+                           animated:YES
+                         completion:nil];
+    }
+}
+
+//- (void)tomtom {
+//    __block NSURL *myContainer;
+//    dispatch_async (dispatch_get_global_queue (DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
+//        myContainer = [[NSFileManager defaultManager]
+//                       URLForUbiquityContainerIdentifier:@"iCloud.com.graycode.cardfit"];
+//        if (myContainer != nil) {
+//            // Your app can write to the iCloud container
+//            
+//            dispatch_async (dispatch_get_main_queue (), ^(void) {
+//                // On the main thread, update UI and state as appropriate
+//            });
+//        }
+//    });
+//    //    This example assumes that you have previously defined myContainer as an instance variable of type NSURL prior to executing this code.
+//    
+//    
+//}
+
 - (void)viewDidLoad { //Called when view loads
     [super viewDidLoad];
     //Set delegates and hide picker view nad next button
     self.pickerView.delegate = self;
     self.pickerView.hidden = YES;
     self.nextButton.hidden = YES;
+    [self iCloudAlert];
+//    [self tomtom];
     //Set up buttons
-    [self setUpButton:self.multiPlayerButton withTitle:@"MultiPlayer"];
-    [self setUpButton:self.onePlayerButton withTitle:@"Single Player"];
+    [self setUpButton:self.flyingSoloButton withTitle:@"FLYING SOLO"];
+    [self setUpButton:self.withFriendsButton withTitle:@"WITH FRIENDS"];
     [self setUpButton:self.nextButton withTitle:@"Next"];
     //Set up reveal view controller for side menu
     self.revealViewController.rightViewController = nil;
@@ -49,13 +93,19 @@
 
 - (void)viewWillAppear:(BOOL)animated { //Called when view appears
     [super viewWillAppear:animated];
+    UIImage *image = [UIImage imageNamed:@"BackGround"];
+//    [self imageWithImage:image scaledToSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height)];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + self.navigationController.navigationBar.frame.size.height, imageView.frame.size.width, imageView.frame.size.height);
+    [self.view addSubview:imageView];
+    [self.view sendSubviewToBack:imageView];
     //Add radio stations for player authentication and match maker view controller
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerAuthenticated) name:LocalPlayerIsAuthenticated object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentMatchMakerViewController) name:PresentGKMatchMakerViewController object:nil];
     //Check if player is authenticated to enable multiplayer selection
     if (!self.multiplayerReady) {
-        self.multiPlayerButton.enabled = NO;
-        self.multiPlayerButton.titleLabel.alpha = 0.15;
+        self.withFriendsButton.enabled = NO;
+        self.withFriendsButton.titleLabel.alpha = 0.15;
     }
 }
 
@@ -68,8 +118,8 @@
 - (void)playerAuthenticated { //Called when player is authenticated
     //Enable multiplayer game
     self.multiplayerReady = YES;
-    self.multiPlayerButton.enabled = YES;
-    self.multiPlayerButton.titleLabel.alpha = 1.0;
+    self.withFriendsButton.enabled = YES;
+    self.withFriendsButton.titleLabel.alpha = 1.0;
 }
 
 - (void)presentMatchMakerViewController { //Called when MatchMakerViewController is wanted
@@ -124,16 +174,16 @@
         [self setMenuBarButton];
         self.pickerView.hidden = YES;
         self.nextButton.hidden = YES;
-        [self.onePlayerButton setAttributedTitle:[self buttonAttributedTitleWithString:@"One Player"] forState:UIControlStateNormal];
-        self.multiPlayerButton.hidden = NO;
-        self.onePlayerButton.hidden = NO;
-        NSArray *objects = @[self.multiPlayerButton, self.onePlayerButton];
+        [self.withFriendsButton setAttributedTitle:[self buttonAttributedTitleWithString:@"with Friends"] forState:UIControlStateNormal];
+        self.flyingSoloButton.hidden = NO;
+        self.withFriendsButton.hidden = NO;
+        NSArray *objects = @[self.flyingSoloButton, self.withFriendsButton];
         [self animateObjects:objects];
     }];
 }
 
 - (void)setUpButton:(UIButton *)button withTitle:(NSString *)title { //Set up button with title
-    [button setBackgroundColor:self.view.backgroundColor];
+    [button setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.7]];
     [button setAttributedTitle:[self buttonAttributedTitleWithString:title] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
@@ -151,12 +201,12 @@
     //If game type not selected
     if (!self.selected) {
         //Decide if multiplayer or not and set datasources for picker views
-        if (button == self.multiPlayerButton) {
+        if (button == self.flyingSoloButton) {
             self.multiPlayer = YES;
             self.pickerView.dataSource = nil;
             self.pickerView.dataSource = self;
             [self updatePickerView];
-        } else if (button == self.onePlayerButton) {
+        } else if (button == self.withFriendsButton) {
             self.multiPlayer = NO;
             self.pickerView.dataSource = nil;
             self.pickerView.dataSource = self;
@@ -164,15 +214,15 @@
         }
         //Animate buttons and picker views
         [UIView animateWithDuration:0.15 animations:^{
-            self.multiPlayerButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
-            self.onePlayerButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
+            self.flyingSoloButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
+            self.withFriendsButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
             self.pickerView.transform = CGAffineTransformMakeScale(0.01, 0.01);
             self.nextButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
         } completion:^(BOOL finished) {
             [self setCancelBarButton];
-            self.multiPlayerButton.hidden = YES;
-            self.onePlayerButton.hidden = YES;
-            [self.onePlayerButton setAttributedTitle:[self buttonAttributedTitleWithString:@"Next"] forState:UIControlStateNormal];
+            self.flyingSoloButton.hidden = YES;
+            self.withFriendsButton.hidden = YES;
+            [self.withFriendsButton setAttributedTitle:[self buttonAttributedTitleWithString:@"Next"] forState:UIControlStateNormal];
             self.pickerView.hidden = NO;
             self.nextButton.hidden = NO;
             NSArray *objects = @[self.pickerView, self.nextButton];
@@ -185,20 +235,65 @@
     }
 }
 
-#define BUTTON_FONT_SCALE_FACTOR .003
+#define BUTTON_FONT_SCALE_FACTOR .002
+#define BUTTON_FONT_SCALE_FACTOR2 .004
 
 - (NSAttributedString *)buttonAttributedTitleWithString:(NSString *)string { //Returns attributed string for button titles
+    NSArray *components = [string componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    BOOL twoWords = [components count] > 1 ? YES : NO;
     
-    UIFont *font = [[UIFont alloc] init];
-    font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    font = [font fontWithSize:font.pointSize * (self.view.bounds.size.height * BUTTON_FONT_SCALE_FACTOR)];
+    NSString *string1 = components[0];
+    NSUInteger length1 = [string1 length];
+    unichar buffer1[length1+1];
+    NSMutableString *newstring1 = [[NSMutableString alloc] init];
+    [string1 getCharacters:buffer1 range:NSMakeRange(0, length1)];
+    for (int i = 0; i < length1; i++) {
+        [newstring1 appendString:[NSString stringWithFormat:@"%C ", buffer1[i]]];
+    }
+    string1 = newstring1;
+
+    
+    NSString *string2;
+    if (twoWords) {
+        string2 = components[1];
+        NSUInteger length2 = [string2 length];
+        unichar buffer2[length2+1];
+        NSMutableString *newstring2 = [[NSMutableString alloc] init];
+        [string2 getCharacters:buffer2 range:NSMakeRange(0, length2)];
+        for (int i = 0; i < length2; i++) {
+            [newstring2 appendString:[NSString stringWithFormat:@"%C ", buffer2[i]]];
+        }
+        string2 = newstring2;
+    }
+    
+    UIFont *font1 = [[UIFont alloc] init];
+    font1 = [UIFont fontWithName:@"Helvetica" size:16];
+    font1 = [font1 fontWithSize:font1.pointSize * (self.view.bounds.size.height * BUTTON_FONT_SCALE_FACTOR)];
+    
+    UIFont *font2 = [[UIFont alloc] init];
+    font2 = [UIFont fontWithName:@"Helvetica-Bold" size:16];
+    font2 = [font2 fontWithSize:font2.pointSize * (self.view.bounds.size.height * BUTTON_FONT_SCALE_FACTOR2)];
     
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.alignment = NSTextAlignmentLeft;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
     
-    NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor colorWithRed:0 green:.3 blue:.8 alpha:1], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : font, NSParagraphStyleAttributeName : paragraphStyle};
+    NSDictionary *attributes1 = @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : font1, NSParagraphStyleAttributeName : paragraphStyle};
     
-    return [[NSAttributedString alloc] initWithString:string attributes:attributes];
+    NSDictionary *attributes2 = @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : font2, NSParagraphStyleAttributeName : paragraphStyle};
+    
+    NSAttributedString *aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", string1] attributes:attributes1];
+    NSAttributedString *aString2;
+    if (twoWords) {
+        aString2 = [[NSAttributedString alloc] initWithString:string2 attributes:attributes2];
+    }
+    
+    NSMutableAttributedString *myString = [[NSMutableAttributedString alloc] init];
+    [myString appendAttributedString:aString1];
+    if (twoWords) {
+        [myString appendAttributedString:aString2];
+    }
+    
+    return myString;
 }
 
 #pragma mark - Animations

@@ -17,7 +17,7 @@
 @property (nonatomic, strong) CardFitGame *game; //Instance of game
 @property (nonatomic, strong) CardFitLayoutView *cardFitLayoutView; //Instance of LayoutView
 
-@property (nonatomic, strong) CardFitCard *currentCard; //Keeps track of the current shown card
+@property (nonatomic, strong) Card *currentCard; //Keeps track of the current shown card
 @property (nonatomic, strong) UIView *cardView; //Keeps track of the current shown card's view
 
 @property (nonatomic, strong) UIButton *pauseButton; //Button that pauses game
@@ -156,6 +156,10 @@
 - (UILabel *)taskLabel {
     if (!_taskLabel) {
         _taskLabel = [[UILabel alloc] init];
+        _taskLabel.numberOfLines = 0;
+        _taskLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _taskLabel.backgroundColor = [UIColor clearColor];
+        _taskLabel.textAlignment = NSTextAlignmentCenter;
     }
     //Return result
     return _taskLabel;
@@ -354,7 +358,7 @@
             //Set text string for task label for card view
             [self setTaskLabelTitleForCardView:self.cardView];
             //Set task label frame
-            self.taskLabel.frame = [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
+            [self resetTaskLabelFrame];
             //Add task label to subview
             [self.view addSubview:self.taskLabel];
             //Set frame for timer label
@@ -362,7 +366,7 @@
             //Add timer label to view
             [self.view addSubview:self.timerLabel];
             //Set game points based on current card
-            self.game.totalPoints = self.currentCard.points;
+            self.game.totalPoints = [self pointsForCard:self.currentCard];
         } else { //Device may have been rotated
             //Reset frames with animation over time
             [UIView transitionWithView:self.cardView
@@ -372,9 +376,9 @@
                                 //Set card view frame
                                 self.cardView.frame = [self.cardFitLayoutView frameForCardView:self.cardView];
                                 //Set pause button frame
-                                self.pauseButton.frame = [self.cardFitLayoutView frameForStartButton:self.pauseButton];
+                                [self resetButtonFrame];
                                 //Set task label frame
-                                self.taskLabel.frame = [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
+                                [self resetTaskLabelFrame];
                                 //Set timer label frame
                                 self.timerLabel.frame = [self.cardFitLayoutView frameForTimerLabel:self.timerLabel];
                             } completion:nil];
@@ -389,13 +393,13 @@
 }
 
 //Draw card from game
-- (CardFitCard *)drawRandomCard {
+- (Card *)drawRandomCard {
     //Set progress for player one
     [self.progress setProgress:self.game.progress];
     //Set progress for all other players
     [self.networkingEngine sendProgress:self.game.progress];
     //Draw a card from game
-    CardFitCard *card = [self.game drawCard];
+    Card *card = [self.game drawCard];
     //Return Card
     return card;
 }
@@ -418,6 +422,18 @@
     }
 }
 
+//Called when needing to remove old card view
+- (void)removeOldCardViewAndUpdateUI {
+    //Remove cardview from view
+    [self.cardView removeFromSuperview];
+    //Set card view to nil
+    self.cardView = nil;
+    //Set card to selected
+    self.currentCard.selected = YES;
+    //update UI
+    [self updateUI];
+}
+
 //Called when game is ended
 - (void)endGame {
     //Set progress
@@ -427,17 +443,22 @@
     //Get dictionary of attributes for that range
     NSDictionary *attributes = [self.taskLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
     //Set an attributed string for task label to reflect score
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Points:%ld", self.game.totalPoints] attributes:attributes];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld\n\nPoints:%ld", self.game.score ,self.game.totalPoints] attributes:attributes];
     //Set task label attributed text to that string
     self.taskLabel.attributedText = attributedString;
     //Set frame for task label
-    [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
+    [self resetTaskLabelFrame];
+    //Set frame for pauseButton
+    [self resetButtonFrame];
     //Disable pause button
     self.pauseButton.enabled = NO;
     //Show navigation bar to exit
     self.navigationController.navigationBar.hidden = NO;
     //set game paused
     self.game.paused = YES;
+    self.taskLabel.backgroundColor = [UIColor clearColor];
+    self.fireWorksView.backgroundColor = [UIColor darkGrayColor];
+    [self.fireWorksView startEmittingFireworks:NO];
 }
 
 #pragma mark - PauseButton
@@ -449,7 +470,7 @@
     //Set corner radius so the corners are curved
     self.pauseButton.layer.cornerRadius = 10;
     //Set pause button frame
-    self.pauseButton.frame = [self.cardFitLayoutView frameForStartButton:self.pauseButton];
+    self.pauseButton.frame = [self.cardFitLayoutView frameForMainButton:self.pauseButton];
     //Set pause button background color
     [self.pauseButton setBackgroundColor:[UIColor colorWithRed:0 green:.3 blue:.8 alpha:1]];
     //Set attributed title for pause button based on whther game has started and whether game is paused or not
@@ -559,6 +580,14 @@
     }
 }
 
+//Called to set frame for pause button
+- (void)resetButtonFrame {
+    //Set frame of pause button
+    self.pauseButton.frame = [self.cardFitLayoutView frameForMainButton:self.pauseButton];
+    //Adjust text to new frame height
+    [self.pauseButton setAttributedTitle:[self setButtonAttributedTitleForHeight:self.pauseButton.frame.size.height] forState:UIControlStateNormal];
+}
+
 #pragma mark - Task Label
 
 #define LABEL_FONT_SCALE_FACTOR 0.005 //Scale font based on label height
@@ -589,10 +618,20 @@
     //Set font size
     labelFont = [labelFont fontWithSize:36];
     //Set task label attributed text with attributes
-    self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", self.currentCard.label] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
+    self.taskLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self labelForCard:self.currentCard]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
     //Set task label background color to light gray
     self.taskLabel.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:0.50];
 }
+
+//Called to set frame for task label
+- (void)resetTaskLabelFrame {
+    //Adjust label to fit text
+    [self.taskLabel sizeToFit];
+    //Adjust new frame to text
+    self.taskLabel.frame = [self.cardFitLayoutView frameForTasklabel:self.taskLabel];
+}
+
+#pragma mark - Tap Gesture
 
 //Called when user initialized tap gesture
 - (void)tap:(UITapGestureRecognizer *)gesture {
@@ -614,20 +653,10 @@
     }
 }
 
-//Called when needing to remove old card view
-- (void)removeOldCardViewAndUpdateUI {
-    //Remove cardview from view
-    [self.cardView removeFromSuperview];
-    //Set card view to nil
-    self.cardView = nil;
-    //Set card to selected
-    self.currentCard.selected = YES;
-    //update UI
-    [self updateUI];
-}
+#pragma mark - MultiPlayerHelperMethod
 
 //Called when a card is recieved from player one
-- (void)recievedCard:(CardFitCard *)card {
+- (void)recievedCard:(Card *)card {
     //Set current card equal to new card
     self.currentCard = card;
     //If game has started
@@ -692,9 +721,9 @@
 //Called when game info is recieved
 - (void)gameInfo:(id)gameInfo {
     //Use introspection to see if info is a card
-    if ([gameInfo isKindOfClass:[CardFitCard class]]) { // If card
+    if ([gameInfo isKindOfClass:[Card class]]) { // If card
         //Set card
-        CardFitCard *card = (CardFitCard *)gameInfo;
+        Card *card = (Card *)gameInfo;
         //call recievedCard
         [self recievedCard:card];
     } else { //If not card them must be settings
@@ -743,6 +772,14 @@
 
 - (NSUInteger)numberOfCards { //abstract
     return 0;
+}
+
+- (NSUInteger)pointsForCard:(Card *)card { //abstract
+    return 0;
+}
+
+- (NSString *)labelForCard:(Card *)card { //abstract
+    return nil;
 }
 
 @end
