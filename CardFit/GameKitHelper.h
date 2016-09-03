@@ -13,6 +13,7 @@
 @protocol GameKitHelperDelegate
 
 - (void)matchStarted;
+//- (void)sessionStarted;
 - (void)matchEnded;
 - (void)matchCanceled;
 - (void)myMatch:(GKMatch *)match didRecieveData:(NSData *)data fromPlayer:(GKPlayer *)player;
@@ -22,6 +23,7 @@
 extern NSString *const PresentAuthenticationViewController;
 extern NSString *const LocalPlayerIsAuthenticated;
 extern NSString *const PresentGKMatchMakerViewController;
+extern NSString *const GKMatchMakerViewControllerDismissed;
 
 @interface GameKitHelper : NSObject <GKMatchmakerViewControllerDelegate, GKMatchDelegate, GKLocalPlayerListener, GKGameSessionEventListener>
 
@@ -32,6 +34,7 @@ extern NSString *const PresentGKMatchMakerViewController;
 
 @property (nonatomic, strong) GKMatch *match;
 @property (nonatomic, strong) GKGameSession *session;
+//@property (nonatomic, strong) NSURL *sharedSessionURL;
 @property (nonatomic, strong) GKTurnBasedMatch *turnMatch;
 @property (nonatomic, assign) id <GameKitHelperDelegate> delegate;
 

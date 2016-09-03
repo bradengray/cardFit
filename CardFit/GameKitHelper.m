@@ -18,25 +18,15 @@
 
 @implementation GameKitHelper
 
-#define DEFAULT_CONTAINER @"iCloud.com.graycode.cardfit"
-
 NSString *const PresentAuthenticationViewController = @"present_authentication_view_controller";
 NSString *const LocalPlayerIsAuthenticated = @"local_player_authencticated";
 NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_controller";
+NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view_controller";
 
 - (id)init {
     self = [super init];
     if (self) {
         self.enableGameCenter = YES;
-//        [GKGameSession createSessionInContainer:DEFAULT_CONTAINER
-//                                      withTitle:@"Game"
-//                            maxConnectedPlayers:2
-//                              completionHandler:^(GKGameSession * _Nullable session, NSError * _Nullable error) {
-//                                  if (error) {
-//                                      NSLog(@"Error:%@", error.localizedDescription);
-//                                  }
-//                                  NSLog(@"Session:%@", session.identifier);
-//                              }];
         [[GKLocalPlayer localPlayer] registerListener:self];
         [GKGameSession addEventListener:self];
     }
@@ -56,6 +46,11 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
     });
     return sharedGameKitHelper;
 }
+
+//- (void)setSession:(GKGameSession *)session {
+//    _session = session;
+//    [self.delegate sessionStarted];
+//}
 
 - (void)authenticateLocalPlayer {
     // 1
@@ -173,16 +168,6 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
 // A peer-to-peer match has been found, the game should start
 - (void)matchmakerViewController:(GKMatchmakerViewController *)viewController didFindMatch:(GKMatch *)match {
     [viewController dismissViewControllerAnimated:YES completion:nil];
-    [GKGameSession createSessionInContainer:DEFAULT_CONTAINER
-                                  withTitle:@"Game"
-                        maxConnectedPlayers:2
-                          completionHandler:^(GKGameSession * _Nullable session, NSError * _Nullable error) {
-                              if (error) {
-                                  NSLog(@"Error: %@", error.localizedDescription);
-                              }
-                              NSLog(@"Session:%@", session.identifier);
-                              self.session = session;
-                          }];
     _match = match;
     _match.delegate = self;
     if (!self.matchStarted && match.expectedPlayerCount == 0) {
@@ -201,7 +186,7 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
 
 #pragma mark - GKMatchDelegate
 
-// The match received date sent from player.
+ //The match received date sent from player.
 - (void)match:(GKMatch *)match didReceiveData:(NSData *)data fromRemotePlayer:(GKPlayer *)player {
     if (_match != match) {
         return;
@@ -267,7 +252,7 @@ NSString *const PresentGKMatchMakerViewController = @"present_match_maker_view_c
 #pragma mark = GKGameSessionEventListener
 
 - (void)session:(GKGameSession *)session didReceiveData:(NSData *)data fromPlayer:(GKCloudPlayer *)player {
-#warning send some data
+    NSLog(@"Session did recieve data");
 }
 
 - (void)session:(GKGameSession *)session player:(GKCloudPlayer *)player didChangeConnectionState:(GKConnectionState)newState {

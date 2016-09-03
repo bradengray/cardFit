@@ -11,6 +11,8 @@
 #define PLAYER_ID_KEY @"PlayerID"
 #define RANDOM_NUMBER_KEY @"randomNumber"
 
+#define DEFAULT_CONTAINER @"iCloud.com.graycode.cardfit"
+
 typedef NS_ENUM(NSUInteger, GameState) {
     kGameStateWaitingForMatch = 0,
     kGameStateWaitingForRandomNumber,
@@ -23,6 +25,7 @@ typedef NS_ENUM(NSUInteger, MessageType) {
     kMessageTypeRandomNumber = 0,
     kMessageTypeGameReady,
     kMessageTypeGameStart,
+    kMessageTypeSessionID,
     kMessageTypeDrawCard,
     kMessageProgressChanged,
     kMessageTypeCard,
@@ -48,6 +51,11 @@ typedef struct {
 
 typedef struct {
     Message message;
+    const char *identifier;
+} MessageSessionIdentifier;
+
+typedef struct {
+    Message message;
 } MessageDrawCard;
 
 typedef struct {
@@ -59,6 +67,12 @@ typedef struct {
     Message message;
     BOOL player1Won;
 } MessageGameOver;
+
+@interface MultiplayerNetworking ()
+
+@property (nonatomic) BOOL session;
+
+@end
 
 @implementation MultiplayerNetworking {
     uint32_t _ourRandomNumber;
@@ -82,6 +96,14 @@ typedef struct {
     if (_isPlayer1 && _gameState == kGameStateWaitingForStart) {
         _gameState = kGameStateActive;
         NSLog(@"We are ready to play the game");
+        [[NSNotificationCenter defaultCenter] postNotificationName:GKMatchMakerViewControllerDismissed object:nil];
+    }
+}
+
+- (void)setDelegate:(id<MultiplayerNetworkingProtocol>)delegate {
+    _delegate = delegate;
+    if (_isPlayer1) {
+        [_delegate isPlayerOne];
         [self sendGameReady];
     }
 }
@@ -89,14 +111,33 @@ typedef struct {
 #pragma mark - SendData
 
 - (void)sendData:(NSData *)data {
+    [self sendData:data toPlayer:nil];
+}
+
+- (void)sendData:(NSData *)data toPlayer:(NSString *)player {
     NSError *error;
     GameKitHelper *gameKitHelper = [GameKitHelper sharedGameKitHelper];
-    
-    BOOL success = [gameKitHelper.match sendDataToAllPlayers:data withDataMode:GKMatchSendDataReliable error:&error];
-    
-    if (!success) {
-        NSLog(@"Error sending data:%@", error.localizedDescription);
-        [self matchEnded];
+    if (self.session) {
+        if (!player) {
+            [gameKitHelper.session sendData:data withTransportType:GKTransportTypeReliable completionHandler:^(NSError * _Nullable error) {
+                if (error) {
+                    NSLog(@"Error:%@", error.localizedDescription);
+//                    [self sendData:data toPlayer:player];
+                }
+            }];
+        }
+    } else {
+        BOOL success;
+
+        if (!player) {
+            success = [gameKitHelper.match sendDataToAllPlayers:data withDataMode:GKMatchSendDataReliable error:&error];
+        } else {
+            [gameKitHelper.match sendData:data toPlayers:@[player] dataMode:GKMatchSendDataReliable error:&error];
+        }
+        if (!success) {
+            NSLog(@"Error sending data:%@", error.localizedDescription);
+            [self matchEnded];
+        }
     }
 }
 
@@ -113,6 +154,14 @@ typedef struct {
     MessageGameReady message;
     message.message.messageType = kMessageTypeGameReady;
     NSData *data = [NSData dataWithBytes:&message length:sizeof(MessageGameReady)];
+    [self sendData:data];
+}
+
+- (void)sendSessionID:(NSString *)identifer {
+    MessageSessionIdentifier message;
+    message.message.messageType = kMessageTypeSessionID;
+    message.identifier = [identifer UTF8String];
+    NSData *data = [NSData dataWithBytes:&message length:sizeof(MessageSessionIdentifier)];
     [self sendData:data];
 }
 
@@ -145,9 +194,22 @@ typedef struct {
     [self sendData:data];
 }
 
-- (void)sendGameInfo:(id)gameInfo {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:gameInfo];
+- (void)sendSessionIdentifier:(NSString *)identifier {
+    NSData *data = [identifier dataUsingEncoding:NSUTF8StringEncoding];
     [self sendData:data];
+}
+
+- (void)sendGameInfo:(id)gameInfo toPlayer:(NSString *)playerid {
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:gameInfo];
+    if (!playerid) {
+        [self sendData:data];
+    } else {
+        [self sendData:data];
+    }
+}
+
+- (void)sendGameInfo:(id)gameInfo {
+    [self sendGameInfo:gameInfo toPlayer:nil];
 }
 
 #pragma mark - Receive Data
@@ -186,14 +248,51 @@ typedef struct {
     return NO;
 }
 
-- (BOOL)isLocalPlayerPlayer1 {
+- (void)isLocalPlayerPlayer1 {
     NSDictionary *dictionary = _orderOfPlayers[0];
     if ([dictionary[PLAYER_ID_KEY] isEqualToString:[GKLocalPlayer localPlayer].playerID]) {
+        [GKGameSession createSessionInContainer:DEFAULT_CONTAINER
+                                      withTitle:@"Game"
+                            maxConnectedPlayers:2
+                              completionHandler:^(GKGameSession * _Nullable session, NSError * _Nullable error) {
+                                  if (error) {
+                                      NSLog(@"Error: %@", error.localizedDescription);
+                                  }
+                                  NSLog(@"Session:%@", session.identifier);
+                                  [GameKitHelper sharedGameKitHelper].session = session;
+                                  [self loadSessionForIdentifier:session.identifier];
+                                  NSLog(@"Sending session");
+                                  [self sendSessionID:session.identifier];
+                              }];
         NSLog(@"I'm player 1");
+        _isPlayer1 = YES;
         [self.delegate isPlayerOne];
-        return YES;
+//        return YES;
     }
-    return NO;
+//    return NO;
+}
+
+- (void)loadSessionForIdentifier:(NSString *)identifier {
+    [GKGameSession loadSessionWithIdentifier:identifier completionHandler:^(GKGameSession * _Nullable session, NSError * _Nullable error) {
+        NSLog(@"We have a session:%@", session);
+        __block GKGameSession *mySession = session;
+        [session setConnectionState:GKConnectionStateConnected completionHandler:^(NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"Error connecting:%@", error.localizedDescription);
+            } else {
+                NSLog(@"I is now connected");
+                NSArray *array = [mySession playersWithConnectionState:GKConnectionStateConnected];
+                if (array) {
+                    NSLog(@"yeah we did");
+                    for (GKCloudPlayer *player in array) {
+                        NSLog(@"Player:%@", player.playerID);
+                    }
+                }
+            }
+            self.session = YES;
+        }];
+        [GameKitHelper sharedGameKitHelper].session = session;
+    }];
 }
 
 #pragma mark GameKitHelperDelegate
@@ -208,6 +307,11 @@ typedef struct {
     [self sendRandomNumber];
     [self tryStartGame];
 }
+
+//- (void)sessionStarted {
+//    NSLog(@"Session has started successfully");
+//    [self sendSessionID:[GameKitHelper sharedGameKitHelper].session.identifier];
+//}
 
 - (void)matchEnded {
     NSLog(@"Match has ended");
@@ -241,7 +345,7 @@ typedef struct {
         
         //4
         if (_receivedAllRandomNumbers) {
-            _isPlayer1 = [self isLocalPlayerPlayer1];
+            [self isLocalPlayerPlayer1];
         }
         
         if (!tie && _receivedAllRandomNumbers) {
@@ -254,6 +358,7 @@ typedef struct {
     } else if (message->messageType == kMessageTypeGameReady) {
         NSLog(@"Game ready message recieved");
         _gameState = kGameStateActive;
+        [[NSNotificationCenter defaultCenter] postNotificationName:GKMatchMakerViewControllerDismissed object:nil];
         [self.delegate matchReady];
     } else if (message->messageType == kMessageTypeGameStart) {
         [self.delegate gameStarted];
@@ -267,6 +372,11 @@ typedef struct {
     } else if (message->messageType == kMessageTypeGameOver) {
         NSLog(@"Game over message received");
         [self.delegate matchEnded];
+    } else if (message->messageType == kMessageTypeSessionID) {
+        NSLog(@"Session ID message recieved");
+        MessageSessionIdentifier *sessionID = (MessageSessionIdentifier *)[data bytes];
+        NSString *ID = [NSString stringWithUTF8String:sessionID->identifier];
+        [self loadSessionForIdentifier:ID];
     } else {
         id object = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         [self.delegate gameInfo:object];

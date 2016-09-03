@@ -458,7 +458,7 @@
     self.game.paused = YES;
     self.taskLabel.backgroundColor = [UIColor clearColor];
     self.fireWorksView.backgroundColor = [UIColor darkGrayColor];
-    [self.fireWorksView startEmittingFireworks:NO];
+    [self.fireWorksView startEmittingFireworks:YES];
 }
 
 #pragma mark - PauseButton

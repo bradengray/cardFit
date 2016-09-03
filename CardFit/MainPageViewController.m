@@ -78,7 +78,7 @@
     //Set delegates and hide picker view nad next button
     self.pickerView.delegate = self;
     self.pickerView.hidden = YES;
-    self.pickerView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.7];
+    self.pickerView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.80];
     self.nextButton.hidden = YES;
     [self iCloudAlert];
 //    [self tomtom];
@@ -97,12 +97,26 @@
     UIImage *image = [UIImage imageNamed:@"BackGround"];
 //    [self imageWithImage:image scaledToSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height)];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + self.navigationController.navigationBar.frame.size.height, imageView.frame.size.width, imageView.frame.size.height);
+    imageView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + self.navigationController.navigationBar.frame.size.height + 15, imageView.frame.size.width, imageView.frame.size.height);
     [self.view addSubview:imageView];
     [self.view sendSubviewToBack:imageView];
+//    CAGradientLayer *gradient = [CAGradientLayer layer];
+//    gradient.frame = self.view.bounds;
+//    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:0.75 green:0.80 blue:0.86 alpha:0.7] CGColor], (id)[[UIColor colorWithRed:0.02 green:0.44 blue:0.75 alpha:0.80] CGColor], nil];
+//    [self.view.layer insertSublayer:gradient atIndex:0];
     //Add radio stations for player authentication and match maker view controller
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerAuthenticated) name:LocalPlayerIsAuthenticated object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentMatchMakerViewController) name:PresentGKMatchMakerViewController object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerAuthenticated)
+                                                 name:LocalPlayerIsAuthenticated
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presentMatchMakerViewController)
+                                                 name:PresentGKMatchMakerViewController
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(segueToGame)
+                                                 name:GKMatchMakerViewControllerDismissed
+                                               object:nil];
     //Check if player is authenticated to enable multiplayer selection
     if (!self.multiplayerReady) {
         self.withFriendsButton.enabled = NO;
@@ -125,6 +139,12 @@
 
 - (void)presentMatchMakerViewController { //Called when MatchMakerViewController is wanted
     self.multiPlayer = YES;
+    self.networkingEngine = [[MultiplayerNetworking alloc] init];
+    [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
+//    [self performSegueWithIdentifier:@"Play Game" sender:self.nextButton];
+}
+
+- (void)segueToGame { //Called when ready to segue to game
     [self performSegueWithIdentifier:@"Play Game" sender:self.nextButton];
 }
 
@@ -175,15 +195,13 @@
         [self setMenuBarButton];
         self.pickerView.hidden = YES;
         self.nextButton.hidden = YES;
-        self.flyingSoloButton.hidden = NO;
-        self.withFriendsButton.hidden = NO;
         NSArray *objects = @[self.flyingSoloButton, self.withFriendsButton];
         [self animateObjects:objects];
     }];
 }
 
 - (void)setUpButton:(UIButton *)button withTitle:(NSString *)title { //Set up button with title
-    [button setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.7]];
+    [button setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.8]];
     [button setAttributedTitle:[self buttonAttributedTitleWithString:title] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
@@ -222,15 +240,17 @@
             [self setCancelBarButton];
             self.flyingSoloButton.hidden = YES;
             self.withFriendsButton.hidden = YES;
-            self.pickerView.hidden = NO;
-            self.nextButton.hidden = NO;
             NSArray *objects = @[self.pickerView, self.nextButton];
             [self animateObjects:objects];
         }];
         //Set whether game type was chosen or not.
         self.selected = !self.selected;
     } else { //If game type selected the Next button must have been selected. Play game.
-        [self performSegueWithIdentifier:@"Play Game" sender:button];
+        if (self.multiPlayer) {
+            [self presentMatchMakerViewController];
+        } else {
+            [self performSegueWithIdentifier:@"Play Game" sender:button];
+        }
     }
 }
 
@@ -251,7 +271,7 @@
 - (NSDictionary *)getAttributesDictionaryForFontBold:(BOOL)bold Centered:(BOOL)centered {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = centered ? NSTextAlignmentCenter : NSTextAlignmentLeft;
-    return @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : [self getScaledFontBold:bold], NSParagraphStyleAttributeName : paragraphStyle};
+    return @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-1, NSFontAttributeName : [self getScaledFontBold:bold], NSParagraphStyleAttributeName : paragraphStyle};
 }
 
 - (NSAttributedString *)buttonAttributedTitleWithString:(NSString *)string { //Returns attributed string for button titles
@@ -287,11 +307,13 @@
         if ([object isKindOfClass:[UIButton class]]) {
             UIButton *button = (UIButton *)object;
             [UIView animateWithDuration:ANIMATION_DURATION delay:counter usingSpringWithDamping:SPRING_DAMPING initialSpringVelocity:SPRING_VELOCITY options:UIViewAnimationOptionTransitionNone animations:^{
+                button.hidden = NO;
                 button.transform = CGAffineTransformMakeScale(1.0, 1.0);
             } completion:nil];
         } else if ([object isKindOfClass:[UIPickerView class]]) {
             UIPickerView *picker = (UIPickerView *)object;
             [UIView animateWithDuration:ANIMATION_DURATION delay:counter usingSpringWithDamping:SPRING_DAMPING initialSpringVelocity:SPRING_VELOCITY options:UIViewAnimationOptionTransitionNone animations:^{
+                picker.hidden = NO;
                 picker.transform = CGAffineTransformMakeScale(1.0, 1.0);
             } completion:nil];
         }
@@ -355,15 +377,15 @@
         if ((UIButton *)sender == self.nextButton) { //Check sender
             if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) { //Check destination
                 CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
-                //Check to see what gameType
-                if (self.multiPlayer) {
-                    self.networkingEngine = [[MultiplayerNetworking alloc] init];
-                    self.networkingEngine.delegate = cfvc;
-                    cfvc.networkingEngine = self.networkingEngine;
-                    [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
-                }
                 cfvc.title = @"CardFit Game";
                 cfvc.multiplayer = self.multiPlayer;
+                //Check to see what gameType
+                if (self.multiPlayer) {
+//                    self.networkingEngine = [[MultiplayerNetworking alloc] init];
+                    self.networkingEngine.delegate = cfvc;
+                    cfvc.networkingEngine = self.networkingEngine;
+//                    [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
+                }
             }
         }
     }
