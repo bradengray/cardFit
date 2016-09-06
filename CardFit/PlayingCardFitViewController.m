@@ -19,15 +19,6 @@
 
 @implementation PlayingCardFitViewController
 
-- (void)viewDidLoad { //Set all required values for our layout view
-    [super viewDidLoad];
-    self.cardAspectRatio = 0.620;
-    self.maxCardWidth = 414;
-    self.maxCardHeight = 668;
-    self.minCardWidth = 10;
-    self.minCardHeight = 10;
-}
-
 //When view disappears it sets the shared playing card object back to save so that values are stored in NSUserDefaults
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];

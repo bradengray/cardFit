@@ -11,7 +11,6 @@
 @interface CardFitLayoutView ()
 
 @property (nonatomic) BOOL resolved; //Bool value for whether card did fit in container view
-@property (nonatomic) BOOL unresolvable; //Bool value for whether card can fit in container view
 @property (nonatomic, readwrite) CGSize subViewSize; //Writes to the size of the card
 
 @end
@@ -20,88 +19,27 @@
 
 #pragma mark - Validation
 
-#define SUBVIEW_HEIGHT_SCALE_PERCENTAGE .120
-#define MINIMUM_VOFFSET 40
-
-- (CGFloat)subViewScaledHeight {
-    return ((self.size.height * (1 - SUBVIEW_HEIGHT_SCALE_PERCENTAGE)) - MINIMUM_VOFFSET);
-}
+#define MINIMUM_VOFFSET 15
+#define MAX_HEIGHT 736.0
 
 - (void)validate { //Validates whether card will fit in container view
     
     if (self.resolved) return;    // already valid, nothing to do
-    if (self.unresolvable) return;  // already tried to validate and couldn't
     
-    double overallWidth = ABS(self.size.width);
-    double overallHeight = ABS(self.size.height);
-    double aspectRatio = ABS(self.aspectRatio);
+    double overallHeight = ABS([self frameSizeForCard].height);
+    double overallWidth = ABS([self frameSizeForCard].width);
+    double aspectRatio = ABS(0.5625);
     
-    if (!aspectRatio || !overallWidth || !overallHeight) {
-        self.unresolvable = YES;
-        return; // invalid inputs
+    if (overallHeight > MAX_HEIGHT) {
+        overallHeight = MAX_HEIGHT;
     }
-    
-    //Get max and min values
-    double maxWidth = self.maxSubViewWidth;
-    double maxHeight = self.maxSubViewHeight;
-    double minWidth = self.minSubViewWidth;
-    double minHeight = self.minSubViewHeight;
-    
-    if (minWidth < 0) {
-        minWidth = 0;
-    }
-    if (minHeight < 0) {
-        minHeight = 0;
-    }
-    
-    //Calculate the size of the subview based on height and width
-    double subViewHeight = overallHeight;
-    if (subViewHeight > maxHeight) {
-        subViewHeight = maxHeight;
-    }
-    if (subViewHeight > [self subViewScaledHeight]) {
-        subViewHeight = [self subViewScaledHeight];
-    }
-    if (subViewHeight <= minHeight) {
-        self.unresolvable = YES;
-    } else {
-        double subViewWidth = subViewHeight * aspectRatio;
-        if (subViewWidth > overallWidth) {
-            subViewWidth = overallWidth;
-            subViewHeight = subViewWidth / aspectRatio;
-        }
-        if (subViewWidth > maxWidth) {
-            subViewWidth = maxWidth;
-        }
-        if (subViewWidth <= minWidth) {
-            self.unresolvable = YES;
-        } else {
-            self.subViewSize = CGSizeMake(subViewWidth, subViewHeight);
-            self.resolved = YES;
-        }
-    }
+    overallWidth = overallHeight * aspectRatio;
+    self.subViewSize = CGSizeMake(overallHeight * aspectRatio, overallHeight);
+
+    self.resolved = YES;
 }
 
-#pragma mark - Frame Calculations
-
-- (CGSize)adjustedCardSize { //Adjusts card size based on orientation size
-    if ([self defaultTotalHeightCardAndButton] > [self frameSize].height - MINIMUM_VOFFSET) {
-        CGFloat sizeAdjustment = [self defaultTotalHeightCardAndButton] - ([self frameSize].height - MINIMUM_VOFFSET);
-        return CGSizeMake([self defaultCardSize].width - sizeAdjustment, [self defaultCardSize].height - sizeAdjustment);
-    } else {
-        return CGSizeMake([self defaultCardSize].width, [self defaultCardSize].height);
-    }
-}
-
-- (CGFloat)defaultTotalHeightCardAndButton { //Returns total default height for card and button
-    return [self defaultCardSize].height * (1 + SUBVIEW_HEIGHT_SCALE_PERCENTAGE);
-}
-
-- (CGFloat)adjustedTotalHeightCardAndButton { //Returns adjusted height for card and button
-    return [self adjustedCardSize].height * (1 + SUBVIEW_HEIGHT_SCALE_PERCENTAGE);
-}
-
--(CGSize)frameSize { //Returns frame size for orientation
+- (CGSize)frameSizeForCard {
     if (self.rotated) {
         return CGSizeMake(self.size.height, self.size.width);
     } else {
@@ -109,7 +47,9 @@
     }
 }
 
-- (CGSize)defaultCardSize { //Returns default card size for orientation
+#pragma mark - Frame Calculations
+
+- (CGSize)cardSize { //Returns default card size for orientation
     if (self.rotated) {
         return CGSizeMake(self.subViewSize.height, self.subViewSize.width);
     } else {
@@ -118,15 +58,19 @@
 }
 
 - (CGFloat)voffset { //Calculates vertical offset for frames
-    CGFloat offset = ([self frameSize].height - [self adjustedTotalHeightCardAndButton]) / 2.0;
-    if (offset < MINIMUM_VOFFSET) {
-        offset = MINIMUM_VOFFSET;
+    if ([self frameSizeForCard].height > [self cardSize].height) {
+        return ([self frameSizeForCard].height - [self cardSize].height) / 2.0;
+    } else {
+        return MINIMUM_VOFFSET;
     }
-    return offset;
 }
 
 - (CGFloat)hoffset { //Calculates horizontal offset for frames
-    return ([self frameSize].width - [self adjustedCardSize].width) / 2.0;
+    if ([self frameSizeForCard].width > [self cardSize].width) {
+        return ([self frameSizeForCard].width - [self cardSize].width) / 2.0;
+    } else {
+        return 0;
+    }
 }
 
 - (CGAffineTransform)rotate { //Rotates context 90 degrees back to portrait
@@ -141,54 +85,18 @@
 
 - (CGRect)frameForCardView:(UIView *)cardView { //Returns frame of card view
     cardView.transform = [self rotate];
-    CGRect frame = CGRectMake([self hoffset], [self voffset], [self adjustedCardSize].width, [self adjustedCardSize].height);
+    CGRect frame = CGRectMake([self hoffset], [self voffset], [self cardSize].width, [self cardSize].height - MINIMUM_VOFFSET * 2);
     if (self.rotated) {
         cardView.transform = [self rotateLeft];
     }
     return frame;
 }
 
-- (CGRect)frameForMainButton:(UIButton *)button { //Returns frame of start button
-    button.transform = [self rotate];
-    CGRect frame = CGRectMake([self hoffset], [self voffset] + [self adjustedCardSize].height, [self adjustedCardSize].width, [self adjustedCardSize].height * SUBVIEW_HEIGHT_SCALE_PERCENTAGE);
-    return frame;
-}
-
-- (CGRect)frameForTasklabel:(UILabel *)label { //Returns frame of task label
-    CGRect frame = CGRectMake([self hoffset], ([self voffset] + [self adjustedCardSize].height / 2.0) - label.attributedText.size.height / 2.0, [self adjustedCardSize].width, label.frame.size.height);
-    return frame;
-}
-
-- (CGRect)frameForTimerLabel:(UILabel *)label { //Returns frame of timer label
-    CGRect frame = CGRectMake([self hoffset] + [self adjustedCardSize].width / 2.0 - label.attributedText.size.width / 2.0, [self voffset] + [self adjustedCardSize].height - label.attributedText.size.height, label.attributedText.size.width, label.attributedText.size.height);
-    return frame;
-}
-
 #pragma mark Properties
-
-- (void)setResolved:(BOOL)resolved { //Sets resolved
-    self.unresolvable = NO;
-    _resolved = resolved;
-}
 
 - (void)setSize:(CGSize)size { //Sets size of container view
     if (!CGSizeEqualToSize(size, _size)) self.resolved = NO;
     _size = size;
-}
-
-- (void)setAspectRatio:(CGFloat)aspectRatio { //Sets aspect ration of sub view
-    if (ABS(aspectRatio) != ABS(_aspectRatio)) self.resolved = NO;
-    _aspectRatio = aspectRatio;
-}
-
-- (void)setMaxSubViewWidth:(CGFloat)maxSubViewWidth { //Sets max subview width
-    if (maxSubViewWidth != _maxSubViewWidth) self.resolved = NO;
-    _maxSubViewWidth = maxSubViewWidth;
-}
-
-- (void)setMaxSubViewHeight:(CGFloat)maxSubViewHeight { //Sets max subview height
-    if (maxSubViewHeight != _maxSubViewHeight) self.resolved = NO;
-    _maxSubViewHeight = maxSubViewHeight;
 }
 
 - (CGSize)subViewSize { //Returns subview height and call validate

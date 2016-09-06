@@ -258,6 +258,9 @@ typedef struct {
                                   if (error) {
                                       NSLog(@"Error: %@", error.localizedDescription);
                                   }
+                                  [session getShareURLWithCompletionHandler:^(NSURL * _Nullable url, NSError * _Nullable error) {
+                                      NSLog(@"%@", url);
+                                  }];
                                   NSLog(@"Session:%@", session.identifier);
                                   [GameKitHelper sharedGameKitHelper].session = session;
                                   [self loadSessionForIdentifier:session.identifier];

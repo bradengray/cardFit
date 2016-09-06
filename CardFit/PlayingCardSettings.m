@@ -72,17 +72,6 @@
 
 @implementation PlayingCardSettings
 
-//Creates a shared instance of PlayingCardSettings
-//+ (instancetype)sharedPlayingCardSettings {
-//    static PlayingCardSettings *sharedPlayingCardSettings;
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
-//        sharedPlayingCardSettings = [[PlayingCardSettings alloc] init];
-//        sharedPlayingCardSettings.save = YES;
-//    });
-//    return sharedPlayingCardSettings;
-//}
-
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -109,10 +98,8 @@
     [aCoder encodeInteger:self.jokersPoints forKey:JOKERS_POINTS_KEY];
 }
 
-//Used by NSCoder to decode this object using NSKeyedUnarchiver. It is important to note here that this object is decoded as the shared playing card settings and will not create a new object.
+//Used by NSCoder to decode this object using NSKeyedUnarchiver.
 - (id)initWithCoder:(NSCoder *)aDecoder {
-    
-//    PlayingCardSettings *self = [PlayingCardSettings sharedPlayingCardSettings];
     
     self.save = [aDecoder decodeBoolForKey:@"Save"];
     self.spadesExerciseString = [aDecoder decodeObjectForKey:SPADES_EXCERCISE_KEY];
@@ -265,7 +252,7 @@
 
 - (NSString *)spadesExerciseString { //Returns exercise for spades or a default value.
     if (self.save) {
-        return [self valueForKey:SPADES_EXCERCISE_KEY withDefaultString:@"Push-Ups"];
+        return [self valueForKey:SPADES_EXCERCISE_KEY withDefaultString:@"PUSH-UPS"];
     } else {
         return _spadesExerciseString ? _spadesExerciseString : @"?";
     }
@@ -273,7 +260,7 @@
 
 - (NSString *)clubsExerciseString { //Returns exercise for clubs or a default value.
     if (self.save) {
-        return [self valueForKey:CLUBS_EXCERCISE_KEY withDefaultString:@"Sit-Ups"];
+        return [self valueForKey:CLUBS_EXCERCISE_KEY withDefaultString:@"SIT-UPS"];
     } else {
         return _clubsExerciseString ? _clubsExerciseString : @"?";
     }
@@ -281,7 +268,7 @@
 
 - (NSString *)heartsExerciseString { //Returns exercise for hearts or a default value.
     if (self.save) {
-        return [self valueForKey:HEARTS_EXCERCISE_KEY withDefaultString:@"Lunges"];
+        return [self valueForKey:HEARTS_EXCERCISE_KEY withDefaultString:@"LUNGES"];
     } else {
         return _heartsExerciseString ? _heartsExerciseString : @"?";
     }
@@ -289,7 +276,7 @@
 
 - (NSString *)diamondsExerciseString { //Returns exercise for diamonds or a default value.
     if (self.save) {
-        return [self valueForKey:DIAMONDS_EXCERCISE_KEY withDefaultString:@"Squats"];
+        return [self valueForKey:DIAMONDS_EXCERCISE_KEY withDefaultString:@"SQUATS"];
     } else {
         return _diamondsExerciseString ? _diamondsExerciseString : @"?";
     }
@@ -297,7 +284,7 @@
 
 - (NSString *)acesExerciseString { //Returns exercise for aces or a default value.
     if (self.save) {
-        return [self valueForKey:ACES_EXERCISE_KEY withDefaultString:@"25 Jump Rope"];
+        return [self valueForKey:ACES_EXERCISE_KEY withDefaultString:@"25 JUMP ROPE"];
     } else {
         return _acesExerciseString ? _acesExerciseString : @"?";
     }
@@ -305,7 +292,7 @@
 
 - (NSString *)jokersExerciseString { //Returns exercise for jokers or a default value.
     if (self.save) {
-        return [self valueForKey:JOKERS_EXERCISE_KEY withDefaultString:@"20 Burpees"];
+        return [self valueForKey:JOKERS_EXERCISE_KEY withDefaultString:@"20 BURPEES"];
     } else {
         return _jokersExerciseString ? _jokersExerciseString : @"?";
     }

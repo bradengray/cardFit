@@ -14,13 +14,8 @@
 
 //required
 @property (nonatomic) CGSize size; //Sets the size of the container view
-@property (nonatomic) CGFloat aspectRatio; //Sets the aspect ratio of the card
 
 //optional
-@property (nonatomic) CGFloat maxSubViewWidth; //Sets the maximum width for the subview
-@property (nonatomic) CGFloat maxSubViewHeight; //Sets the maximum height for the subview
-@property (nonatomic) CGFloat minSubViewWidth; //Sets the minimum width for the subview
-@property (nonatomic) CGFloat minSubViewHeight; //Sets the minumum height for the subview
 @property (nonatomic) BOOL rotated; //Tells if superview has changed orientation
 
 //outputs
@@ -28,8 +23,5 @@
 
 //origin of Frame should be called after each change of orientation of superview
 - (CGRect)frameForCardView:(UIView *)cardView; //Returns a rect for the card
-- (CGRect)frameForMainButton:(UIButton *)button; //Returns a rect for the start button
-- (CGRect)frameForTasklabel:(UILabel *)label; //Returns a rect for the task label
-- (CGRect)frameForTimerLabel:(UILabel *)label; //Returns a rect for the timer label
 
 @end

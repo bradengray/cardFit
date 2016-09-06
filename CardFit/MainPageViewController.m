@@ -97,9 +97,12 @@
     UIImage *image = [UIImage imageNamed:@"BackGround"];
 //    [self imageWithImage:image scaledToSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height)];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + self.navigationController.navigationBar.frame.size.height + 15, imageView.frame.size.width, imageView.frame.size.height);
+    imageView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + 25, imageView.frame.size.width, imageView.frame.size.height);
     [self.view addSubview:imageView];
     [self.view sendSubviewToBack:imageView];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
 //    CAGradientLayer *gradient = [CAGradientLayer layer];
 //    gradient.frame = self.view.bounds;
 //    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:0.75 green:0.80 blue:0.86 alpha:0.7] CGColor], (id)[[UIColor colorWithRed:0.02 green:0.44 blue:0.75 alpha:0.80] CGColor], nil];
@@ -346,7 +349,7 @@
         string = self.settings.multiplayerNumberOfCardsOptionStrings[row];
     }
     
-    return [[NSAttributedString alloc] initWithString:string attributes:[self getAttributesDictionaryForFontBold:NO Centered:YES]];
+    return [[NSAttributedString alloc] initWithString:string attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]];
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component { //Called when row selected
@@ -377,7 +380,7 @@
         if ((UIButton *)sender == self.nextButton) { //Check sender
             if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) { //Check destination
                 CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
-                cfvc.title = @"CardFit Game";
+//                cfvc.title = @"CardFit Game";
                 cfvc.multiplayer = self.multiPlayer;
                 //Check to see what gameType
                 if (self.multiPlayer) {

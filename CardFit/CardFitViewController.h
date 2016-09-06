@@ -15,13 +15,13 @@
 @interface CardFitViewController : UIViewController <MultiplayerNetworkingProtocol>
 @property (strong, nonatomic) IBOutlet FireWorksView *fireWorksView;
 
-//Required Set in subclass viewDidLoad
-@property (nonatomic) CGFloat cardAspectRatio; //Sets aspect ration for Card
-@property (nonatomic) NSUInteger maxCardHeight; //Sets max card height
-@property (nonatomic) NSUInteger maxCardWidth; //Sets max card width
-//Optional Set in subclass viewDidLoad
-@property (nonatomic) NSUInteger minCardHeight; //Sets min card height
-@property (nonatomic) NSUInteger minCardWidth; //Sets min card Width
+////Required Set in subclass viewDidLoad
+//@property (nonatomic) CGFloat cardAspectRatio; //Sets aspect ration for Card
+//@property (nonatomic) NSUInteger maxCardHeight; //Sets max card height
+//@property (nonatomic) NSUInteger maxCardWidth; //Sets max card width
+////Optional Set in subclass viewDidLoad
+//@property (nonatomic) NSUInteger minCardHeight; //Sets min card height
+//@property (nonatomic) NSUInteger minCardWidth; //Sets min card Width
 
 //Required for multiplayer
 @property (nonatomic, strong) MultiplayerNetworking *networkingEngine; //Networking engine for multiplayer

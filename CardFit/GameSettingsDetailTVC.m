@@ -109,6 +109,7 @@
         CGRect frame = CGRectMake (cell.textLabel.attributedText.size.width + TRAILING_SPACE, VOFFSET, CELL_WIDTH - (cell.textLabel.attributedText.size.width + TRAILING_SPACE), CELL_HEIGHT);
         textField = [[UITextField alloc] initWithFrame:frame];
         [cell.contentView addSubview:textField];
+        textField.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -174,6 +175,17 @@
     } else { //If not save new settings entry
         [self saveUserInputForTextField:textField];
     }
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSRange lowercaseCharRange = [string rangeOfCharacterFromSet:[NSCharacterSet lowercaseLetterCharacterSet]];
+    
+    if (lowercaseCharRange.location != NSNotFound) {
+        textField.text = [textField.text stringByReplacingCharactersInRange:range
+                                                                 withString:[string uppercaseString]];
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark - Alerts 

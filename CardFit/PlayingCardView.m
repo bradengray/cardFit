@@ -55,16 +55,16 @@
 
 - (void)drawRect:(CGRect)rect { //Draws Card
     //Draws boundary of card card with BezierPath
-    UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:[self cornerRadius]];
-    
-    [roundedRect addClip];
-    
-    [[UIColor whiteColor] setFill];
-    [roundedRect fill];
-    
-    [[UIColor blackColor] setStroke];
-    roundedRect.lineWidth = 2.0;
-    [roundedRect stroke];
+//    UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:[self cornerRadius]];
+//    
+//    [roundedRect addClip];
+//    
+//    [[UIColor whiteColor] setFill];
+//    [roundedRect fill];
+//    
+//    [[UIColor blackColor] setStroke];
+//    roundedRect.lineWidth = 2.0;
+//    [roundedRect stroke];
     
     //Draws the contents of the card
     if (self.faceUp) {
@@ -87,7 +87,9 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
     //Create font
-    UIFont *cornerFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+//    UIFont *cornerFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    UIFont *cornerFont = [[UIFont alloc] init];
+    cornerFont = [UIFont fontWithName:@"Helvetica" size:18];
     cornerFont = [cornerFont fontWithSize:cornerFont.pointSize * [self cornerScaleFactor]];
     //Set attributed text with attributes
     NSAttributedString *cornterText = [[NSAttributedString alloc] initWithString:[self cornerTextString] attributes:@{NSFontAttributeName : cornerFont, NSParagraphStyleAttributeName : paragraphStyle, NSForegroundColorAttributeName : [self fontColor]}];
