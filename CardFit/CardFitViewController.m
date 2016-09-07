@@ -18,13 +18,12 @@
 @property (nonatomic, strong) CardFitLayoutView *cardFitLayoutView; //Instance of LayoutView
 
 @property (nonatomic, strong) Card *currentCard; //Keeps track of the current shown card
-@property (nonatomic, strong) UIView *cardView; //Keeps track of the current shown card's view
+@property (nonatomic, strong) CardView *cardView; //Keeps track of the current shown card's view
 
 @property (nonatomic, strong) UIBarButtonItem *pauseButton; //Button that pauses game
-@property (weak, nonatomic) IBOutlet UILabel *centerLabel; //Label that displays countdown
+//@property (weak, nonatomic) IBOutlet UILabel *centerLabel; //Label that displays countdown
 @property (weak, nonatomic) IBOutlet UILabel *timerLabel;
 @property (weak, nonatomic) IBOutlet UIProgressView *progress; //Progress view that shows the progress of the game
-
 @property (nonatomic) BOOL rotated; //Tells if device orientiation is landscape or not
 @property (nonatomic) BOOL started; //Tells if game has started or not
 @property (nonatomic, strong) NSTimer *gameTimer; //Timer to determine when countDownLabel and timerLabel should update
@@ -65,6 +64,7 @@
          if (orientation == UIInterfaceOrientationLandscapeLeft || orientation ==UIInterfaceOrientationLandscapeRight) {
              //Set BOOL rotated equal YES
              self.cardFitLayoutView.rotated = YES;
+             [self.cardView setNeedsUpdateConstraints];
          } else { //If orientation is portrait
              //Set BOOL rotated equal NO
              self.cardFitLayoutView.rotated = NO;
@@ -179,7 +179,7 @@
         textString = @"TAP TO START";
     }
     //Set task label text with attributes
-    self.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:textString attributes:[self.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range]];
+    self.cardView.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:textString attributes:[self.cardView.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range]];
 }
 
 //Activate NSTimer to the GAME_TIMER_INTERVAL
@@ -196,9 +196,9 @@
 //Called when Count Down to game start is needed
 - (void)startCountDown {
     //Set CountDownLabels Background to clear
-    self.centerLabel.backgroundColor = [UIColor clearColor];
+    self.cardView.centerLabel.backgroundColor = [UIColor clearColor];
     //Set cound down label tag equal 3 to start count down
-    self.centerLabel.tag = 3;
+    self.cardView.centerLabel.tag = 3;
     //Count down
     [self countDown];
     //Start NStimer to call count down for COUNTDOWN_INTERVAL
@@ -208,9 +208,9 @@
 //Make count down label count down 3, 2, 1, Go....
 - (void)countDown {
     //Set local variable couner
-    int counter = (int)self.centerLabel.tag;
+    int counter = (int)self.cardView.centerLabel.tag;
     //If counter is between 0 and 4 then count down is active
-    if (self.centerLabel.tag <= 3 && self.centerLabel.tag > 0) {
+    if (self.cardView.centerLabel.tag <= 3 && self.cardView.centerLabel.tag > 0) {
         // animate countdown label
         [self animateCountDownLabel];
     } else { //Count down finished
@@ -230,19 +230,19 @@
     }
     //increase counter
     counter--;
-    self.centerLabel.tag = counter;
+    self.cardView.centerLabel.tag = counter;
 }
 
 //Animate count down label to change alpha from light do dark over time
 - (void)animateCountDownLabel {
     //Set count down label text
-    self.centerLabel.attributedText = [self countDownLabelAttributedText];
+    self.cardView.centerLabel.attributedText = [self countDownLabelAttributedText];
     //Make count down label transparent
-    self.centerLabel.alpha = .15;
+    self.cardView.centerLabel.alpha = .15;
     //Animate over time
     [UIView animateWithDuration:0.8 animations:^{
         //Set count down label to opaque
-        self.centerLabel.alpha = 1.0;
+        self.cardView.centerLabel.alpha = 1.0;
     }];
 }
 
@@ -251,7 +251,7 @@
     //returns NSAttributed text from labelString
     UIFont *countDownLabelFont = [[UIFont alloc] init];
     countDownLabelFont = [UIFont fontWithName:@"Helvetica-Bold" size:130];
-    return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", self.centerLabel.tag] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : countDownLabelFont}];
+    return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", self.cardView.centerLabel.tag] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : countDownLabelFont}];
 }
 
 //Animate card view changing from face down to face up
@@ -302,12 +302,17 @@
             [self.view sendSubviewToBack:self.cardView];
             //Set text string for task label for card view
             [self setTaskLabelTitleForCardView:self.cardView];
+//            [self.centerLabel addConstraint:[NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.cardView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0]];
             //Set frame for centerLabel
-            [self setFrameForCenterLabel];
+//            [self setFrameForCenterLabel];
+//            self.centerLabelWidth.constant = self.cardView.frame.size.width;
             //Set game points based on current card
             self.game.totalPoints = [self pointsForCard:self.currentCard];
         } else { //Device may have been rotated
-            self.cardView.frame = [self.cardFitLayoutView frameForCardView:self.cardView];
+            [self updateCardView:self.cardView withCard:self.currentCard];
+            [self setTaskLabelTitleForCardView:self.cardView];
+            [self.cardFitLayoutView frameForCardView:self.cardView];
+//            self.centerLabelWidth.constant = self.cardView.frame.size.width;
         }
     } else { //If there is no card
         //If you are player one
@@ -349,16 +354,16 @@
 }
 
 //Called when needing to remove old card view
-- (void)removeOldCardViewAndUpdateUI {
-    //Remove cardview from view
-    [self.cardView removeFromSuperview];
-    //Set card view to nil
-    self.cardView = nil;
-    //Set card to selected
-    self.currentCard.selected = YES;
-    //update UI
-    [self updateUI];
-}
+//- (void)removeOldCardViewAndUpdateUI {
+//    //Remove cardview from view
+//    [self.cardView removeFromSuperview];
+//    //Set card view to nil
+//    self.cardView = nil;
+//    //Set card to selected
+//    self.currentCard.selected = YES;
+//    //update UI
+//    [self updateUI];
+//}
 
 //Called when game is ended
 - (void)endGame {
@@ -367,18 +372,18 @@
     //Get range for task label attributed text
     NSRange range = NSMakeRange(0, 1);
     //Get dictionary of attributes for that range
-    NSDictionary *attributes = [self.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
+    NSDictionary *attributes = [self.cardView.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
     //Set an attributed string for task label to reflect score
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld\n\nPoints:%ld", self.game.score ,self.game.totalPoints] attributes:attributes];
     //Set task label attributed text to that string
-    self.centerLabel.attributedText = attributedString;
+    self.cardView.centerLabel.attributedText = attributedString;
     //Disable pause button
     self.pauseButton.enabled = NO;
     //Show navigation bar to exit
     self.navigationController.navigationBar.hidden = NO;
     //set game paused
     self.game.paused = YES;
-    self.centerLabel.backgroundColor = [UIColor clearColor];
+    self.cardView.centerLabel.backgroundColor = [UIColor clearColor];
     self.fireWorksView.backgroundColor = [UIColor darkGrayColor];
     [self.fireWorksView startEmittingFireworks:YES];
     [self changeLeftBarButton];
@@ -407,7 +412,7 @@
             //Set cardView to opaque
             self.cardView.alpha = 1.0;
             //Set task label to opaque
-            self.centerLabel.alpha = 1.0;
+            self.cardView.centerLabel.alpha = 1.0;
             //Add tap gesture so player can select card
             [self addTapGestureToView:self.cardView];
         }];
@@ -415,7 +420,7 @@
         //Make cardview transparent
         self.cardView.alpha = 0.10;
         //Make task label transparent
-        self.centerLabel.alpha = 0.35;
+        self.cardView.centerLabel.alpha = 0.35;
         //Deactivate NSTimer for timer label
         [self deactivateGameTimer];
         //Remove tap gesture from card so player cannot select card
@@ -436,9 +441,9 @@
 
 #define LABEL_FONT_SCALE_FACTOR 0.005 //Scale font based on label height
 
-- (void)setFrameForCenterLabel {
-    self.centerLabel.frame = CGRectMake(self.centerLabel.frame.origin.x, self.centerLabel.frame.origin.y, self.cardView.frame.size.width, self.centerLabel.frame.size.height);
-}
+//- (void)setFrameForCenterLabel {
+//    self.centerLabel.frame = CGRectMake(self.centerLabel.frame.origin.x, self.centerLabel.frame.origin.y, self.cardView.frame.size.width, self.centerLabel.frame.size.height);
+//}
 
 //Called to determine font scale factor
 - (CGFloat)labelFontScaleFactor {
@@ -465,9 +470,9 @@
     UIFont *labelFont = [[UIFont alloc] init];
     labelFont = [UIFont fontWithName:@"Helvetica-Bold" size:36];
     //Set task label attributed text with attributes
-    self.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self labelForCard:self.currentCard]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
+    self.cardView.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self labelForCard:self.currentCard]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
     //Set task label background color to light gray
-    self.centerLabel.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:0.60];
+    self.cardView.centerLabel.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:0.60];
 }
 
 #pragma mark - Tap Gesture
@@ -489,8 +494,11 @@
         if (self.playerOne) {
             //Draw a new card
             self.currentCard = [self drawRandomCard];
+            self.currentCard.selected = YES;
             //Remove old card view and update UI
-            [self removeOldCardViewAndUpdateUI];
+#warning updateUI
+//            [self removeOldCardViewAndUpdateUI];
+            [self updateUI];
         } else { //If not player one
             //If game is not over
             if (!self.gameOver) {
@@ -513,7 +521,10 @@
     //If game has started
     if (self.started) {
         //remove old card view and update UI
-        [self removeOldCardViewAndUpdateUI];
+#warning updateUI
+//        [self removeOldCardViewAndUpdateUI];
+        self.currentCard.selected = YES;
+        [self updateUI];
     } else { //If game has not started
         //Set card as not selected
         self.currentCard.selected = NO;
@@ -613,11 +624,11 @@
     return;
 }
 
-- (UIView *)createCardViewWithCard:(Card *)card { // abstract
+- (CardView *)createCardViewWithCard:(Card *)card { // abstract
     return nil;
 }
 
-- (void)updateCardView:(UIView *)cardView withCard:(Card *)card { // abstract
+- (void)updateCardView:(CardView *)cardView withCard:(Card *)card { // abstract
     return;
 }
 

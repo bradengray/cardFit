@@ -55,16 +55,16 @@
 
 - (void)drawRect:(CGRect)rect { //Draws Card
     //Draws boundary of card card with BezierPath
-//    UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:[self cornerRadius]];
-//    
-//    [roundedRect addClip];
-//    
-//    [[UIColor whiteColor] setFill];
-//    [roundedRect fill];
-//    
-//    [[UIColor blackColor] setStroke];
-//    roundedRect.lineWidth = 2.0;
-//    [roundedRect stroke];
+    UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:[self cornerRadius]];
+    
+    [roundedRect addClip];
+    
+    [[UIColor whiteColor] setFill];
+    [roundedRect fill];
+    
+    [[UIColor blackColor] setStroke];
+    roundedRect.lineWidth = 2.0;
+    [roundedRect stroke];
     
     //Draws the contents of the card
     if (self.faceUp) {
@@ -212,6 +212,14 @@
     self.backgroundColor = nil;
     self.opaque = NO;
     self.contentMode = UIViewContentModeRedraw;
+//    [self addSubview:self.centerLabel];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0]];
+}
+
+- (void)setNeedsUpdateConstraints {
+  //hahahahah
 }
 
 - (void)awakeFromNib { //Sets up for when cards are loaded from nib

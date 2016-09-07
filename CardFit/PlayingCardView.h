@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CardView.h"
 
-@interface PlayingCardView : UIView
+@interface PlayingCardView : CardView
 
 @property (nonatomic) NSUInteger suit; //Contains numeric value for rank 0-4
 @property (nonatomic) NSUInteger rank; //Contains numeric value for suit 0-14

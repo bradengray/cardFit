@@ -376,7 +376,6 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="centerLabel" destination="qVO-s9-RZi" id="HaT-xn-Nie"/>
                         <outlet property="fireWorksView" destination="oHC-AA-L3G" id="g0B-lv-P4T"/>
                         <outlet property="progress" destination="Iwc-hG-TBB" id="uLQ-iZ-LE6"/>
                         <outlet property="timerLabel" destination="sJk-DX-qn8" id="tGP-jy-LEt"/>

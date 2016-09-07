@@ -48,13 +48,13 @@
     }
 }
 
-- (UIView *)createCardViewWithCard:(Card *)card { //Creates card view for card object
+- (CardView *)createCardViewWithCard:(Card *)card { //Creates card view for card object
     PlayingCardView *playingCardView = [[PlayingCardView alloc] init];
     [self updateCardView:playingCardView withCard:card];
     return playingCardView;
 }
 
-- (void)updateCardView:(UIView *)cardView withCard:(Card *)card { //Updates Card view for card object
+- (void)updateCardView:(CardView *)cardView withCard:(Card *)card { //Updates Card view for card object
     if ([cardView isKindOfClass:[PlayingCardView class]]) {
         if ([card isKindOfClass:[PlayingCard class]]) {
             PlayingCard *playingCard = (PlayingCard *)card;
