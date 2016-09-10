@@ -358,25 +358,17 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qVO-s9-RZi">
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="3hT-NN-LDU" firstAttribute="top" secondItem="Iwc-hG-TBB" secondAttribute="bottom" constant="20.5" id="7A4-oZ-eft"/>
                             <constraint firstItem="Iwc-hG-TBB" firstAttribute="centerX" secondItem="oHC-AA-L3G" secondAttribute="centerX" id="B03-We-EqJ"/>
-                            <constraint firstItem="qVO-s9-RZi" firstAttribute="centerY" secondItem="oHC-AA-L3G" secondAttribute="centerY" id="Hca-oL-6Fo"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Iwc-hG-TBB" secondAttribute="trailing" id="Ni9-FZ-ewm"/>
                             <constraint firstItem="sJk-DX-qn8" firstAttribute="centerX" secondItem="oHC-AA-L3G" secondAttribute="centerX" id="Y4x-sv-XCe"/>
-                            <constraint firstItem="qVO-s9-RZi" firstAttribute="centerX" secondItem="oHC-AA-L3G" secondAttribute="centerX" id="b8g-E6-Hw0"/>
                             <constraint firstItem="Iwc-hG-TBB" firstAttribute="top" secondItem="sJk-DX-qn8" secondAttribute="bottom" constant="8" id="rJn-9O-yak"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="fireWorksView" destination="oHC-AA-L3G" id="g0B-lv-P4T"/>
                         <outlet property="progress" destination="Iwc-hG-TBB" id="uLQ-iZ-LE6"/>
                         <outlet property="timerLabel" destination="sJk-DX-qn8" id="tGP-jy-LEt"/>
                     </connections>

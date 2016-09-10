@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FireWorksView.h"
 
-@interface CardView : UIView
+@interface CardView : FireWorksView
 
 @property (nonatomic, strong) UILabel *centerLabel;
 

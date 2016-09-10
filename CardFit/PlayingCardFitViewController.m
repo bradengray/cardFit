@@ -56,12 +56,14 @@
 
 - (void)updateCardView:(CardView *)cardView withCard:(Card *)card { //Updates Card view for card object
     if ([cardView isKindOfClass:[PlayingCardView class]]) {
+        PlayingCardView *playingCardView = (PlayingCardView *)cardView;
         if ([card isKindOfClass:[PlayingCard class]]) {
             PlayingCard *playingCard = (PlayingCard *)card;
-            PlayingCardView *playingCardView = (PlayingCardView *)cardView;
             playingCardView.rank = playingCard.rank;
             playingCardView.suit = playingCard.suit;
             playingCardView.faceUp = playingCard.selected;
+        } else if (!card) {
+            playingCardView.rank = 0;
         }
     }
 }

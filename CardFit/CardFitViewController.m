@@ -7,7 +7,7 @@
 //
 
 #import "CardFitViewController.h"
-#import "CardFitLayoutView.h"
+#import "Orientation.h"
 #import "CardFitGame.h"
 #import "Timer.h"
 
@@ -15,16 +15,13 @@
 
 @interface CardFitViewController ()
 @property (nonatomic, strong) CardFitGame *game; //Instance of game
-@property (nonatomic, strong) CardFitLayoutView *cardFitLayoutView; //Instance of LayoutView
 
 @property (nonatomic, strong) Card *currentCard; //Keeps track of the current shown card
 @property (nonatomic, strong) CardView *cardView; //Keeps track of the current shown card's view
 
 @property (nonatomic, strong) UIBarButtonItem *pauseButton; //Button that pauses game
-//@property (weak, nonatomic) IBOutlet UILabel *centerLabel; //Label that displays countdown
 @property (weak, nonatomic) IBOutlet UILabel *timerLabel;
 @property (weak, nonatomic) IBOutlet UIProgressView *progress; //Progress view that shows the progress of the game
-@property (nonatomic) BOOL rotated; //Tells if device orientiation is landscape or not
 @property (nonatomic) BOOL started; //Tells if game has started or not
 @property (nonatomic, strong) NSTimer *gameTimer; //Timer to determine when countDownLabel and timerLabel should update
 
@@ -58,17 +55,7 @@
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         //Checks the devices orientation
-         UIInterfaceOrientation orientation = [self orientation];
-         //If the orientation is landscape
-         if (orientation == UIInterfaceOrientationLandscapeLeft || orientation ==UIInterfaceOrientationLandscapeRight) {
-             //Set BOOL rotated equal YES
-             self.cardFitLayoutView.rotated = YES;
-             [self.cardView setNeedsUpdateConstraints];
-         } else { //If orientation is portrait
-             //Set BOOL rotated equal NO
-             self.cardFitLayoutView.rotated = NO;
-         }
+         [self.cardView setNeedsUpdateConstraints];
      } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
          //When done update the UI
@@ -76,11 +63,6 @@
      }];
     
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-}
-
-- (UIInterfaceOrientation)orientation {
-    //Get device orientation based on orientation of the status bar
-    return [[UIApplication sharedApplication] statusBarOrientation];
 }
 
 #pragma mark - Properties
@@ -105,32 +87,6 @@
         //Then return what was set by game
         return _playerOne;
     }
-}
-
-//Lazy instantiate the card Fit Layout View
-- (CardFitLayoutView *)cardFitLayoutView {
-    if (!_cardFitLayoutView) {
-        _cardFitLayoutView = [[CardFitLayoutView alloc] init]; //initialize
-        _cardFitLayoutView.rotated = self.rotated; //Tell if rotated
-        _cardFitLayoutView.size = self.view.frame.size; //Set size
-    }
-    //Return result
-    return _cardFitLayoutView;
-}
-
-//Lazy Instantiate BOOL rotated
-- (BOOL)rotated {
-    //Check the orientation of the device
-    UIInterfaceOrientation orientation = [self orientation];
-    if (orientation != UIInterfaceOrientationPortrait) {
-        //If landscape roated equals YES
-        _rotated = YES;
-    } else {
-        //If portrait landscape equals NO
-        _rotated = NO;
-    }
-    //Return result
-    return _rotated;
 }
 
 #pragma mark - Countdown And Setup
@@ -249,9 +205,11 @@
 //Set count down label text
 - (NSAttributedString *)countDownLabelAttributedText {
     //returns NSAttributed text from labelString
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.alignment = NSTextAlignmentCenter;
     UIFont *countDownLabelFont = [[UIFont alloc] init];
     countDownLabelFont = [UIFont fontWithName:@"Helvetica-Bold" size:130];
-    return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", self.cardView.centerLabel.tag] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : countDownLabelFont}];
+    return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", self.cardView.centerLabel.tag] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : countDownLabelFont, NSParagraphStyleAttributeName : paragraphStyle}];
 }
 
 //Animate card view changing from face down to face up
@@ -292,8 +250,6 @@
         if (!self.cardView) {
             //Create card view for current card
             self.cardView = [self createCardViewWithCard:self.currentCard];
-            //Set card view frame
-            self.cardView.frame = [self.cardFitLayoutView frameForCardView:self.cardView];
             //Add tap gesture so player can choose card
             [self.cardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)]];
             //Add the cardview to our view
@@ -302,17 +258,13 @@
             [self.view sendSubviewToBack:self.cardView];
             //Set text string for task label for card view
             [self setTaskLabelTitleForCardView:self.cardView];
-//            [self.centerLabel addConstraint:[NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.cardView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0]];
-            //Set frame for centerLabel
-//            [self setFrameForCenterLabel];
-//            self.centerLabelWidth.constant = self.cardView.frame.size.width;
             //Set game points based on current card
             self.game.totalPoints = [self pointsForCard:self.currentCard];
         } else { //Device may have been rotated
             [self updateCardView:self.cardView withCard:self.currentCard];
-            [self setTaskLabelTitleForCardView:self.cardView];
-            [self.cardFitLayoutView frameForCardView:self.cardView];
-//            self.centerLabelWidth.constant = self.cardView.frame.size.width;
+            if (self.started) {
+                [self setTaskLabelTitleForCardView:self.cardView];
+            }
         }
     } else { //If there is no card
         //If you are player one
@@ -353,18 +305,6 @@
     }
 }
 
-//Called when needing to remove old card view
-//- (void)removeOldCardViewAndUpdateUI {
-//    //Remove cardview from view
-//    [self.cardView removeFromSuperview];
-//    //Set card view to nil
-//    self.cardView = nil;
-//    //Set card to selected
-//    self.currentCard.selected = YES;
-//    //update UI
-//    [self updateUI];
-//}
-
 //Called when game is ended
 - (void)endGame {
     //Set progress
@@ -376,7 +316,7 @@
     //Set an attributed string for task label to reflect score
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld\n\nPoints:%ld", self.game.score ,self.game.totalPoints] attributes:attributes];
     //Set task label attributed text to that string
-    self.cardView.centerLabel.attributedText = attributedString;
+    self.cardView.centerLabel.attributedText = attributedString;;
     //Disable pause button
     self.pauseButton.enabled = NO;
     //Show navigation bar to exit
@@ -384,8 +324,10 @@
     //set game paused
     self.game.paused = YES;
     self.cardView.centerLabel.backgroundColor = [UIColor clearColor];
-    self.fireWorksView.backgroundColor = [UIColor darkGrayColor];
-    [self.fireWorksView startEmittingFireworks:YES];
+    [self updateCardView:self.cardView withCard:nil];
+//    self.cardView.backgroundColor = [UIColor darkGrayColor];
+    self.view.backgroundColor = [UIColor darkGrayColor];
+    [self.cardView startEmittingFireworks:YES];
     [self changeLeftBarButton];
 }
 
@@ -441,15 +383,11 @@
 
 #define LABEL_FONT_SCALE_FACTOR 0.005 //Scale font based on label height
 
-//- (void)setFrameForCenterLabel {
-//    self.centerLabel.frame = CGRectMake(self.centerLabel.frame.origin.x, self.centerLabel.frame.origin.y, self.cardView.frame.size.width, self.centerLabel.frame.size.height);
-//}
-
 //Called to determine font scale factor
 - (CGFloat)labelFontScaleFactor {
     CGFloat cardHeight;
     //If device is landscape
-    if (self.cardFitLayoutView.rotated) {
+    if ([Orientation landscapeOrientation]) {
         //set card height to view width
         cardHeight = self.view.bounds.size.width;
     } else { //If device orientation is portrait
@@ -496,8 +434,6 @@
             self.currentCard = [self drawRandomCard];
             self.currentCard.selected = YES;
             //Remove old card view and update UI
-#warning updateUI
-//            [self removeOldCardViewAndUpdateUI];
             [self updateUI];
         } else { //If not player one
             //If game is not over
@@ -521,8 +457,6 @@
     //If game has started
     if (self.started) {
         //remove old card view and update UI
-#warning updateUI
-//        [self removeOldCardViewAndUpdateUI];
         self.currentCard.selected = YES;
         [self updateUI];
     } else { //If game has not started

@@ -67,17 +67,22 @@
     [roundedRect stroke];
     
     //Draws the contents of the card
-    if (self.faceUp) {
-        UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@", [self rankAsString]]];
-        if (faceImage) { //Inserts image for face card
-            CGRect imageRect = CGRectInset(self.bounds, self.bounds.size.width * FACE_CARD_IMAGE_SCALE_FACTOR, self.bounds.size.height * FACE_CARD_IMAGE_SCALE_FACTOR);
-            [faceImage drawInRect:imageRect];
-        } else { //Draw pips
-            [self drawPips];
+    if (self.rank == 0) {
+        [[UIColor clearColor] setFill];
+        [roundedRect fill];
+    } else {
+        if (self.faceUp) {
+            UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@", [self rankAsString]]];
+            if (faceImage) { //Inserts image for face card
+                CGRect imageRect = CGRectInset(self.bounds, self.bounds.size.width * FACE_CARD_IMAGE_SCALE_FACTOR, self.bounds.size.height * FACE_CARD_IMAGE_SCALE_FACTOR);
+                [faceImage drawInRect:imageRect];
+            } else { //Draw pips
+                [self drawPips];
+            }
+            [self drawCorners]; //Draw corners
+        } else { //Set card face down
+            [[UIImage imageNamed:@"cardback"] drawInRect:self.bounds];
         }
-        [self drawCorners]; //Draw corners
-    } else { //Set card face down
-        [[UIImage imageNamed:@"cardback"] drawInRect:self.bounds];
     }
 }
 
@@ -212,14 +217,7 @@
     self.backgroundColor = nil;
     self.opaque = NO;
     self.contentMode = UIViewContentModeRedraw;
-//    [self addSubview:self.centerLabel];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0]];
-}
-
-- (void)setNeedsUpdateConstraints {
-  //hahahahah
+    self.translatesAutoresizingMaskIntoConstraints = false;
 }
 
 - (void)awakeFromNib { //Sets up for when cards are loaded from nib

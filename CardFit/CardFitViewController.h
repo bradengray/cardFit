@@ -14,7 +14,7 @@
 #import "FireWorksView.h"
 
 @interface CardFitViewController : UIViewController <MultiplayerNetworkingProtocol>
-@property (strong, nonatomic) IBOutlet FireWorksView *fireWorksView;
+//@property (strong, nonatomic) IBOutlet FireWorksView *fireWorksView;
 
 ////Required Set in subclass viewDidLoad
 //@property (nonatomic) CGFloat cardAspectRatio; //Sets aspect ration for Card
