@@ -7,27 +7,14 @@
 //
 
 #import "PlayingCardSettingsTVC.h"
-#import "PlayingCardSettings.h"
-
-@interface PlayingCardSettingsTVC ()
-
-@property (nonatomic, strong) PlayingCardSettings *playingCardSettings;
-
-@end
+#import "PlayingCardDataController.h"
 
 @implementation PlayingCardSettingsTVC
 
 #pragma mark - Initialization
 
-- (PlayingCardSettings *)playingCardSettings {
-    if (!_playingCardSettings) {
-        _playingCardSettings = [[PlayingCardSettings alloc] init];
-    }
-    return _playingCardSettings;
-}
-
-- (Settings *)createSettings { //Return Playing Card Settings object to super class
-    return self.playingCardSettings;
+- (DataController *)createDataSource { //Abstract returns dataSource
+    return [[PlayingCardDataController alloc] init];
 }
 
 @end

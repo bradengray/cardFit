@@ -11,6 +11,7 @@
 
 @interface CardView : FireWorksView
 
-@property (nonatomic, strong) UILabel *centerLabel;
+@property (nonatomic, strong) UILabel *centerLabel; //CenterLabel for cardView
+@property (nonatomic) CGFloat aspectRatio; //Stores aspect ratio for cardView
 
 @end

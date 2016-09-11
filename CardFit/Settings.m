@@ -151,7 +151,7 @@
     return nil;
 }
 
-- (NSUInteger)pointsForRank:(NSUInteger)rank {
+- (NSUInteger)pointsForRank:(NSUInteger)rank { //Abstract
     return 0;
 }
 

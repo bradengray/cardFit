@@ -9,41 +9,32 @@
 #import "CardView.h"
 #import "Orientation.h"
 
+#define ASPECT_RATIO 0.5625
+#define MAX_HEIGHT 736
+
 @implementation CardView
+
+#pragma mark - Properties
+
+- (CGFloat)aspectRatio { //Lazy instantiation of aspect ratio
+    if (!_aspectRatio) {
+        _aspectRatio = ASPECT_RATIO;
+    }
+    return _aspectRatio;
+}
 
 #define CENTER_X_CONSTRAINT_ID @"centerX"
 #define CENTER_Y_CONSTRAINT_ID @"centerY"
 #define WIDTH_CONSTRAINT_ID @"width"
 #define HEIGHT_CONSTRAINT_ID @"height"
 
-#define ASPECT_RATIO 0.5625
-#define ASPECT_RATIO_2 0.4375
-#define MAX_HEIGHT 736
-
 #pragma mark - Initialization
 
 - (void)didMoveToSuperview {
-    if (self.superview) {
-        [self setOrientation];
-        NSLayoutConstraint *centerX = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0];
-        centerX.identifier = CENTER_X_CONSTRAINT_ID;
-        NSLayoutConstraint *centerY = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0];
-        centerY.identifier = CENTER_Y_CONSTRAINT_ID;
-        NSLayoutConstraint *width = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:.5645 constant:0.0];
-        width.identifier = WIDTH_CONSTRAINT_ID;
-//        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[UIApplication sharedApplication].keyWindow.rootViewController.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
-//        NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
-        NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeHeight multiplier:1.0 constant:[self viewHeightConstant]];
-        height.identifier = HEIGHT_CONSTRAINT_ID;
-        [self.superview addConstraints:@[centerX, centerY, width, height]];
-    }
+    [self setOrientation];
 }
 
 #pragma mark - Properties
-
-- (CGFloat)viewHeightConstant {
-    return [Orientation landscapeOrientation] ? self.superview.bounds.size.width * ASPECT_RATIO_2: 0;
-}
 
 - (UILabel *)centerLabel {
     if (!_centerLabel) {
@@ -64,15 +55,12 @@
     return _centerLabel;
 }
 
+- (CGFloat)viewHeightConstant {
+    return [Orientation landscapeOrientation] ? self.bounds.size.width * (1 - ASPECT_RATIO): 0;
+}
+
 - (void)setNeedsUpdateConstraints {
     [self setOrientation];
-    NSArray *constraints = self.superview.constraints;
-    for (NSLayoutConstraint *constraint in constraints) {
-        if ([constraint.identifier isEqualToString:HEIGHT_CONSTRAINT_ID]) {
-            constraint.constant = [Orientation landscapeOrientation] ? [self viewHeightConstant] : 0.0;
-        }
-    }
-    
     NSArray *labelConstraints = self.constraints;
     for (NSLayoutConstraint *constraint in labelConstraints) {
         if ([constraint.identifier isEqualToString:WIDTH_CONSTRAINT_ID]) {

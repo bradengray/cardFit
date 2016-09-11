@@ -55,6 +55,7 @@
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
+         [self updateConstraints];
          [self.cardView setNeedsUpdateConstraints];
      } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
@@ -254,6 +255,8 @@
             [self.cardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)]];
             //Add the cardview to our view
             [self.view addSubview:self.cardView];
+            //Set constraints for cardView
+            [self setConstraintsForCardView];
             //Send CardView to Bottom of subviews
             [self.view sendSubviewToBack:self.cardView];
             //Set text string for task label for card view
@@ -542,6 +545,40 @@
     [self.navigationController popViewControllerAnimated:YES];
     //Show navigation bar
     self.navigationController.navigationBar.hidden = NO;
+}
+
+#pragma mark Set Constraints
+
+#define CENTER_X_CONSTRAINT_ID @"centerX"
+#define CENTER_Y_CONSTRAINT_ID @"centerY"
+#define WIDTH_CONSTRAINT_ID @"width"
+#define HEIGHT_CONSTRAINT_ID @"height"
+
+- (void)setConstraintsForCardView {
+    NSLayoutConstraint *centerX = [NSLayoutConstraint constraintWithItem:self.cardView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0];
+    centerX.identifier = CENTER_X_CONSTRAINT_ID;
+    NSLayoutConstraint *centerY = [NSLayoutConstraint constraintWithItem:self.cardView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0];
+    centerY.identifier = CENTER_Y_CONSTRAINT_ID;
+    NSLayoutConstraint *width = [NSLayoutConstraint constraintWithItem:self.cardView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.cardView attribute:NSLayoutAttributeHeight multiplier:self.cardView.aspectRatio constant:0.0];
+    width.identifier = WIDTH_CONSTRAINT_ID;
+    //        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[UIApplication sharedApplication].keyWindow.rootViewController.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
+    //        NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
+    NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:self.cardView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1.0 constant:[self viewHeightConstant]];
+    height.identifier = HEIGHT_CONSTRAINT_ID;
+    [self.view addConstraints:@[centerX, centerY, height, width]];
+}
+
+- (CGFloat)viewHeightConstant {
+    return [Orientation landscapeOrientation] ? self.view.bounds.size.width * (1 - self.cardView.aspectRatio) : 0;
+}
+
+- (void)updateConstraints {
+    NSArray *constraints = self.view.constraints;
+    for (NSLayoutConstraint *constraint in constraints) {
+        if ([constraint.identifier isEqualToString:HEIGHT_CONSTRAINT_ID]) {
+            constraint.constant = [self viewHeightConstant];
+        }
+    }
 }
 
 #pragma mark - Abstract Methods

@@ -6,9 +6,13 @@
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import "SettingsTVC.h"
-#import "Settings.h"
+#import "DataController.h"
+//#import "Settings.h"
 
-@interface GameSettingsTVC : SettingsTVC
+@interface GameSettingsTVC : UITableViewController
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton; // Navigation button for side menu
+
+- (DataController *)createDataSource; //Abstract creates data source object
 
 @end

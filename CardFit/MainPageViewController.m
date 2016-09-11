@@ -8,21 +8,20 @@
 
 #import "MainPageViewController.h"
 #import "SWRevealViewController.h"
-#import "Settings.h"
+#import "DataController.h"
 #import "CardFitViewController.h"
 #import "MultiplayerNetworking.h"
 
 //Adheres to UIPickerViewDelegate and UIPickerViewDataSource Protocols
-@interface MainPageViewController () <UIPickerViewDelegate, UIPickerViewDataSource>
+@interface MainPageViewController () <UIPickerViewDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *flyingSoloButton; //Outlet for multiplayer button
 @property (weak, nonatomic) IBOutlet UIButton *withFriendsButton; //Outlet for singleplayer button
 @property (weak, nonatomic) IBOutlet UIButton *nextButton; //Outlet for nextbutton
 @property (weak, nonatomic) IBOutlet UIPickerView *pickerView; //Pickerview for selecting number of cards
-@property (nonatomic, strong) Settings *settings; //Settings object
+@property (nonatomic, strong) DataController *dataSource; //For Accessing Game Data
 @property (nonatomic, strong) MultiplayerNetworking *networkingEngine; //networking engine object
 @property (nonatomic, strong) UIBarButtonItem *sidebarButton; //Navigationbar button for side menu
-@property (nonatomic) BOOL selected; //Tracks whether game type was selected single player or multiplayer
-@property (nonatomic) BOOL multiPlayer; //Tracks whether multiplayer option is selected or not
+@property (nonatomic) BOOL gameTypeSelected; //Tracks whether game type was selected single player or multiplayer
 @property (nonatomic) BOOL multiplayerReady; //Tracks player authentication
 
 @end
@@ -33,55 +32,37 @@
 
 #define UBIQUITY_TOKEN @"com.apple.cardfit.UbiquityIdentityToken"
 
-- (void)iCloudAlert {
-    id currentiCloudToken = [[NSUserDefaults standardUserDefaults] objectForKey:UBIQUITY_TOKEN];
-    if (!currentiCloudToken) {// && firstLaunchWithiCloudAvailable) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Choose Storage Option"
-                                                                       message:@"Should documents be stored in iCloud and available on all your devices?"
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Local Only"
-                                                          style:UIAlertActionStyleDefault
-                                                        handler:nil];
-        UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Use iCloud"
-                                                          style:UIAlertActionStyleDefault
-                                                        handler:nil];
-        [alert addAction:action1];
-        [alert addAction:action2];
-        
-        [self presentViewController:alert
-                           animated:YES
-                         completion:nil];
-    }
-}
-
-//- (void)tomtom {
-//    __block NSURL *myContainer;
-//    dispatch_async (dispatch_get_global_queue (DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void) {
-//        myContainer = [[NSFileManager defaultManager]
-//                       URLForUbiquityContainerIdentifier:@"iCloud.com.graycode.cardfit"];
-//        if (myContainer != nil) {
-//            // Your app can write to the iCloud container
-//            
-//            dispatch_async (dispatch_get_main_queue (), ^(void) {
-//                // On the main thread, update UI and state as appropriate
-//            });
-//        }
-//    });
-//    //    This example assumes that you have previously defined myContainer as an instance variable of type NSURL prior to executing this code.
-//    
-//    
+//- (void)iCloudAlert {
+//    id currentiCloudToken = [[NSUserDefaults standardUserDefaults] objectForKey:UBIQUITY_TOKEN];
+//    if (!currentiCloudToken) {// && firstLaunchWithiCloudAvailable) {
+//        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Choose Storage Option"
+//                                                                       message:@"Should documents be stored in iCloud and available on all your devices?"
+//                                                                preferredStyle:UIAlertControllerStyleAlert];
+//        
+//        UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"Local Only"
+//                                                          style:UIAlertActionStyleDefault
+//                                                        handler:nil];
+//        UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"Use iCloud"
+//                                                          style:UIAlertActionStyleDefault
+//                                                        handler:nil];
+//        [alert addAction:action1];
+//        [alert addAction:action2];
+//        
+//        [self presentViewController:alert
+//                           animated:YES
+//                         completion:nil];
+//    }
 //}
 
 - (void)viewDidLoad { //Called when view loads
     [super viewDidLoad];
     //Set delegates and hide picker view nad next button
     self.pickerView.delegate = self;
+    self.pickerView.dataSource = self.dataSource;
     self.pickerView.hidden = YES;
     self.pickerView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.80];
     self.nextButton.hidden = YES;
-    [self iCloudAlert];
-//    [self tomtom];
+//    [self iCloudAlert];
     //Set up buttons
     [self setUpButton:self.flyingSoloButton withTitle:@"F L Y I N G\nS O L O"];
     [self setUpButton:self.withFriendsButton withTitle:@"W I T H\nF R I E N D S"];
@@ -95,7 +76,6 @@
 - (void)viewWillAppear:(BOOL)animated { //Called when view appears
     [super viewWillAppear:animated];
     UIImage *image = [UIImage imageNamed:@"BackGround"];
-//    [self imageWithImage:image scaledToSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height)];
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + 25, imageView.frame.size.width, imageView.frame.size.height);
     [self.view addSubview:imageView];
@@ -141,10 +121,9 @@
 }
 
 - (void)presentMatchMakerViewController { //Called when MatchMakerViewController is wanted
-    self.multiPlayer = YES;
+    self.dataSource.multiPlayer = YES;
     self.networkingEngine = [[MultiplayerNetworking alloc] init];
     [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
-//    [self performSegueWithIdentifier:@"Play Game" sender:self.nextButton];
 }
 
 - (void)segueToGame { //Called when ready to segue to game
@@ -160,11 +139,11 @@
     return _multiplayerReady;
 }
 
-- (Settings *)settings { //Initializes Settings object
-    if (!_settings) {
-        _settings = [[Settings alloc] init];
+- (DataController *)dataSource {
+    if (!_dataSource) {
+        _dataSource = [[DataController alloc] init];
     }
-    return _settings;
+    return _dataSource;
 }
 
 #pragma mark - Buttons
@@ -188,7 +167,7 @@
 
 - (void)cancelBarButtonTouched { //Called when navigation bar cancel button is touched
     //Set game type to not selected
-    self.selected = !self.selected;
+    self.gameTypeSelected = !self.gameTypeSelected;
     //Animate buttons
     [UIView animateWithDuration:0.15 animations:^{
         self.nextButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
@@ -220,19 +199,14 @@
         button.titleLabel.alpha = 1.0;
     }];
     //If game type not selected
-    if (!self.selected) {
+    if (!self.gameTypeSelected) {
         //Decide if multiplayer or not and set datasources for picker views
         if (button == self.withFriendsButton) {
-            self.multiPlayer = YES;
-            self.pickerView.dataSource = nil;
-            self.pickerView.dataSource = self;
-            [self updatePickerView];
+            self.dataSource.multiPlayer = YES;
         } else if (button == self.flyingSoloButton) {
-            self.multiPlayer = NO;
-            self.pickerView.dataSource = nil;
-            self.pickerView.dataSource = self;
-            [self updatePickerView];
+            self.dataSource.multiPlayer = NO;
         }
+        [self updatePickerView];
         //Animate buttons and picker views
         [UIView animateWithDuration:0.15 animations:^{
             self.flyingSoloButton.transform = CGAffineTransformMakeScale(0.01, 0.01);
@@ -247,9 +221,9 @@
             [self animateObjects:objects];
         }];
         //Set whether game type was chosen or not.
-        self.selected = !self.selected;
+        self.gameTypeSelected = !self.gameTypeSelected;
     } else { //If game type selected the Next button must have been selected. Play game.
-        if (self.multiPlayer) {
+        if (self.dataSource.multiPlayer) {
             [self presentMatchMakerViewController];
         } else {
             [self performSegueWithIdentifier:@"Play Game" sender:button];
@@ -323,54 +297,20 @@
     }
 }
 
-#pragma mark - UIPickerViewDataSource
-
--(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView { //Set number of components for picker view to 1 column
-    return 1;
-}
-
--(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component { //Set rows for pickerview
-    //Check to see what gameType
-    if (!self.multiPlayer) {
-        return [self.settings.onePlayerNumberOfCardsOptionStrings count];
-    } else {
-        return [self.settings.multiplayerNumberOfCardsOptionStrings count];
-    }
-}
-
 #pragma mark - UIPickerViewDelegate
 
 - (NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    //Check to see what gameType
-    NSString *string;
-    if (!self.multiPlayer) {
-        string = self.settings.onePlayerNumberOfCardsOptionStrings[row];
-    } else {
-        string = self.settings.multiplayerNumberOfCardsOptionStrings[row];
-    }
-    
-    return [[NSAttributedString alloc] initWithString:string attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]];
+    return [[NSAttributedString alloc] initWithString:[self.dataSource pickerViewStringForRow:row] attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]]; //Return string for row
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component { //Called when row selected
-    //Check to see what gameType
-    if (!self.multiPlayer) {
-        self.settings.onePlayerNumberOfCards = self.settings.onePlayerNumberOfCardsOptionStrings[row];
-    } else {
-        self.settings.multiplayerNumberOfCards = self.settings.multiplayerNumberOfCardsOptionStrings[row];
-    }
+    [self.dataSource storePickerViewDataForRow:row]; //Store data for row
 }
 
--(void)updatePickerView { //Updates pickerview to moste recently selected row
-    NSInteger row;
-    //Check to see what gameType
-    if (!self.multiPlayer) {
-        row = [self.settings.onePlayerNumberOfCardsOptionStrings indexOfObject:self.settings.onePlayerNumberOfCards];
-        [self.pickerView selectRow:row inComponent:0 animated:YES];
-    } else {
-        row = [self.settings.multiplayerNumberOfCardsOptionStrings indexOfObject:self.settings.multiplayerNumberOfCards];
-        [self.pickerView selectRow:row inComponent:0 animated:YES];
-    }
+-(void)updatePickerView { //Updates pickerview to most recently selected row
+    [self.pickerView reloadAllComponents];
+    NSUInteger row = [self.dataSource pickerViewDefaultRow];
+    [self.pickerView selectRow:row inComponent:0 animated:YES];
 }
 
 #pragma mark - Segue
@@ -380,14 +320,11 @@
         if ((UIButton *)sender == self.nextButton) { //Check sender
             if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) { //Check destination
                 CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
-//                cfvc.title = @"CardFit Game";
-                cfvc.multiplayer = self.multiPlayer;
+                cfvc.multiplayer = self.dataSource.multiPlayer;
                 //Check to see what gameType
-                if (self.multiPlayer) {
-//                    self.networkingEngine = [[MultiplayerNetworking alloc] init];
+                if (self.dataSource.multiPlayer) {
                     self.networkingEngine.delegate = cfvc;
                     cfvc.networkingEngine = self.networkingEngine;
-//                    [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
                 }
             }
         }

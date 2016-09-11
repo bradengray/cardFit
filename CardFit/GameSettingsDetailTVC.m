@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) UITextField *currentTextField; //Tracks current selected text field
 @property (nonatomic) BOOL cancelEntry; //Tracks whether entry was canceled
-@property (nonatomic, strong) Settings *settings; //Settings object
+@property (nonatomic, strong) SettingsCell *settingsCell; //SettingsCell object
 
 @end
 
@@ -22,7 +22,6 @@
 
 - (void)viewDidLoad { //Called when view loads
     [super viewDidLoad];
-    self.settings = [self createSettings]; //Create settings
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor]; //Set table view background color
 }
 
@@ -33,12 +32,16 @@
     [self.tableView.delegate tableView:self.tableView didSelectRowAtIndexPath:indexPath];
 }
 
-- (void)setSettingsCell:(SettingsCell *)settingsCell {
-    _settingsCell = settingsCell;
+#pragma mark Properties
+
+- (void)setDataSource:(DataController *)dataSource {
+    _dataSource = dataSource;
+    self.settingsCell = [_dataSource selectedSettingsCell];
+    self.title = self.settingsCell.title;
     [self.tableView reloadData];
 }
 
-#pragma mark - UITableViewDelegate 
+#pragma mark - UITableViewDelegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView { //Number of sections in table view
     return 1;
@@ -73,6 +76,17 @@
     return 1;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath { //Called when cell is selected
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    //Get the textfield from the cell and make it first responder
+    for (id object in cell.contentView.subviews) {
+        if ([object isKindOfClass:[UITextField class]]) {
+            UITextField *textField = (UITextField *)object;
+            [textField becomeFirstResponder];
+        }
+    }
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section { //Number of rows in section of tableview
     return [self.settingsCell.detailSettingsCells count];
 }
@@ -88,7 +102,6 @@
     UITableViewCell *cell;
 
     SettingsCell *detailSettingsCell = [self.settingsCell.detailSettingsCells objectAtIndex:indexPath.row];
-//    NSString *rowValue = [self.settingsDetailDictionary objectForKey:rowName];
     
     UIFont *font = [[UIFont alloc] init];
     font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
@@ -146,17 +159,6 @@
     self.currentTextField = nil;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath { //Called when cell is selected
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-    //Get the textfield from the cell and make it first responder
-    for (id object in cell.contentView.subviews) {
-        if ([object isKindOfClass:[UITextField class]]) {
-            UITextField *textField = (UITextField *)object;
-            [textField becomeFirstResponder];
-        }
-    }
-}
-
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField { //Get rid of keyboard when return is hit
@@ -195,18 +197,14 @@
 #define MAX_NUMBER_VALUE 1000
 
 - (void)saveUserInputForTextField:(UITextField *)textField { //Called when New settings should be saved
-    //Get the dictionary key
-    SettingsCell *detailSettingsCell = [self.settingsCell.detailSettingsCells objectAtIndex:textField.tag];
     //Make sure entry is valid and check for alerts
-    NSString *alertString = [self.settings alertLabelForString:textField.text forKey:detailSettingsCell.title];
+    NSString *alertString = [self.dataSource alertLabelForString:textField.text forCellIndex:textField.tag];
     //If alert message then sent alert and reset text field to orignal settings
     if (alertString) {
         [self alert:alertString];
-        textField.text = detailSettingsCell.value;
+        textField.text = [self.dataSource valueForCellAtIndex:textField.tag];
     } else { //If not alert then save new settings by calling delegate
-        self.settingsCell = [self.settingsCell setDetailSettingsValue:textField.text forIndex:textField.tag];
-//        [self.delegate settingsChanged:self.settingsCell];
-        [self.settings storeNewSettings:self.settingsCell];
+        [self.dataSource storeData:textField.text forIndex:textField.tag];
     }
 }
 
@@ -218,6 +216,12 @@
     [alert addAction:action];
     
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+# pragma mark Abstract Methods
+
+- (DataController *)createDataSource { //Abstract
+    return [[DataController alloc] init];
 }
 
 @end

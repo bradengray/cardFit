@@ -15,8 +15,6 @@
 		F200D5171CFC84EA00981BC7 /* PlayingCardFitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F200D5161CFC84EA00981BC7 /* PlayingCardFitViewController.m */; };
 		F2016C021CEE6E4F0079887E /* GameSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */; };
 		F2016C051CEE723D0079887E /* PlayingCardSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */; };
-		F214A4E91D200B4B0006978C /* SettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F214A4E81D200B4B0006978C /* SettingsTVC.m */; };
-		F214A4EC1D200FE60006978C /* PlayingCardDetailSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F214A4EB1D200FE60006978C /* PlayingCardDetailSettingsTVC.m */; };
 		F22F00551D7FB42D0008F2F4 /* CardView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22F00541D7FB42D0008F2F4 /* CardView.m */; };
 		F23D55391CB70DD800F7727B /* Orientation.m in Sources */ = {isa = PBXBuildFile; fileRef = F23D55381CB70DD800F7727B /* Orientation.m */; };
 		F23D553C1CBB15AB00F7727B /* MainPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23D553B1CBB15AB00F7727B /* MainPageViewController.m */; };
@@ -36,6 +34,8 @@
 		F25C7BFA1CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F25C7BF91CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m */; };
 		F25C7C011CF1EF1500BF7EAE /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F25C7C001CF1EF1500BF7EAE /* SWRevealViewController.m */; };
 		F25C7C041CF27E9400BF7EAE /* SideMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F25C7C031CF27E9400BF7EAE /* SideMenuViewController.m */; };
+		F27B3E291D84A91C00EE82D6 /* DataController.m in Sources */ = {isa = PBXBuildFile; fileRef = F27B3E281D84A91C00EE82D6 /* DataController.m */; };
+		F27B3E321D84C6F700EE82D6 /* PlayingCardDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = F27B3E311D84C6F700EE82D6 /* PlayingCardDataController.m */; };
 		F28B78001CAA14C600023B3D /* PlayingCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = F28B77FF1CAA14C600023B3D /* PlayingCardView.m */; };
 		F299D6FB1CDFF22C009EE988 /* Timer.m in Sources */ = {isa = PBXBuildFile; fileRef = F299D6FA1CDFF22C009EE988 /* Timer.m */; };
 		F29AD2FE1CBC8FF3003F18A5 /* PlayingCardSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = F29AD2FD1CBC8FF3003F18A5 /* PlayingCardSettings.m */; };
@@ -77,10 +77,6 @@
 		F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSettingsTVC.m; sourceTree = "<group>"; };
 		F2016C031CEE723D0079887E /* PlayingCardSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardSettingsTVC.h; sourceTree = "<group>"; };
 		F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardSettingsTVC.m; sourceTree = "<group>"; };
-		F214A4E71D200B4B0006978C /* SettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTVC.h; sourceTree = "<group>"; };
-		F214A4E81D200B4B0006978C /* SettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTVC.m; sourceTree = "<group>"; };
-		F214A4EA1D200FE60006978C /* PlayingCardDetailSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardDetailSettingsTVC.h; sourceTree = "<group>"; };
-		F214A4EB1D200FE60006978C /* PlayingCardDetailSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardDetailSettingsTVC.m; sourceTree = "<group>"; };
 		F22F00531D7FB42D0008F2F4 /* CardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardView.h; sourceTree = "<group>"; };
 		F22F00541D7FB42D0008F2F4 /* CardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardView.m; sourceTree = "<group>"; };
 		F23D55371CB70DD800F7727B /* Orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Orientation.h; sourceTree = "<group>"; };
@@ -119,6 +115,10 @@
 		F25C7C001CF1EF1500BF7EAE /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
 		F25C7C021CF27E9400BF7EAE /* SideMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideMenuViewController.h; sourceTree = "<group>"; };
 		F25C7C031CF27E9400BF7EAE /* SideMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideMenuViewController.m; sourceTree = "<group>"; };
+		F27B3E271D84A91C00EE82D6 /* DataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataController.h; sourceTree = "<group>"; };
+		F27B3E281D84A91C00EE82D6 /* DataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataController.m; sourceTree = "<group>"; };
+		F27B3E301D84C6F700EE82D6 /* PlayingCardDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardDataController.h; sourceTree = "<group>"; };
+		F27B3E311D84C6F700EE82D6 /* PlayingCardDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardDataController.m; sourceTree = "<group>"; };
 		F28B5F431CFA1F530005997D /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		F28B77FE1CAA14C600023B3D /* PlayingCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardView.h; sourceTree = "<group>"; };
 		F28B77FF1CAA14C600023B3D /* PlayingCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardView.m; sourceTree = "<group>"; };
@@ -283,28 +283,8 @@
 		F245CC041CA9F4AF00F034F5 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				F25C7BFF1CF1EF1500BF7EAE /* SWRevealViewController.h */,
-				F25C7C001CF1EF1500BF7EAE /* SWRevealViewController.m */,
-				F200D5121CFC84CD00981BC7 /* CardFitViewController.h */,
-				F200D5131CFC84CD00981BC7 /* CardFitViewController.m */,
-				F200D5151CFC84EA00981BC7 /* PlayingCardFitViewController.h */,
-				F200D5161CFC84EA00981BC7 /* PlayingCardFitViewController.m */,
-				F200D50A1CFA856100981BC7 /* GameNavigationController.h */,
-				F200D50B1CFA856100981BC7 /* GameNavigationController.m */,
-				F23D553A1CBB15AB00F7727B /* MainPageViewController.h */,
-				F23D553B1CBB15AB00F7727B /* MainPageViewController.m */,
-				F25C7C021CF27E9400BF7EAE /* SideMenuViewController.h */,
-				F25C7C031CF27E9400BF7EAE /* SideMenuViewController.m */,
-				F214A4E71D200B4B0006978C /* SettingsTVC.h */,
-				F214A4E81D200B4B0006978C /* SettingsTVC.m */,
-				F2016C001CEE6E4F0079887E /* GameSettingsTVC.h */,
-				F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */,
-				F2016C031CEE723D0079887E /* PlayingCardSettingsTVC.h */,
-				F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */,
-				F25C7BF81CEFEC8C00BF7EAE /* GameSettingsDetailTVC.h */,
-				F25C7BF91CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m */,
-				F214A4EA1D200FE60006978C /* PlayingCardDetailSettingsTVC.h */,
-				F214A4EB1D200FE60006978C /* PlayingCardDetailSettingsTVC.m */,
+				F27B3E261D84A8DB00EE82D6 /* DataControllers */,
+				F27B3E251D84A8CD00EE82D6 /* ViewControllers */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -317,6 +297,42 @@
 				F2489F7D1D577A0D0079A9DE /* CloudKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F27B3E251D84A8CD00EE82D6 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				F25C7BFF1CF1EF1500BF7EAE /* SWRevealViewController.h */,
+				F25C7C001CF1EF1500BF7EAE /* SWRevealViewController.m */,
+				F200D5121CFC84CD00981BC7 /* CardFitViewController.h */,
+				F200D5131CFC84CD00981BC7 /* CardFitViewController.m */,
+				F200D5151CFC84EA00981BC7 /* PlayingCardFitViewController.h */,
+				F200D5161CFC84EA00981BC7 /* PlayingCardFitViewController.m */,
+				F200D50A1CFA856100981BC7 /* GameNavigationController.h */,
+				F200D50B1CFA856100981BC7 /* GameNavigationController.m */,
+				F23D553A1CBB15AB00F7727B /* MainPageViewController.h */,
+				F23D553B1CBB15AB00F7727B /* MainPageViewController.m */,
+				F25C7C021CF27E9400BF7EAE /* SideMenuViewController.h */,
+				F25C7C031CF27E9400BF7EAE /* SideMenuViewController.m */,
+				F2016C001CEE6E4F0079887E /* GameSettingsTVC.h */,
+				F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */,
+				F2016C031CEE723D0079887E /* PlayingCardSettingsTVC.h */,
+				F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */,
+				F25C7BF81CEFEC8C00BF7EAE /* GameSettingsDetailTVC.h */,
+				F25C7BF91CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		F27B3E261D84A8DB00EE82D6 /* DataControllers */ = {
+			isa = PBXGroup;
+			children = (
+				F27B3E271D84A91C00EE82D6 /* DataController.h */,
+				F27B3E281D84A91C00EE82D6 /* DataController.m */,
+				F27B3E301D84C6F700EE82D6 /* PlayingCardDataController.h */,
+				F27B3E311D84C6F700EE82D6 /* PlayingCardDataController.m */,
+			);
+			name = DataControllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -458,7 +474,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F214A4E91D200B4B0006978C /* SettingsTVC.m in Sources */,
 				F2DADE941D0FA50B001740A8 /* Settings.m in Sources */,
 				F24324FF1D4EEAFA000E4A12 /* SettingsCell.m in Sources */,
 				F29AD2FE1CBC8FF3003F18A5 /* PlayingCardSettings.m in Sources */,
@@ -467,8 +482,10 @@
 				F22F00551D7FB42D0008F2F4 /* CardView.m in Sources */,
 				F25C7BFA1CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m in Sources */,
 				F2EA33EF1CC5B4BF0018CE5F /* CardFitGame.m in Sources */,
+				F27B3E291D84A91C00EE82D6 /* DataController.m in Sources */,
 				F2B792CC1D652BF400DCC5E5 /* FireWorksView.m in Sources */,
 				F23D553C1CBB15AB00F7727B /* MainPageViewController.m in Sources */,
+				F27B3E321D84C6F700EE82D6 /* PlayingCardDataController.m in Sources */,
 				F245CC101CA9FD8B00F034F5 /* PlayingCardDeck.m in Sources */,
 				F245CBD41CA9F35F00F034F5 /* AppDelegate.m in Sources */,
 				F28B78001CAA14C600023B3D /* PlayingCardView.m in Sources */,
@@ -477,7 +494,6 @@
 				F2016C051CEE723D0079887E /* PlayingCardSettingsTVC.m in Sources */,
 				F25C7C011CF1EF1500BF7EAE /* SWRevealViewController.m in Sources */,
 				F245CBD11CA9F35F00F034F5 /* main.m in Sources */,
-				F214A4EC1D200FE60006978C /* PlayingCardDetailSettingsTVC.m in Sources */,
 				F245CC071CA9F4CF00F034F5 /* Card.m in Sources */,
 				F245CC0D1CA9FB4700F034F5 /* Deck.m in Sources */,
 				F200D50F1CFBA77A00981BC7 /* MultiplayerNetworking.m in Sources */,
