@@ -118,10 +118,10 @@
             </objects>
             <point key="canvasLocation" x="940" y="369.26536731634184"/>
         </scene>
-        <!--Playing Card Detail SettingsTVC-->
+        <!--Game Settings DetailTVC-->
         <scene sceneID="Dhi-Fn-KUs">
             <objects>
-                <tableViewController id="Qnk-aJ-wZ5" customClass="PlayingCardDetailSettingsTVC" sceneMemberID="viewController">
+                <tableViewController id="Qnk-aJ-wZ5" customClass="GameSettingsDetailTVC" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="RF6-UC-kg5">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -348,27 +348,53 @@
                         <viewControllerLayoutGuide type="top" id="R4Z-QW-SWe"/>
                         <viewControllerLayoutGuide type="bottom" id="3hT-NN-LDU"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="oHC-AA-L3G" customClass="FireWorksView">
+                    <view key="view" contentMode="scaleToFill" id="oHC-AA-L3G">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Iwc-hG-TBB"/>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sJk-DX-qn8">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="timer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sJk-DX-qn8">
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="muW-RA-BBM">
+                                <frame key="frameInset" minX="16" minY="72" width="343" height="557"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zhs-8Y-2y6" customClass="FireWorksView">
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FsO-qN-xFq">
+                                        <frame key="frameInset" minY="268" width="343" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="FsO-qN-xFq" firstAttribute="width" secondItem="zhs-8Y-2y6" secondAttribute="width" id="9WX-hg-yTo"/>
+                                    <constraint firstItem="FsO-qN-xFq" firstAttribute="centerY" secondItem="zhs-8Y-2y6" secondAttribute="centerY" id="a49-P9-w3i"/>
+                                    <constraint firstItem="FsO-qN-xFq" firstAttribute="centerX" secondItem="zhs-8Y-2y6" secondAttribute="centerX" id="eDn-Us-Jtf"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="3hT-NN-LDU" firstAttribute="top" secondItem="Iwc-hG-TBB" secondAttribute="bottom" constant="20.5" id="7A4-oZ-eft"/>
+                            <constraint firstItem="zhs-8Y-2y6" firstAttribute="top" secondItem="R4Z-QW-SWe" secondAttribute="bottom" constant="8" id="9ZN-GN-Za0"/>
                             <constraint firstItem="Iwc-hG-TBB" firstAttribute="centerX" secondItem="oHC-AA-L3G" secondAttribute="centerX" id="B03-We-EqJ"/>
+                            <constraint firstItem="sJk-DX-qn8" firstAttribute="top" secondItem="zhs-8Y-2y6" secondAttribute="bottom" constant="7.5" id="L9u-ub-mSj"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Iwc-hG-TBB" secondAttribute="trailing" id="Ni9-FZ-ewm"/>
                             <constraint firstItem="sJk-DX-qn8" firstAttribute="centerX" secondItem="oHC-AA-L3G" secondAttribute="centerX" id="Y4x-sv-XCe"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="zhs-8Y-2y6" secondAttribute="trailing" id="YQh-nQ-eSv"/>
                             <constraint firstItem="Iwc-hG-TBB" firstAttribute="top" secondItem="sJk-DX-qn8" secondAttribute="bottom" constant="8" id="rJn-9O-yak"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="zhs-8Y-2y6" secondAttribute="leading" id="zmN-ik-IH0"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="centerLabel" destination="FsO-qN-xFq" id="EIV-g0-42N"/>
+                        <outlet property="containerView" destination="zhs-8Y-2y6" id="Bc7-kC-UIi"/>
                         <outlet property="progress" destination="Iwc-hG-TBB" id="uLQ-iZ-LE6"/>
                         <outlet property="timerLabel" destination="sJk-DX-qn8" id="tGP-jy-LEt"/>
                     </connections>

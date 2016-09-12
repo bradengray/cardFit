@@ -7,6 +7,7 @@
 //
 
 #import "CardFitViewController.h"
+#import "FireWorksView.h"
 #import "Orientation.h"
 #import "CardFitGame.h"
 #import "Timer.h"
@@ -15,12 +16,14 @@
 
 @interface CardFitViewController ()
 @property (nonatomic, strong) CardFitGame *game; //Instance of game
+@property (weak, nonatomic) IBOutlet FireWorksView *containerView;
 
 @property (nonatomic, strong) Card *currentCard; //Keeps track of the current shown card
-@property (nonatomic, strong) CardView *cardView; //Keeps track of the current shown card's view
+@property (nonatomic, strong) UIView *cardView; //Keeps track of the current shown card's view
 
 @property (nonatomic, strong) UIBarButtonItem *pauseButton; //Button that pauses game
 @property (weak, nonatomic) IBOutlet UILabel *timerLabel;
+@property (weak, nonatomic) IBOutlet UILabel *centerLabel;
 @property (weak, nonatomic) IBOutlet UIProgressView *progress; //Progress view that shows the progress of the game
 @property (nonatomic) BOOL started; //Tells if game has started or not
 @property (nonatomic, strong) NSTimer *gameTimer; //Timer to determine when countDownLabel and timerLabel should update
@@ -47,6 +50,11 @@
     }
 }
 
+- (void)viewDidLayoutSubviews {
+    [self rotate:self.cardView];
+    [self setCardViewFrame];
+}
+
 #pragma mark - Rotation
 
 //Called when the view changes size or the device changes orientation
@@ -55,8 +63,7 @@
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         [self updateConstraints];
-         [self.cardView setNeedsUpdateConstraints];
+         [self setCardViewFrame];
      } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
          //When done update the UI
@@ -68,11 +75,19 @@
 
 #pragma mark - Properties
 
+//Lazy insantiate data Source
+- (DataController *)dataSource {
+    if (!_dataSource) {
+        _dataSource = [self createDataSource];
+    }
+    return _dataSource;
+}
+
 //Lazy instantiate game
 - (CardFitGame *)game {
     if (!_game) {
         //Use designated initializer to create game
-        _game = [[CardFitGame alloc] initWithCardCount:[self numberOfCards] withDeck:[self createDeck]];
+        _game = [[CardFitGame alloc] initWithCardCount:[self.dataSource numberOfCards] withDeck:[self createDeck]];
     }
     //Return result
     return _game;
@@ -136,7 +151,7 @@
         textString = @"TAP TO START";
     }
     //Set task label text with attributes
-    self.cardView.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:textString attributes:[self.cardView.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range]];
+    self.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:textString attributes:[self.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range]];
 }
 
 //Activate NSTimer to the GAME_TIMER_INTERVAL
@@ -153,9 +168,9 @@
 //Called when Count Down to game start is needed
 - (void)startCountDown {
     //Set CountDownLabels Background to clear
-    self.cardView.centerLabel.backgroundColor = [UIColor clearColor];
+    self.centerLabel.backgroundColor = [UIColor clearColor];
     //Set cound down label tag equal 3 to start count down
-    self.cardView.centerLabel.tag = 3;
+    self.centerLabel.tag = 3;
     //Count down
     [self countDown];
     //Start NStimer to call count down for COUNTDOWN_INTERVAL
@@ -165,9 +180,9 @@
 //Make count down label count down 3, 2, 1, Go....
 - (void)countDown {
     //Set local variable couner
-    int counter = (int)self.cardView.centerLabel.tag;
+    int counter = (int)self.centerLabel.tag;
     //If counter is between 0 and 4 then count down is active
-    if (self.cardView.centerLabel.tag <= 3 && self.cardView.centerLabel.tag > 0) {
+    if (self.centerLabel.tag <= 3 && self.centerLabel.tag > 0) {
         // animate countdown label
         [self animateCountDownLabel];
     } else { //Count down finished
@@ -187,19 +202,19 @@
     }
     //increase counter
     counter--;
-    self.cardView.centerLabel.tag = counter;
+    self.centerLabel.tag = counter;
 }
 
 //Animate count down label to change alpha from light do dark over time
 - (void)animateCountDownLabel {
     //Set count down label text
-    self.cardView.centerLabel.attributedText = [self countDownLabelAttributedText];
+    self.centerLabel.attributedText = [self countDownLabelAttributedText];
     //Make count down label transparent
-    self.cardView.centerLabel.alpha = .15;
+    self.centerLabel.alpha = .15;
     //Animate over time
     [UIView animateWithDuration:0.8 animations:^{
         //Set count down label to opaque
-        self.cardView.centerLabel.alpha = 1.0;
+        self.centerLabel.alpha = 1.0;
     }];
 }
 
@@ -210,7 +225,7 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
     UIFont *countDownLabelFont = [[UIFont alloc] init];
     countDownLabelFont = [UIFont fontWithName:@"Helvetica-Bold" size:130];
-    return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", self.cardView.centerLabel.tag] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : countDownLabelFont, NSParagraphStyleAttributeName : paragraphStyle}];
+    return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", self.centerLabel.tag] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : countDownLabelFont, NSParagraphStyleAttributeName : paragraphStyle}];
 }
 
 //Animate card view changing from face down to face up
@@ -254,15 +269,13 @@
             //Add tap gesture so player can choose card
             [self.cardView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)]];
             //Add the cardview to our view
-            [self.view addSubview:self.cardView];
-            //Set constraints for cardView
-            [self setConstraintsForCardView];
+            [self.containerView addSubview:self.cardView];
             //Send CardView to Bottom of subviews
-            [self.view sendSubviewToBack:self.cardView];
+            [self.containerView sendSubviewToBack:self.cardView];
             //Set text string for task label for card view
             [self setTaskLabelTitleForCardView:self.cardView];
             //Set game points based on current card
-            self.game.totalPoints = [self pointsForCard:self.currentCard];
+            self.game.totalPoints = [self.dataSource pointsForCard:self.currentCard];
         } else { //Device may have been rotated
             [self updateCardView:self.cardView withCard:self.currentCard];
             if (self.started) {
@@ -315,22 +328,23 @@
     //Get range for task label attributed text
     NSRange range = NSMakeRange(0, 1);
     //Get dictionary of attributes for that range
-    NSDictionary *attributes = [self.cardView.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
+    NSDictionary *attributes = [self.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
     //Set an attributed string for task label to reflect score
     NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld\n\nPoints:%ld", self.game.score ,self.game.totalPoints] attributes:attributes];
     //Set task label attributed text to that string
-    self.cardView.centerLabel.attributedText = attributedString;;
+    self.centerLabel.attributedText = attributedString;;
     //Disable pause button
     self.pauseButton.enabled = NO;
     //Show navigation bar to exit
     self.navigationController.navigationBar.hidden = NO;
     //set game paused
     self.game.paused = YES;
-    self.cardView.centerLabel.backgroundColor = [UIColor clearColor];
-    [self updateCardView:self.cardView withCard:nil];
-//    self.cardView.backgroundColor = [UIColor darkGrayColor];
+    self.centerLabel.backgroundColor = [UIColor clearColor];
+    [self.cardView removeFromSuperview];
+    self.cardView = nil;
     self.view.backgroundColor = [UIColor darkGrayColor];
-    [self.cardView startEmittingFireworks:YES];
+    self.containerView.backgroundColor = [UIColor darkGrayColor];
+    [self.containerView startEmittingFireworks:YES];
     [self changeLeftBarButton];
 }
 
@@ -357,7 +371,7 @@
             //Set cardView to opaque
             self.cardView.alpha = 1.0;
             //Set task label to opaque
-            self.cardView.centerLabel.alpha = 1.0;
+            self.centerLabel.alpha = 1.0;
             //Add tap gesture so player can select card
             [self addTapGestureToView:self.cardView];
         }];
@@ -365,7 +379,7 @@
         //Make cardview transparent
         self.cardView.alpha = 0.10;
         //Make task label transparent
-        self.cardView.centerLabel.alpha = 0.35;
+        self.centerLabel.alpha = 0.35;
         //Deactivate NSTimer for timer label
         [self deactivateGameTimer];
         //Remove tap gesture from card so player cannot select card
@@ -411,9 +425,9 @@
     UIFont *labelFont = [[UIFont alloc] init];
     labelFont = [UIFont fontWithName:@"Helvetica-Bold" size:36];
     //Set task label attributed text with attributes
-    self.cardView.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self labelForCard:self.currentCard]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
+    self.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self.dataSource labelForCard:self.currentCard]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
     //Set task label background color to light gray
-    self.cardView.centerLabel.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:0.60];
+    self.centerLabel.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:0.60];
 }
 
 #pragma mark - Tap Gesture
@@ -489,7 +503,7 @@
 //Called if player is player one
 - (void)isPlayerOne {
     //Send your settings to all other players
-    [self.networkingEngine sendGameInfo:[self settings]];
+    [self.networkingEngine sendGameInfo:self.dataSource.settings];
     //Set BOOL playerOne equal YES
     self.playerOne = YES;
     //Set up game for start
@@ -527,7 +541,7 @@
         [self recievedCard:card];
     } else { //If not card them must be settings
         //call recieved Settings
-        [self recievedSettings:gameInfo];
+        [self.dataSource recievedSettings:gameInfo];
     }
 }
 
@@ -547,38 +561,10 @@
     self.navigationController.navigationBar.hidden = NO;
 }
 
-#pragma mark Set Constraints
+#pragma mark CardView Frame
 
-#define CENTER_X_CONSTRAINT_ID @"centerX"
-#define CENTER_Y_CONSTRAINT_ID @"centerY"
-#define WIDTH_CONSTRAINT_ID @"width"
-#define HEIGHT_CONSTRAINT_ID @"height"
-
-- (void)setConstraintsForCardView {
-    NSLayoutConstraint *centerX = [NSLayoutConstraint constraintWithItem:self.cardView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0.0];
-    centerX.identifier = CENTER_X_CONSTRAINT_ID;
-    NSLayoutConstraint *centerY = [NSLayoutConstraint constraintWithItem:self.cardView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0];
-    centerY.identifier = CENTER_Y_CONSTRAINT_ID;
-    NSLayoutConstraint *width = [NSLayoutConstraint constraintWithItem:self.cardView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.cardView attribute:NSLayoutAttributeHeight multiplier:self.cardView.aspectRatio constant:0.0];
-    width.identifier = WIDTH_CONSTRAINT_ID;
-    //        NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[UIApplication sharedApplication].keyWindow.rootViewController.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
-    //        NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
-    NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:self.cardView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeHeight multiplier:1.0 constant:[self viewHeightConstant]];
-    height.identifier = HEIGHT_CONSTRAINT_ID;
-    [self.view addConstraints:@[centerX, centerY, height, width]];
-}
-
-- (CGFloat)viewHeightConstant {
-    return [Orientation landscapeOrientation] ? self.view.bounds.size.width * (1 - self.cardView.aspectRatio) : 0;
-}
-
-- (void)updateConstraints {
-    NSArray *constraints = self.view.constraints;
-    for (NSLayoutConstraint *constraint in constraints) {
-        if ([constraint.identifier isEqualToString:HEIGHT_CONSTRAINT_ID]) {
-            constraint.constant = [self viewHeightConstant];
-        }
-    }
+- (void)setCardViewFrame {
+    self.cardView.frame = CGRectMake(0, 0, self.containerView.frame.size.width, self.containerView.frame.size.height);
 }
 
 #pragma mark - Abstract Methods
@@ -587,32 +573,20 @@
     return nil;
 }
 
-- (id)settings { //abstract
+- (DataController *)createDataSource { //Abstract
     return nil;
 }
 
-- (void)recievedSettings:(id)settings { //abstract
+- (UIView *)createCardViewWithCard:(Card *)card { // abstract
+    return nil;
+}
+
+- (void)updateCardView:(UIView *)cardView withCard:(Card *)card { // abstract
     return;
 }
 
-- (CardView *)createCardViewWithCard:(Card *)card { // abstract
-    return nil;
-}
-
-- (void)updateCardView:(CardView *)cardView withCard:(Card *)card { // abstract
+- (void)rotate:(UIView *)cardView {
     return;
-}
-
-- (NSUInteger)numberOfCards { //abstract
-    return 0;
-}
-
-- (NSUInteger)pointsForCard:(Card *)card { //abstract
-    return 0;
-}
-
-- (NSString *)labelForCard:(Card *)card { //abstract
-    return nil;
 }
 
 @end

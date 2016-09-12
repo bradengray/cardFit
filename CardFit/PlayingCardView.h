@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CardView.h"
 
-@interface PlayingCardView : CardView
+@interface PlayingCardView : UIView
 
 @property (nonatomic) NSUInteger suit; //Contains numeric value for rank 0-4
 @property (nonatomic) NSUInteger rank; //Contains numeric value for suit 0-14
 @property (nonatomic) BOOL faceUp; //Bool value that determines whether or not the card is face up
+
+- (void)setRotation;
 
 @end

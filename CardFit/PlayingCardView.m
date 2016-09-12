@@ -7,6 +7,7 @@
 //
 
 #import "PlayingCardView.h"
+#import "Orientation.h"
 
 @implementation PlayingCardView
 
@@ -67,22 +68,18 @@
     [roundedRect stroke];
     
     //Draws the contents of the card
-    if (self.rank == 0) {
-        [[UIColor clearColor] setFill];
-        [roundedRect fill];
-    } else {
-        if (self.faceUp) {
-            UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@", [self rankAsString]]];
-            if (faceImage) { //Inserts image for face card
-                CGRect imageRect = CGRectInset(self.bounds, self.bounds.size.width * FACE_CARD_IMAGE_SCALE_FACTOR, self.bounds.size.height * FACE_CARD_IMAGE_SCALE_FACTOR);
-                [faceImage drawInRect:imageRect];
-            } else { //Draw pips
-                [self drawPips];
-            }
-            [self drawCorners]; //Draw corners
-        } else { //Set card face down
-            [[UIImage imageNamed:@"cardback"] drawInRect:self.bounds];
+
+    if (self.faceUp) {
+        UIImage *faceImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@", [self rankAsString]]];
+        if (faceImage) { //Inserts image for face card
+            CGRect imageRect = CGRectInset(self.bounds, self.bounds.size.width * FACE_CARD_IMAGE_SCALE_FACTOR, self.bounds.size.height * FACE_CARD_IMAGE_SCALE_FACTOR);
+            [faceImage drawInRect:imageRect];
+        } else { //Draw pips
+            [self drawPips];
         }
+        [self drawCorners]; //Draw corners
+    } else { //Set card face down
+        [[UIImage imageNamed:@"cardback"] drawInRect:self.bounds];
     }
 }
 
@@ -92,7 +89,6 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
     
     //Create font
-//    UIFont *cornerFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     UIFont *cornerFont = [[UIFont alloc] init];
     cornerFont = [UIFont fontWithName:@"Helvetica" size:18];
     cornerFont = [cornerFont fontWithSize:cornerFont.pointSize * [self cornerScaleFactor]];
@@ -227,6 +223,28 @@
 
 - (void)layoutSubviews { //Sets up for when cards are layed out in subview
     [self setUp];
+}
+
+- (CGAffineTransform)rotateLeft {
+    return CGAffineTransformMakeRotation(M_PI_2);
+}
+
+- (CGAffineTransform)rotateRight {
+    return CGAffineTransformMakeRotation(-M_PI_2);
+}
+
+- (CGAffineTransform)rotate {
+    return CGAffineTransformMakeRotation(2 * M_PI);
+}
+
+- (void)setRotation {
+    [UIView animateWithDuration:0.1 animations:^{
+        if ([Orientation landscapeOrientation]) {
+            self.transform = [self rotateLeft];
+        } else {
+            self.transform = [self rotate];
+        }
+    }];
 }
 
 @end

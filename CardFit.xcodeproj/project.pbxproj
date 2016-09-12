@@ -15,7 +15,6 @@
 		F200D5171CFC84EA00981BC7 /* PlayingCardFitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F200D5161CFC84EA00981BC7 /* PlayingCardFitViewController.m */; };
 		F2016C021CEE6E4F0079887E /* GameSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */; };
 		F2016C051CEE723D0079887E /* PlayingCardSettingsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */; };
-		F22F00551D7FB42D0008F2F4 /* CardView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22F00541D7FB42D0008F2F4 /* CardView.m */; };
 		F23D55391CB70DD800F7727B /* Orientation.m in Sources */ = {isa = PBXBuildFile; fileRef = F23D55381CB70DD800F7727B /* Orientation.m */; };
 		F23D553C1CBB15AB00F7727B /* MainPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23D553B1CBB15AB00F7727B /* MainPageViewController.m */; };
 		F24324FF1D4EEAFA000E4A12 /* SettingsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F24324FE1D4EEAFA000E4A12 /* SettingsCell.m */; };
@@ -77,8 +76,6 @@
 		F2016C011CEE6E4F0079887E /* GameSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSettingsTVC.m; sourceTree = "<group>"; };
 		F2016C031CEE723D0079887E /* PlayingCardSettingsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayingCardSettingsTVC.h; sourceTree = "<group>"; };
 		F2016C041CEE723D0079887E /* PlayingCardSettingsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayingCardSettingsTVC.m; sourceTree = "<group>"; };
-		F22F00531D7FB42D0008F2F4 /* CardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CardView.h; sourceTree = "<group>"; };
-		F22F00541D7FB42D0008F2F4 /* CardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CardView.m; sourceTree = "<group>"; };
 		F23D55371CB70DD800F7727B /* Orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Orientation.h; sourceTree = "<group>"; };
 		F23D55381CB70DD800F7727B /* Orientation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Orientation.m; sourceTree = "<group>"; };
 		F23D553A1CBB15AB00F7727B /* MainPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainPageViewController.h; sourceTree = "<group>"; };
@@ -268,8 +265,6 @@
 			isa = PBXGroup;
 			children = (
 				F245CBD81CA9F35F00F034F5 /* Main.storyboard */,
-				F22F00531D7FB42D0008F2F4 /* CardView.h */,
-				F22F00541D7FB42D0008F2F4 /* CardView.m */,
 				F28B77FE1CAA14C600023B3D /* PlayingCardView.h */,
 				F28B77FF1CAA14C600023B3D /* PlayingCardView.m */,
 				F23D55371CB70DD800F7727B /* Orientation.h */,
@@ -479,7 +474,6 @@
 				F29AD2FE1CBC8FF3003F18A5 /* PlayingCardSettings.m in Sources */,
 				F200D50C1CFA856100981BC7 /* GameNavigationController.m in Sources */,
 				F299D6FB1CDFF22C009EE988 /* Timer.m in Sources */,
-				F22F00551D7FB42D0008F2F4 /* CardView.m in Sources */,
 				F25C7BFA1CEFEC8C00BF7EAE /* GameSettingsDetailTVC.m in Sources */,
 				F2EA33EF1CC5B4BF0018CE5F /* CardFitGame.m in Sources */,
 				F27B3E291D84A91C00EE82D6 /* DataController.m in Sources */,
