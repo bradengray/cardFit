@@ -8,7 +8,6 @@
 
 #import "MainPageViewController.h"
 #import "SWRevealViewController.h"
-#import "DataController.h"
 #import "CardFitViewController.h"
 #import "MultiplayerNetworking.h"
 
@@ -18,7 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *withFriendsButton; //Outlet for singleplayer button
 @property (weak, nonatomic) IBOutlet UIButton *nextButton; //Outlet for nextbutton
 @property (weak, nonatomic) IBOutlet UIPickerView *pickerView; //Pickerview for selecting number of cards
-@property (nonatomic, strong) DataController *dataSource; //For Accessing Game Data
+@property (nonatomic, strong) GameDataController *dataSource; //For Accessing Game Data
 @property (nonatomic, strong) MultiplayerNetworking *networkingEngine; //networking engine object
 @property (nonatomic, strong) UIBarButtonItem *sidebarButton; //Navigationbar button for side menu
 @property (nonatomic) BOOL gameTypeSelected; //Tracks whether game type was selected single player or multiplayer
@@ -57,8 +56,8 @@
 - (void)viewDidLoad { //Called when view loads
     [super viewDidLoad];
     //Set delegates and hide picker view nad next button
-    self.pickerView.delegate = self;
     self.pickerView.dataSource = self.dataSource;
+    self.pickerView.delegate = self;
     self.pickerView.hidden = YES;
     self.pickerView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.80];
     self.nextButton.hidden = YES;
@@ -121,7 +120,7 @@
 }
 
 - (void)presentMatchMakerViewController { //Called when MatchMakerViewController is wanted
-    self.dataSource.multiPlayer = YES;
+    self.dataSource.multiplayer = YES;
     self.networkingEngine = [[MultiplayerNetworking alloc] init];
     [[GameKitHelper sharedGameKitHelper] findMatchWithMinPlayers:2 maxPlayers:2 viewController:self delegate:self.networkingEngine];
 }
@@ -139,9 +138,9 @@
     return _multiplayerReady;
 }
 
-- (DataController *)dataSource {
+- (GameDataController *)dataSource {
     if (!_dataSource) {
-        _dataSource = [[DataController alloc] init];
+        _dataSource = [self createDataSource];
     }
     return _dataSource;
 }
@@ -202,9 +201,11 @@
     if (!self.gameTypeSelected) {
         //Decide if multiplayer or not and set datasources for picker views
         if (button == self.withFriendsButton) {
-            self.dataSource.multiPlayer = YES;
+            self.dataSource.multiplayer = YES;
+            [self.pickerView reloadAllComponents];
         } else if (button == self.flyingSoloButton) {
-            self.dataSource.multiPlayer = NO;
+            self.dataSource.multiplayer = NO;
+            [self.pickerView reloadAllComponents];
         }
         [self updatePickerView];
         //Animate buttons and picker views
@@ -223,7 +224,7 @@
         //Set whether game type was chosen or not.
         self.gameTypeSelected = !self.gameTypeSelected;
     } else { //If game type selected the Next button must have been selected. Play game.
-        if (self.dataSource.multiPlayer) {
+        if (self.dataSource.multiplayer) {
             [self presentMatchMakerViewController];
         } else {
             [self performSegueWithIdentifier:@"Play Game" sender:button];
@@ -300,16 +301,18 @@
 #pragma mark - UIPickerViewDelegate
 
 - (NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    return [[NSAttributedString alloc] initWithString:[self.dataSource pickerViewStringForRow:row] attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]]; //Return string for row
+    NSString *componentTitle = self.dataSource.dataSectionTitles[component];
+    NSArray *titles = [self.dataSource.data objectForKey:componentTitle];
+    return [[NSAttributedString alloc] initWithString:[titles objectAtIndex:row] attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]]; //Return string for row
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component { //Called when row selected
-    [self.dataSource storePickerViewDataForRow:row]; //Store data for row
+    [self.dataSource didSelectIndexPath:[NSIndexPath indexPathForRow:row inSection:component]]; //Store data for row
 }
 
 -(void)updatePickerView { //Updates pickerview to most recently selected row
     [self.pickerView reloadAllComponents];
-    NSUInteger row = [self.dataSource pickerViewDefaultRow];
+    NSInteger row = [self.dataSource rowForSelectedNumberOfCards];
     [self.pickerView selectRow:row inComponent:0 animated:YES];
 }
 
@@ -320,15 +323,22 @@
         if ((UIButton *)sender == self.nextButton) { //Check sender
             if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) { //Check destination
                 CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
-                cfvc.multiplayer = self.dataSource.multiPlayer;
+//                cfvc.multiplayer = self.dataSource.multiplayer;
+                cfvc.dataSource = self.dataSource;
                 //Check to see what gameType
-                if (self.dataSource.multiPlayer) {
+                if (self.dataSource.multiplayer) {
                     self.networkingEngine.delegate = cfvc;
                     cfvc.networkingEngine = self.networkingEngine;
                 }
             }
         }
     }
+}
+
+#pragma mark - Abstract Methods
+
+- (GameDataController *)createDataSource { //Abstract
+    return nil;
 }
 
 @end

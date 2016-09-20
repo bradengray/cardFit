@@ -7,7 +7,7 @@
 //
 
 #import "SideMenuViewController.h"
-#import "GameSettingsTVC.h"
+#import "SettingsTVC.h"
 
 #define BUTTON_TITLE_ONE @"Main Menu"
 #define BUTTON_TITLE_TWO @"Game Options"

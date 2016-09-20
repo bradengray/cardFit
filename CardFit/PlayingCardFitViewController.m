@@ -7,7 +7,6 @@
 //
 
 #import "PlayingCardFitViewController.h"
-#import "PlayingCardDataController.h"
 #import "PlayingCardDeck.h"
 #import "PlayingCardView.h"
 
@@ -16,17 +15,12 @@
 //When view disappears it sets the shared playing card object back to save so that values are stored in NSUserDefaults
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.dataSource save];
 }
 
 #pragma mark - Abstract Methods
 
 - (Deck *)createDeck { //Creates deck for game play
-    return [[PlayingCardDeck alloc] initWithNumberOfCards:[self.dataSource numberOfCards] withJokers:self.dataSource.jokers];
-}
-
-- (DataController *)createDataSource { //Abstract returns dataSource
-    return [[PlayingCardDataController alloc] init];
+    return [[PlayingCardDeck alloc] initWithNumberOfCards:self.dataSource.numberOfCards];
 }
 
 - (UIView *)createCardViewWithCard:(Card *)card { //Creates card view for card object
@@ -46,13 +40,6 @@
         } else if (!card) {
             playingCardView.rank = 0;
         }
-    }
-}
-
-- (void)rotate:(UIView *)cardView {
-    if ([cardView isKindOfClass:[PlayingCardView class]]) {
-        PlayingCardView *playingCardView = (PlayingCardView *)cardView;
-        [playingCardView setRotation];
     }
 }
 

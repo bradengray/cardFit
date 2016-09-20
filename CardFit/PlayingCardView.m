@@ -223,6 +223,7 @@
 
 - (void)layoutSubviews { //Sets up for when cards are layed out in subview
     [self setUp];
+    [self setRotation];
 }
 
 - (CGAffineTransform)rotateLeft {
@@ -238,12 +239,24 @@
 }
 
 - (void)setRotation {
+    int rotated = 0;
+    if (self.bounds.size.height < self.bounds.size.width) {
+        rotated = 1;
+    }
+    NSLog(@"%ld", rotated);
     [UIView animateWithDuration:0.1 animations:^{
         if ([Orientation landscapeOrientation]) {
             self.transform = [self rotateLeft];
+//            if (!rotated) {
+//                self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+//            }
         } else {
             self.transform = [self rotate];
+//            if (rotated) {
+//                self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+//            }
         }
+//        self.frame = self.frame;
     }];
 }
 

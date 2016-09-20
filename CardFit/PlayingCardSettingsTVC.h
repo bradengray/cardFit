@@ -6,8 +6,8 @@
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
-#import "GameSettingsTVC.h"
+#import "SettingsTVC.h"
 
-@interface PlayingCardSettingsTVC : GameSettingsTVC
+@interface PlayingCardSettingsTVC : SettingsTVC
 
 @end

@@ -30,6 +30,7 @@
 
 @property (nonatomic) BOOL playerOne; //Bool to track whether or not we are playerOne
 @property (nonatomic) BOOL gameOver; //Bool to track if game is over or not
+@property (nonatomic) BOOL multiplayer; //Required to be set for multiplayer games
 
 @end
 
@@ -50,8 +51,12 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+//    [self setCardViewFrame];
+}
+
 - (void)viewDidLayoutSubviews {
-    [self rotate:self.cardView];
     [self setCardViewFrame];
 }
 
@@ -63,7 +68,7 @@
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         [self setCardViewFrame];
+//         [self setCardViewFrame];
      } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
          //When done update the UI
@@ -75,19 +80,17 @@
 
 #pragma mark - Properties
 
-//Lazy insantiate data Source
-- (DataController *)dataSource {
-    if (!_dataSource) {
-        _dataSource = [self createDataSource];
-    }
-    return _dataSource;
+//Set DataSource
+- (void)setDataSource:(GameDataController *)dataSource {
+    _dataSource = dataSource;
+    self.multiplayer = dataSource.multiplayer;
 }
 
 //Lazy instantiate game
 - (CardFitGame *)game {
     if (!_game) {
         //Use designated initializer to create game
-        _game = [[CardFitGame alloc] initWithCardCount:[self.dataSource numberOfCards] withDeck:[self createDeck]];
+        _game = [[CardFitGame alloc] initWithCardCount:self.dataSource.numberOfCards withDeck:[self createDeck]];
     }
     //Return result
     return _game;
@@ -103,6 +106,12 @@
         //Then return what was set by game
         return _playerOne;
     }
+}
+
+//Set network engine and multiplayer boolean
+- (void)setNetworkingEngine:(MultiplayerNetworking *)networkingEngine {
+    _networkingEngine = networkingEngine;
+    self.multiplayer = YES;
 }
 
 #pragma mark - Countdown And Setup
@@ -503,7 +512,7 @@
 //Called if player is player one
 - (void)isPlayerOne {
     //Send your settings to all other players
-    [self.networkingEngine sendGameInfo:self.dataSource.settings];
+//    [self.networkingEngine sendGameInfo:self.dataSource.settings];
     //Set BOOL playerOne equal YES
     self.playerOne = YES;
     //Set up game for start
@@ -541,7 +550,7 @@
         [self recievedCard:card];
     } else { //If not card them must be settings
         //call recieved Settings
-        [self.dataSource recievedSettings:gameInfo];
+//        [self.dataSource recievedSettings:gameInfo];
     }
 }
 
@@ -582,10 +591,6 @@
 }
 
 - (void)updateCardView:(UIView *)cardView withCard:(Card *)card { // abstract
-    return;
-}
-
-- (void)rotate:(UIView *)cardView {
     return;
 }
 

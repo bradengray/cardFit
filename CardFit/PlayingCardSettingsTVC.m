@@ -7,14 +7,29 @@
 //
 
 #import "PlayingCardSettingsTVC.h"
-#import "PlayingCardDataController.h"
+#import "PlayingCardMainSettingsController.h"
+
+@interface PlayingCardSettingsTVC ()
+
+@property (nonatomic, strong) PlayingCardMainSettingsController *playingCardDataSource; //Stores data source object
+
+@end
 
 @implementation PlayingCardSettingsTVC
 
-#pragma mark - Initialization
+#pragma mark - Properties
+//Lazy instantiate data source object
+- (PlayingCardMainSettingsController *)playingCardDataSource {
+    if (!_playingCardDataSource) {
+        _playingCardDataSource = [[PlayingCardMainSettingsController alloc] init];
+    }
+    return _playingCardDataSource;
+}
+
+#pragma mark - Abstract Methods
 
 - (DataController *)createDataSource { //Abstract returns dataSource
-    return [[PlayingCardDataController alloc] init];
+    return self.playingCardDataSource;
 }
 
 @end

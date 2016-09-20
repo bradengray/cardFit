@@ -2,54 +2,11 @@
 //  PlayingCardSettings.m
 //  CardFit
 //
-//  Created by Braden Gray on 4/11/16.
+//  Created by Braden Gray on 9/13/16.
 //  Copyright © 2016 Graycode. All rights reserved.
 //
 
 #import "PlayingCardSettings.h"
-#import "SettingsCell.h"
-
-//Keys for Suits
-#define SPADE @"♠️"
-#define CLUB @"♣️"
-#define HEART @"♥️"
-#define DIAMOND @"♦️"
-
-//Keys for Cards
-#define JACK @"Jack"
-#define QUEEN @"Queen"
-#define KING @"King"
-#define ACE @"Ace"
-#define JOKER @"Joker"
-
-//Keys for jokers options and defualts section
-#define JOKERS_OPTIONS @"Play With Jokers"
-#define DEFAULTS @"Restore Defaults"
-
-//Keys for exercises
-#define EXERCISE @"Exercise"
-#define SPADES_EXCERCISE_KEY @"Spades Exercise Key"
-#define CLUBS_EXCERCISE_KEY @"Clubs Exercies Key"
-#define HEARTS_EXCERCISE_KEY @"Hearts Exercise Key"
-#define DIAMONDS_EXCERCISE_KEY @"Diamonds Exercies Key"
-#define ACES_EXERCISE_KEY @"Aces Exercise Key"
-#define JOKERS_EXERCISE_KEY @"Jokers Exercise Key"
-
-//Keys for points.
-#define EXERCISE_AND_POINTS @"Exercise and Points"
-#define POINTS @"Points"
-#define JACKS_POINTS_KEY @"Jacks Points Key"
-#define QUEENS_POINTS_KEY @"Queen Points Key"
-#define KINGS_POINTS_KEY @"King Points Key"
-#define ACES_POINTS_KEY @"Aces Points Key"
-#define JOKERS_POINTS_KEY @"Jokers Points Key"
-
-//Key for jokers boolean value.
-#define JOKERS_BOOLEAN_KEY @"Jokers Boolean Key"
-
-//Keys for footer Instructions
-#define FOOTER_INSTRUCTIONS_1 @"Do not explicitly state the number of reps. Reps will be determined by the card."
-#define FOOTER_INSTRUCTIONS_2 @"Points will determine the value of this card for scoring."
 
 @interface PlayingCardSettings ()
 
@@ -68,181 +25,98 @@
 @property (nonatomic) NSUInteger acesPoints;
 @property (nonatomic) NSUInteger jokersPoints;
 
+//Stores Jokers Bool
+@property (nonatomic) BOOL playWithJokers;
+
 @end
 
 @implementation PlayingCardSettings
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        self.save = YES;
-    }
-    return self;
+#pragma mark - Settings Methods
+
+//Create dictionary of all settings values for NSCoding
+- (NSDictionary *)settingsValues {
+    NSMutableDictionary *settingsValues = [[super values] mutableCopy];
+    [settingsValues addEntriesFromDictionary:@{SPADES_EXCERCISE_KEY : self.spadesExerciseString, CLUBS_EXCERCISE_KEY : self.clubsExerciseString, HEARTS_EXCERCISE_KEY : self.heartsExerciseString, DIAMONDS_EXCERCISE_KEY : self.diamondsExerciseString, ACES_EXERCISE_KEY : self.acesExerciseString, JOKERS_EXERCISE_KEY : self.jokersExerciseString, JACKS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.jokersPoints], QUEENS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.queensPoints], KINGS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.kingsPoints], ACES_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.acesPoints], JACKS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.jokersPoints], JOKERS_BOOLEAN_KEY : [NSNumber numberWithBool:self.playWithJokers]}];
+    return settingsValues;
 }
 
-//Used by NSCoder to encode this object using NSKeyedArchiver
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    
-    [aCoder encodeBool:!self.save forKey:@"Save"];
-    [aCoder encodeObject:self.spadesExerciseString forKey:SPADES_EXCERCISE_KEY];
-    [aCoder encodeObject:self.clubsExerciseString forKey:CLUBS_EXCERCISE_KEY];
-    [aCoder encodeObject:self.heartsExerciseString forKey:HEARTS_EXCERCISE_KEY];
-    [aCoder encodeObject:self.diamondsExerciseString forKey:DIAMONDS_EXCERCISE_KEY];
-    [aCoder encodeObject:self.acesExerciseString forKey:ACES_EXERCISE_KEY];
-    [aCoder encodeObject:self.jokersExerciseString forKey:JOKERS_EXERCISE_KEY];
-    
-    [aCoder encodeInteger:self.jacksPoints forKey:JACKS_POINTS_KEY];
-    [aCoder encodeInteger:self.queensPoints forKey:QUEENS_POINTS_KEY];
-    [aCoder encodeInteger:self.kingsPoints forKey:KINGS_POINTS_KEY];
-    [aCoder encodeInteger:self.acesPoints forKey:ACES_POINTS_KEY];
-    [aCoder encodeInteger:self.jokersPoints forKey:JOKERS_POINTS_KEY];
-}
-
-//Used by NSCoder to decode this object using NSKeyedUnarchiver.
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    
-    self.save = [aDecoder decodeBoolForKey:@"Save"];
-    self.spadesExerciseString = [aDecoder decodeObjectForKey:SPADES_EXCERCISE_KEY];
-    self.clubsExerciseString = [aDecoder decodeObjectForKey:CLUBS_EXCERCISE_KEY];
-    self.heartsExerciseString = [aDecoder decodeObjectForKey:HEARTS_EXCERCISE_KEY];
-    self.diamondsExerciseString = [aDecoder decodeObjectForKey:DIAMONDS_EXCERCISE_KEY];
-    self.acesExerciseString = [aDecoder decodeObjectForKey:ACES_EXERCISE_KEY];
-    self.jokersExerciseString = [aDecoder decodeObjectForKey:JOKERS_EXERCISE_KEY];
-    
-    self.jacksPoints = [aDecoder decodeIntegerForKey:JACKS_POINTS_KEY];
-    self.queensPoints = [aDecoder decodeIntegerForKey:QUEENS_POINTS_KEY];
-    self.kingsPoints = [aDecoder decodeIntegerForKey:KINGS_POINTS_KEY];
-    self.acesPoints = [aDecoder decodeIntegerForKey:ACES_POINTS_KEY];
-    self.jokersPoints = [aDecoder decodeIntegerForKey:JOKERS_POINTS_KEY];
-    
-    return self;
-}
-
-#pragma mark - Settings
-
-//Data holds an array of sections
-- (NSArray *)data {
-    return @[[self defaults], [self options], [self suits], [self cards]];
-}
-
-//Sections array holds the names of the sections
-- (NSArray *)sectionsArray {
-    return @[@"Defaults", @"Options", @"Suits", @"Cards"];
-}
-
-#pragma mark - Section Arrays
-
-//Array holding dictionaries for the different suits;
-- (NSArray *)suits {
-    return @[[self spade], [self club], [self heart], [self diamond]];
-}
-
-//Array holding dictionaries for the different cards. If there are not jokers it will not show this in the data.
-- (NSArray *)cards {
-    if (self.jokers) {
-        return @[[self ace], [self joker]];
+//Returns Value For Given Key
+- (id)getValueForKey:(NSString *)key {
+    if ([key isEqualToString:SPADES_EXCERCISE_KEY]) {
+        return self.spadesExerciseString;
+    } else if ([key isEqualToString:CLUBS_EXCERCISE_KEY]) {
+        return self.clubsExerciseString;
+    } else if ([key isEqualToString:HEARTS_EXCERCISE_KEY]) {
+        return self.heartsExerciseString;
+    } else if ([key isEqualToString:DIAMONDS_EXCERCISE_KEY]) {
+        return self.diamondsExerciseString;
+    } else if ([key isEqualToString:ACES_EXERCISE_KEY]) {
+        return self.acesExerciseString;
+    } else if ([key isEqualToString:JOKERS_EXERCISE_KEY]) {
+        return self.jokersExerciseString;
+    } else if ([key isEqualToString:JACKS_POINTS_KEY]) {
+        return [NSNumber numberWithUnsignedInteger:self.jacksPoints];
+    } else if ([key isEqualToString:QUEENS_POINTS_KEY]) {
+        return [NSNumber numberWithUnsignedInteger:self.queensPoints];
+    } else if ([key isEqualToString:KINGS_POINTS_KEY]) {
+        return [NSNumber numberWithUnsignedInteger:self.kingsPoints];
+    } else if ([key isEqualToString:ACES_POINTS_KEY]) {
+        return [NSNumber numberWithUnsignedInteger:self.acesPoints];
+    } else if ([key isEqualToString:JOKERS_POINTS_KEY]) {
+        return [NSNumber numberWithUnsignedInteger:self.jokersPoints];
+    } else if ([key isEqualToString:JOKERS_BOOLEAN_KEY]) {
+        return [NSNumber numberWithBool:self.playWithJokers];
     } else {
-        return @[[self ace]];
+        NSLog(@"Settings Error: no value for key");
+        return nil;
     }
 }
 
-//Array holding dictionaries for cells as buttons
-- (NSArray *)defaults {
-    return @[[self defaultButtons]];
-}
-
-//Array holding dictionaries for cells with switches
-- (NSArray *)options {
-    return @[[self jokerOption]];
-}
-
-#pragma mark - Row SettingsCells
-
-//SettingsCell for our default button
-- (SettingsCell *)defaultButtons {
-    SettingsCell *cell = [[SettingsCell alloc] init];
-    cell.title = DEFAULTS;
-    cell.cellIdentifier = CELL_3;
-    return cell;
-}
-
-//SettingsCell for our spade suit
-- (SettingsCell *)spade {
-    SettingsCell *cell = [[SettingsCell alloc] init];
-    cell.title = SPADE;
-    cell.cellIdentifier = CELL_1;
-    cell.detailDescription = EXERCISE;
-    cell.detailSettingsCells = [self createSettingsCellsArrayForKey:SPADE];
-    cell.footerInstrucions = FOOTER_INSTRUCTIONS_1;
-    return cell;
-}
-
-//SettingsCell for our club suit
-- (SettingsCell *)club {
-    SettingsCell *cell = [[SettingsCell alloc] init];    cell.title = CLUB;
-    cell.cellIdentifier = CELL_1;
-    cell.detailDescription = EXERCISE;
-    cell.detailSettingsCells = [self createSettingsCellsArrayForKey:CLUB];
-    cell.footerInstrucions = FOOTER_INSTRUCTIONS_1;
-    return cell;
-}
-
-//SettingsCell for our heart suit
-- (SettingsCell *)heart {
-    SettingsCell *cell = [[SettingsCell alloc] init];
-    cell.title = HEART;
-    cell.cellIdentifier = CELL_1;
-    cell.detailDescription = EXERCISE;
-    cell.detailSettingsCells = [self createSettingsCellsArrayForKey:HEART];
-    cell.footerInstrucions = FOOTER_INSTRUCTIONS_1;
-    return cell;
-}
-
-//SettingsCell for our diamond suit
-- (SettingsCell *)diamond {
-    SettingsCell *cell = [[SettingsCell alloc] init];
-    cell.title = DIAMOND;
-    cell.cellIdentifier = CELL_1;
-    cell.detailDescription = EXERCISE;
-    cell.detailSettingsCells = [self createSettingsCellsArrayForKey:DIAMOND];
-    cell.footerInstrucions = FOOTER_INSTRUCTIONS_1;
-    return cell;
-}
-
-//SettingsCell for our ace card
-- (SettingsCell *)ace {
-    SettingsCell *cell = [[SettingsCell alloc] init];
-    cell.title = ACE;
-    cell.cellIdentifier = CELL_1;
-    cell.detailDescription = EXERCISE_AND_POINTS;
-    cell.detailSettingsCells = [self createSettingsCellsArrayForKey:ACE];
-    cell.footerInstrucions = FOOTER_INSTRUCTIONS_2;
-    return cell;
-}
-
-//SettingsCell for our joker card
-- (SettingsCell *)joker {
-    SettingsCell *cell = [[SettingsCell alloc] init];
-    cell.title = JOKER;
-    cell.cellIdentifier = CELL_1;
-    cell.detailDescription = EXERCISE_AND_POINTS;
-    cell.detailSettingsCells = [self createSettingsCellsArrayForKey:JOKER];
-    cell.footerInstrucions = FOOTER_INSTRUCTIONS_2;
-    return cell;
-}
-
-//SettingsCell for our cell containing switch giving option of whether our cards will have jokers or not
-- (SettingsCell *)jokerOption {
-    SettingsCell *cell = [[SettingsCell alloc] init];
-    cell.title = JOKERS_OPTIONS;
-    cell.cellIdentifier = CELL_2;
-    cell.cellBool = self.jokers;
-    return cell;
+//Sets value for given key
+#warning Consider only taking one data type
+- (void)setSettingsValue:(id)value forKey:(NSString *)key { //Abstract
+    if ([value isKindOfClass:[NSString class]]) {
+        if ([key isEqualToString:SPADES_EXCERCISE_KEY]) {
+            self.spadesExerciseString = (NSString *)value;
+        } else if ([key isEqualToString:CLUBS_EXCERCISE_KEY]) {
+            self.clubsExerciseString = (NSString *)value;
+        } else if ([key isEqualToString:HEARTS_EXCERCISE_KEY]) {
+            self.heartsExerciseString = (NSString *)value;
+        } else if ([key isEqualToString:DIAMONDS_EXCERCISE_KEY]) {
+            self.diamondsExerciseString = (NSString *)value;
+        } else if ([key isEqualToString:ACES_EXERCISE_KEY]) {
+            self.acesExerciseString = (NSString *)value;
+        } else if ([key isEqualToString:JOKERS_EXERCISE_KEY]) {
+            self.jokersExerciseString = (NSString *)value;
+        } else if ([key isEqualToString:JACKS_POINTS_KEY]) {
+            self.jacksPoints = [(NSString *)value integerValue];
+        } else if ([key isEqualToString:QUEENS_POINTS_KEY]) {
+            self.queensPoints = [(NSString *)value integerValue];
+        } else if ([key isEqualToString:KINGS_POINTS_KEY]) {
+            self.kingsPoints = [(NSString *)value integerValue];
+        } else if ([key isEqualToString:ACES_POINTS_KEY]) {
+            self.acesPoints = [(NSString *)value integerValue];
+        } else if ([key isEqualToString:JOKERS_POINTS_KEY]) {
+            self.jokersPoints = [(NSString *)value integerValue];
+        } else if ([key isEqualToString:JOKERS_BOOLEAN_KEY]) {
+            self.playWithJokers = (BOOL)[(NSString *)value integerValue];
+        } else {
+            NSLog(@"Playing Card Settings Error: key did not match known values");
+            return;
+        }
+    } else if ([value isKindOfClass:[NSNumber class]]) {
+        if ([key isEqualToString:JOKERS_BOOLEAN_KEY]) {
+            self.playWithJokers = [(NSNumber *)value boolValue];
+        }
+    } else {
+        NSLog(@"Playing Card Settings Error: unknown type");
+        return;
+    }
 }
 
 #pragma mark - Exercises Properties
-
-//Setters and Getters written for all exercies properties
+//Synthesize properties for setters and getters
 @synthesize spadesExerciseString = _spadesExerciseString;
 @synthesize clubsExerciseString = _clubsExerciseString;
 @synthesize heartsExerciseString = _heartsExerciseString;
@@ -251,104 +125,110 @@
 @synthesize jokersExerciseString = _jokersExerciseString;
 
 - (NSString *)spadesExerciseString { //Returns exercise for spades or a default value.
-    if (self.save) {
-        return [self valueForKey:SPADES_EXCERCISE_KEY withDefaultString:@"PUSH-UPS"];
-    } else {
+    if (self.getLocalValue) {
         return _spadesExerciseString ? _spadesExerciseString : @"?";
+    } else {
+#warning needs introspection
+        return [self valueForKey:SPADES_EXCERCISE_KEY withDefaultString:@"PUSH-UPS"];
     }
 }
 
 - (NSString *)clubsExerciseString { //Returns exercise for clubs or a default value.
-    if (self.save) {
-        return [self valueForKey:CLUBS_EXCERCISE_KEY withDefaultString:@"SIT-UPS"];
-    } else {
+    if (self.getLocalValue) {
         return _clubsExerciseString ? _clubsExerciseString : @"?";
+    } else {
+        return [self valueForKey:CLUBS_EXCERCISE_KEY withDefaultString:@"SIT-UPS"];
     }
 }
 
 - (NSString *)heartsExerciseString { //Returns exercise for hearts or a default value.
-    if (self.save) {
-        return [self valueForKey:HEARTS_EXCERCISE_KEY withDefaultString:@"LUNGES"];
-    } else {
+    if (self.getLocalValue) {
         return _heartsExerciseString ? _heartsExerciseString : @"?";
+    } else {
+        return [self valueForKey:HEARTS_EXCERCISE_KEY withDefaultString:@"LUNGES"];
     }
 }
 
 - (NSString *)diamondsExerciseString { //Returns exercise for diamonds or a default value.
-    if (self.save) {
-        return [self valueForKey:DIAMONDS_EXCERCISE_KEY withDefaultString:@"SQUATS"];
-    } else {
+    if (self.getLocalValue) {
         return _diamondsExerciseString ? _diamondsExerciseString : @"?";
+    } else {
+        return [self valueForKey:DIAMONDS_EXCERCISE_KEY withDefaultString:@"SQUATS"];
     }
 }
 
 - (NSString *)acesExerciseString { //Returns exercise for aces or a default value.
-    if (self.save) {
-        return [self valueForKey:ACES_EXERCISE_KEY withDefaultString:@"25 JUMP ROPE"];
-    } else {
+    if (self.getLocalValue) {
         return _acesExerciseString ? _acesExerciseString : @"?";
+    } else {
+        return [self valueForKey:ACES_EXERCISE_KEY withDefaultString:@"25 JUMP ROPE"];
     }
 }
 
 - (NSString *)jokersExerciseString { //Returns exercise for jokers or a default value.
-    if (self.save) {
-        return [self valueForKey:JOKERS_EXERCISE_KEY withDefaultString:@"20 BURPEES"];
-    } else {
+    if (self.getLocalValue) {
         return _jokersExerciseString ? _jokersExerciseString : @"?";
+    } else {
+        return [self valueForKey:JOKERS_EXERCISE_KEY withDefaultString:@"20 BURPEES"];
     }
 }
 
-- (void)setSpadesExerciseString:(NSString *)spadesExerciseString { //Sets exercise for spades in NSUserdefaults.
-    if (self.save) {
-        [self setStringValue:spadesExerciseString forKey:SPADES_EXCERCISE_KEY];
-    } else {
+- (void)setSpadesExerciseString:(NSString *)spadesExerciseString { //Sets exercise for spade
+    if (self.getLocalValue) {
         _spadesExerciseString = spadesExerciseString;
+    } else {
+        [self save:@{SPADES_EXCERCISE_KEY : spadesExerciseString}];
+        [self settingChanged];
     }
 }
 
-- (void)setClubsExerciseString:(NSString *)clubsExerciseString { //Sets exercise for clubs in NSUserdefaults.
-    if (self.save) {
-        [self setStringValue:clubsExerciseString forKey:CLUBS_EXCERCISE_KEY];
-    } else {
+- (void)setClubsExerciseString:(NSString *)clubsExerciseString { //Sets exercise for club
+    if (self.getLocalValue) {
         _clubsExerciseString = clubsExerciseString;
+    } else {
+        [self save:@{CLUBS_EXCERCISE_KEY : clubsExerciseString}];
+        [self settingChanged];
     }
 }
 
-- (void)setHeartsExerciseString:(NSString *)heartsExerciseString { //Sets exercise for hearts in NSUserdefaults.
-    if (self.save) {
-        [self setStringValue:heartsExerciseString forKey:HEARTS_EXCERCISE_KEY];
-    } else {
+- (void)setHeartsExerciseString:(NSString *)heartsExerciseString { //Sets exercise for heart
+    if (self.getLocalValue) {
         _heartsExerciseString = heartsExerciseString;
+    } else {
+        [self save:@{HEARTS_EXCERCISE_KEY : heartsExerciseString}];
+        [self settingChanged];
     }
 }
 
-- (void)setDiamondsExerciseString:(NSString *)diamondsExerciseString { //Sets exercise for diamonds in NSUserdefaults.
-    if (self.save) {
-        [self setStringValue:diamondsExerciseString forKey:DIAMONDS_EXCERCISE_KEY];
-    } else {
+- (void)setDiamondsExerciseString:(NSString *)diamondsExerciseString { //Sets exercise for diamond
+    if (self.getLocalValue) {
         _diamondsExerciseString = diamondsExerciseString;
+    } else {
+        [self save:@{DIAMONDS_EXCERCISE_KEY : diamondsExerciseString}];
+        [self settingChanged];
     }
 }
 
-- (void)setAcesExerciseString:(NSString *)acesExerciseString { //Sets exercise for aces in NSUserdefaults.
-    if (self.save) {
-        [self setStringValue:acesExerciseString forKey:ACES_EXERCISE_KEY];
-    } else {
+- (void)setAcesExerciseString:(NSString *)acesExerciseString { //Sets exercise for ace
+    if (self.getLocalValue) {
         _acesExerciseString = acesExerciseString;
+    } else {
+        [self save:@{ACES_EXERCISE_KEY : acesExerciseString}];
+        [self settingChanged];
     }
 }
 
-- (void)setJokersExerciseString:(NSString *)jokersExerciseString { //Sets exercise for jokers in NSUserdefaults.
-    if (self.save) {
-        [self setStringValue:jokersExerciseString forKey:JOKERS_EXERCISE_KEY];
-    } else {
+- (void)setJokersExerciseString:(NSString *)jokersExerciseString { //Sets exercise for joker
+    if (self.getLocalValue) {
         _jokersExerciseString = jokersExerciseString;
+    } else {
+        [self save:@{JOKERS_EXERCISE_KEY : jokersExerciseString}];
+        [self settingChanged];
     }
 }
 
 #pragma mark - Points Properties
-
-//Setters and Getters written for all points properties
+//Synthesize for setters and getters
 @synthesize jacksPoints = _jacksPoints;
 @synthesize queensPoints = _queensPoints;
 @synthesize kingsPoints = _kingsPoints;
@@ -356,286 +236,109 @@
 @synthesize jokersPoints = _jokersPoints;
 
 - (NSUInteger)jacksPoints { //Returns integer value for jacks points or default value.
-    if (self.save) {
-        return [self valueForKey:JACKS_POINTS_KEY withDefaultValue:12];
+    if (self.getLocalValue) {
+        return _jacksPoints ? _jacksPoints : 0;
     } else {
-        return _jacksPoints;
+        return [self valueForKey:JACKS_POINTS_KEY withDefaultValue:12];
     }
 }
 
 - (NSUInteger)queensPoints { //Returns integer value for queens points or default value.
-    if (self.save) {
-        return [self valueForKey:QUEENS_POINTS_KEY withDefaultValue:15];
+    if (self.getLocalValue) {
+        return _queensPoints ? _queensPoints : 0;
     } else {
-        return _queensPoints;
+        return [self valueForKey:QUEENS_POINTS_KEY withDefaultValue:15];
     }
 }
 
 - (NSUInteger)kingsPoints { //Returns integer value for kings points or default value.
-    if (self.save) {
-        return [self valueForKey:KINGS_POINTS_KEY withDefaultValue:20];
+    if (self.getLocalValue) {
+        return _kingsPoints ? _kingsPoints : 0;
     } else {
-        return _kingsPoints;
+        return [self valueForKey:KINGS_POINTS_KEY withDefaultValue:20];
     }
 }
 
 - (NSUInteger)acesPoints { //Returns integer value for aces points or default value.
-    if (self.save) {
-        return [self valueForKey:ACES_POINTS_KEY withDefaultValue:25];
+    if (self.getLocalValue) {
+        return _acesPoints ? _acesPoints : 0;
     } else {
-        return _acesPoints;
+        return [self valueForKey:ACES_POINTS_KEY withDefaultValue:25];
     }
 }
 
 - (NSUInteger)jokersPoints { //Returns integer value for jokers points or default value.
-    if (self.save) {
+    if (self.getLocalValue) {
+        return _jokersPoints ? _jacksPoints : 0;
+    } else {
         return [self valueForKey:JOKERS_POINTS_KEY withDefaultValue:50];
-    } else {
-        return _jokersPoints;
     }
 }
 
-- (void)setJacksPoints:(NSUInteger)jacksPoints { //Sets integer value for jacks reps in NSUserdefaults.
-    if (self.save) {
-        [self setNSUIntegerValue:jacksPoints forKey:JACKS_POINTS_KEY];
-    } else {
+- (void)setJacksPoints:(NSUInteger)jacksPoints { //Sets points value for jack
+    if (self.getLocalValue) {
         _jacksPoints = jacksPoints;
+    } else {
+        [self save:@{JACKS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:jacksPoints]}];
+        [self settingChanged];
     }
 }
 
-- (void)setQueensPoints:(NSUInteger)queensPoints { //Sets integer value for queens reps in NSUserdefaults.
-    if (self.save) {
-        [self setNSUIntegerValue:queensPoints forKey:QUEENS_POINTS_KEY];
-    } else {
+- (void)setQueensPoints:(NSUInteger)queensPoints { //Sets points value for jack
+    if (self.getLocalValue) {
         _queensPoints = queensPoints;
+    } else {
+        [self save:@{QUEENS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:queensPoints]}];
+        [self settingChanged];
     }
 }
 
-- (void)setKingsPoints:(NSUInteger)kingsPoints { //Sets integer value for kings reps in NSUserdefaults.
-    if (self.save) {
-        [self setNSUIntegerValue:kingsPoints forKey:KINGS_POINTS_KEY];
-    } else {
+- (void)setKingsPoints:(NSUInteger)kingsPoints { //Sets points value for jack
+    if (self.getLocalValue) {
         _kingsPoints = kingsPoints;
+    } else {
+        [self save:@{KINGS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:kingsPoints]}];
+        [self settingChanged];
     }
 }
 
-- (void)setAcesPoints:(NSUInteger)acesPoints { //Sets integer value for aces reps in NSUserdefaults.
-    if (self.save) {
-        [self setNSUIntegerValue:acesPoints forKey:ACES_POINTS_KEY];
-    } else {
+- (void)setAcesPoints:(NSUInteger)acesPoints { //Sets points value for jack
+    if (self.getLocalValue) {
         _acesPoints = acesPoints;
+    } else {
+        [self save:@{ACES_POINTS_KEY : [NSNumber numberWithUnsignedInteger:acesPoints]}];
+        [self settingChanged];
     }
 }
 
-- (void)setJokersPoints:(NSUInteger)jokersPoints { //Sets integer value for jokers reps in NSUserdefaults.
-    if (self.save) {
-        [self setNSUIntegerValue:jokersPoints forKey:JOKERS_POINTS_KEY];
-    } else {
+- (void)setJokersPoints:(NSUInteger)jokersPoints { //Sets points value for jack
+    if (self.getLocalValue) {
         _jokersPoints = jokersPoints;
+    } else {
+        [self save:@{JOKERS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:jokersPoints]}];
+        [self settingChanged];
     }
 }
 
 #pragma mark - Boolean Properties
 
-- (BOOL)jokers { //Returns a boolean value for whether or not a game should have jokers used.
-    NSUInteger number = [self valueForKey:JOKERS_BOOLEAN_KEY withDefaultValue:[[NSNumber numberWithBool:YES] integerValue]];
-    return [[NSNumber numberWithInteger:number] boolValue];
-}
+@synthesize playWithJokers = _playWithJokers;
 
-- (void)setJokers:(BOOL)jokers { //Sets a boolean value for whether or not a game should have jokers in NSUserdefaults.
-    NSNumber *number = [NSNumber numberWithBool:jokers];
-    [self setNSUIntegerValue:[number integerValue] forKey:JOKERS_BOOLEAN_KEY];
-}
-
-#pragma mark Abstract Methods
-
-//Stores the settings for a settingsCell
-- (void)storeNewSettings:(SettingsCell *)settings { //Abstract
-    NSString *title = settings.title;
-    
-    if ([title isEqualToString:SPADE]) {
-        self.spadesExerciseString = [settings.detailSettingsCells[0] value];
-    } else if ([title isEqualToString:CLUB]) {
-        self.clubsExerciseString = [settings.detailSettingsCells[0] value];
-    } else if ([title isEqualToString:HEART]) {
-        self.heartsExerciseString = [settings.detailSettingsCells[0] value];
-    } else if ([title isEqualToString:DIAMOND]) {
-        self.diamondsExerciseString = [settings.detailSettingsCells[0] value];
-    } else if ([title isEqualToString:ACE]) {
-        self.acesPoints = [[settings.detailSettingsCells[0] value] integerValue];
-        self.acesExerciseString = [settings.detailSettingsCells[1] value];
-    } else if ([title isEqualToString:JOKER]) {
-        self.jokersPoints = [[settings.detailSettingsCells[0] value] integerValue];
-        self.jokersExerciseString = [settings.detailSettingsCells[1] value];
+- (BOOL)playWithJokers { //Returns a boolean value for whether or not a game should have jokers used.
+    if (self.getLocalValue) {
+        return _playWithJokers ? _playWithJokers : 0;
     } else {
-        NSLog(@"Error No Setting");
+        NSUInteger number = [self valueForKey:JOKERS_BOOLEAN_KEY withDefaultValue:[[NSNumber numberWithBool:YES] integerValue]];
+        return [[NSNumber numberWithUnsignedInteger:number] boolValue];
     }
 }
 
-//Communicates whether a switch has been changed or not
-- (void)switchChanged:(BOOL)on { //Abstract
-    self.jokers = on;
-}
-
-#define MAX_NUMBER_VALUE 1000
-#define MINIMUM_STRING_LENGTH 15
-
-//Returns an alert string for a given key
-- (NSString *)alertLabelForString:(NSString *)string forKey:(NSString *)key { //Abstract
-    if ([string isEqualToString:@""]) { //If no entry then alert
-        return @"Entry Required";
+- (void)setPlayWithJokers:(BOOL)playWithJokers { //Sets boolean value for jokers
+    if (self.getLocalValue) {
+        _playWithJokers = playWithJokers;
     } else {
-        if ([key isEqualToString:POINTS]) { //Check to see if number values only
-            if ([string integerValue] >= MAX_NUMBER_VALUE) { //Check against max value
-                return [NSString stringWithFormat:@"Value Must Be Less Than %d", MAX_NUMBER_VALUE];
-            } else if ([string integerValue] <= 0) {
-                    return @"Reps Must be Greater Than 0";
-            } else {
-                return nil;
-            }
-        } else { //If not a number value then must be a string
-            if ([string length] > MINIMUM_STRING_LENGTH) { //Check the string length
-                return [NSString stringWithFormat:@"Exercise Must Contain Less Than %d Characters", MINIMUM_STRING_LENGTH];
-            } else {
-                return nil;
-            }
-        }
-    }
-}
-
-//Returns a label for a given suit and rank
-- (NSString *)labelForSuit:(NSUInteger)suit andRank:(NSUInteger)rank { //Abstract
-    NSString *rankKey = [self keyForRank:rank];
-    NSString *suitKey = [self keyForSuit:suit];
-    
-    if (rank < 2 || rank > 13) {
-        return [self labelForKey:rankKey];
-    } else if (rank > 10) {
-        return [NSString stringWithFormat:@"%@ %@", [self labelForKey:rankKey], [self labelForKey:suitKey]];
-    } else {
-        return [NSString stringWithFormat:@"%ld %@", rank, [self labelForKey:suitKey]];
-    }
-}
-
-//Returns the points for a specific rank
-- (NSUInteger)pointsForRank:(NSUInteger)rank { //Abstract
-    NSString *key = [self keyForRank:rank];
-    if (key) {
-        return [self pointsForKey:key];
-    } else {
-        return rank;
-    }
-}
-
-#pragma mark - Helper Methods
-
-//Returns the points for a specific Key
-- (NSUInteger)pointsForKey:(NSString *)key {
-    if ([key isEqualToString: ACE]) {
-        return self.acesPoints;
-    } else if ([key isEqualToString:JACK]) {
-        return self.jacksPoints;
-    } else if ([key isEqualToString:QUEEN]) {
-        return self.queensPoints;
-    } else if ([key isEqualToString:KING]) {
-        return self.kingsPoints;
-    } else if ([key isEqualToString:JOKER]) {
-        return self.jokersPoints;
-    } else {
-        return 0;
-    }
-}
-
-//Creates detailSettingsCells array for a give key
-- (NSArray *)createSettingsCellsArrayForKey:(NSString *)key {
-    //Create Mutable Array
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    
-    //Get values
-    NSString *exercise = [self labelForKey:key];
-    NSUInteger points = [self pointsForKey:key];
-    
-    //If there is a points value create and add new SettingsCell
-    if (points) {
-        SettingsCell *pointsCell = [[SettingsCell alloc] init];
-        pointsCell.title = POINTS;
-        pointsCell.cellIdentifier = CELL_1;
-        pointsCell.value = [NSString stringWithFormat:@"%ld", points];
-        pointsCell.cellBool = YES;
-        [array addObject:pointsCell];
-    }
-    
-    //If there is an exercise value create and add a new SettingsCell
-    if (exercise) {
-        SettingsCell *exerciseCell = [[SettingsCell alloc] init];
-        exerciseCell.title = EXERCISE;
-        exerciseCell.cellIdentifier = CELL_1;
-        exerciseCell.value = exercise;
-        exerciseCell.cellBool = NO;
-        [array addObject:exerciseCell];
-    }
-    
-    return array;
-}
-
-//Returns a card label for a given dictionary key
-- (NSString *)labelForKey:(NSString *)key {
-    NSString *label = [self exerciseForKey:key];
-    if (label) {
-        return label;
-    } else {
-        return [NSString stringWithFormat:@"%ld", [self pointsForKey:key]];
-    }
-}
-
-//Returns the exercise for a specific Key
-- (NSString *)exerciseForKey:(NSString *)key {
-    if ([key isEqualToString:SPADE]) {
-        return self.spadesExerciseString;
-    } else if ([key isEqualToString:CLUB]) {
-        return self.clubsExerciseString;
-    } else if ([key isEqualToString:HEART]) {
-        return self.heartsExerciseString;
-    } else if ([key isEqualToString:DIAMOND]) {
-        return self.diamondsExerciseString;
-    } else if ([key isEqualToString:ACE]) {
-        return self.acesExerciseString;
-    } else if ([key isEqualToString:JOKER]) {
-        return self.jokersExerciseString;
-    } else {
-        return nil;
-    }
-}
-
-//Returns a label string for a rank
-- (NSString *)keyForRank:(NSUInteger)rank {
-    if (rank == 1) {
-        return ACE;
-    } else if(rank == 11) {
-        return JACK;
-    } else if (rank == 12) {
-        return QUEEN;
-    } else if (rank == 13) {
-        return KING;
-    } else if (rank == 14) {
-        return JOKER;
-    } else {
-        return nil;
-    }
-}
-
-//Returns a label string for a suit
-- (NSString *)keyForSuit:(NSUInteger)suit {
-    if (suit == 0) {
-        return SPADE;
-    } else if (suit == 1) {
-        return HEART;
-    } else if (suit == 2) {
-        return CLUB;
-    } else if (suit == 3) {
-        return DIAMOND;
-    } else {
-        return @"";
+        [self save:@{JOKERS_BOOLEAN_KEY : [NSNumber numberWithBool:playWithJokers]}];
+        [self settingChanged];
     }
 }
 

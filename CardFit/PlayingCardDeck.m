@@ -7,7 +7,7 @@
 //
 
 #import "PlayingCardDeck.h"
-#import "PlayingCardSettings.h"
+//#import "PlayingCardSettings.h"
 
 @implementation PlayingCardDeck
 
@@ -15,17 +15,23 @@
 
 #define STANDARD_NUMBER_OF_CARDS 52
 
-- (instancetype)intiWithNumberOfCards:(NSUInteger)numberOfCards {
-    return [self initWithNumberOfCards:numberOfCards withJokers:NO];
-}
+//- (instancetype)intiWithNumberOfCards:(NSUInteger)numberOfCards {
+//    return [self initWithNumberOfCards:numberOfCards withJokers:NO];
+//}
 
 //Called as the designated initializer
-- (instancetype)initWithNumberOfCards:(NSUInteger)numberOfCards withJokers:(BOOL)jokers{ //designated initialiazer
+- (instancetype)initWithNumberOfCards:(NSUInteger)numberOfCards{ //designated initialiazer
     self = [super init];
+    BOOL jokers = false;
     //Get the number of decks needed to satisfy the number of cards requested
     NSUInteger numberOfDecks;
     if (numberOfCards > STANDARD_NUMBER_OF_CARDS) {
-        numberOfDecks = numberOfCards/STANDARD_NUMBER_OF_CARDS;
+        if (numberOfCards % STANDARD_NUMBER_OF_CARDS != 0) {
+            jokers = YES;
+            numberOfDecks = (numberOfCards / STANDARD_NUMBER_OF_CARDS) + 1;
+        } else {
+            numberOfDecks = numberOfCards / STANDARD_NUMBER_OF_CARDS;
+        }
     } else {
         numberOfDecks = 1;
     }

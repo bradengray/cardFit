@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GameDataController.h"
 
 @interface MainPageViewController : UIViewController
+
+- (GameDataController *)createDataSource; //Abstract
 
 @end
