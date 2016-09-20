@@ -52,8 +52,8 @@
         cell.textLabel.text = cellTitle;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.delegate = self;
-        if ([[self.settings getValueForKey:cellTitle] isKindOfClass:[NSNumber class]]) {
-            [cell setSwitchValue:[[self.settings getValueForKey:cellTitle] boolValue]];
+        if ([[self getValueForKey:cellTitle] isKindOfClass:[NSNumber class]]) {
+            [cell setSwitchValue:[[self getValueForKey:cellTitle] boolValue]];
         } else {
             NSLog(@"DataSource Error: Value for key is not boolean value");
         }

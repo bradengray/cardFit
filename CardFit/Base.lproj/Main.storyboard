@@ -160,30 +160,6 @@
                                     <outlet property="textField" destination="sLk-j3-j5g" id="BzX-xD-c8A"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell2" id="xVL-vH-vHy" customClass="TextFieldTableViewCell">
-                                <rect key="frame" x="0.0" y="136" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xVL-vH-vHy" id="aWy-eb-lF7">
-                                    <frame key="frameInset" width="375" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="8uw-MB-Ea4">
-                                            <nil key="textColor"/>
-                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
-                                            <textInputTraits key="textInputTraits"/>
-                                        </textField>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <constraints>
-                                    <constraint firstItem="8uw-MB-Ea4" firstAttribute="top" secondItem="xVL-vH-vHy" secondAttribute="top" id="IcF-iN-RuV"/>
-                                    <constraint firstItem="8uw-MB-Ea4" firstAttribute="leading" secondItem="xVL-vH-vHy" secondAttribute="leading" id="gkQ-sL-tTt"/>
-                                    <constraint firstAttribute="trailing" secondItem="8uw-MB-Ea4" secondAttribute="trailing" id="hd1-YL-vbM"/>
-                                    <constraint firstAttribute="bottom" secondItem="8uw-MB-Ea4" secondAttribute="bottom" id="umc-dH-ALI"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="textField" destination="8uw-MB-Ea4" id="ROr-l9-pzn"/>
-                                </connections>
-                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Qnk-aJ-wZ5" id="AIQ-Z5-7bJ"/>

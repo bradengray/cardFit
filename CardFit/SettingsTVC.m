@@ -60,12 +60,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath { //Called when cell is selected
-    [self.dataSource didSelectIndexPath:indexPath];
-    self.selectedIndexpath = indexPath;
-    [self.tableView reloadData];
-    if (!(indexPath.section == 0)) { //If not section 0 then segue
+    if (indexPath.section > 1) { //If not section 0 then segue
+        [self.dataSource didSelectIndexPath:indexPath];
+        self.selectedIndexpath = indexPath;
         [self performSegueWithIdentifier:SETTINGS_DETAIL_SEGUE_IDENTIFER sender:tableView];
     }
+    [self.tableView reloadData];
 }
 
 #pragma mark Abstract Methods
