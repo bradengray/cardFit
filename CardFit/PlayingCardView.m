@@ -11,21 +11,32 @@
 
 @implementation PlayingCardView
 
+- (CGSize)intrinsicContentSize {
+    return CGSizeZero;
+}
+
+//- (UIEdgeInsets)alignmentRectInsets {
+//    return UIEdgeInsetsMake(10, 10, 10, 10);
+//}
+
 #pragma mark - Properties
 
 - (void)setSuit:(NSUInteger)suit { //Sets suit and redraws view
     _suit = suit;
     [self setNeedsDisplay];
+    [self invalidateIntrinsicContentSize];
 }
 
 - (void)setRank:(NSUInteger)rank { //Sets rank and redraws view
     _rank = rank;
     [self setNeedsDisplay];
+    [self invalidateIntrinsicContentSize];
 }
 
 - (void)setFaceUp:(BOOL)faceUp { //Sets faceUp and redraws view
     _faceUp = faceUp;
     [self setNeedsDisplay];
+    [self invalidateIntrinsicContentSize];
 }
 
 - (NSString *)rankAsString { //Returns string value for rank
@@ -57,16 +68,16 @@
 - (void)drawRect:(CGRect)rect { //Draws Card
     //Draws boundary of card card with BezierPath
     UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:[self cornerRadius]];
-    
+
     [roundedRect addClip];
-    
+
     [[UIColor whiteColor] setFill];
     [roundedRect fill];
-    
+
     [[UIColor blackColor] setStroke];
     roundedRect.lineWidth = 2.0;
     [roundedRect stroke];
-    
+
     //Draws the contents of the card
 
     if (self.faceUp) {
@@ -180,7 +191,7 @@
         [self pushContextAndRotateUpsideDown];
     }
     //Create point from middle to draw text and draw at point
-    CGPoint middle = CGPointMake(self.bounds.size.width/2.0 - .5, self.bounds.size.height/2.0);
+    CGPoint middle = CGPointMake(self.bounds.size.width/2.0, self.bounds.size.height/2.0);
     UIFont *pipFont = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     pipFont = [pipFont fontWithSize:[pipFont pointSize] * self.bounds.size.width * PIP_FONT_SCALE_FACTOR];
     NSAttributedString *attributesSuit = [[NSAttributedString alloc] initWithString:[self suitAsString] attributes:@{ NSFontAttributeName : pipFont }];
@@ -213,7 +224,7 @@
     self.backgroundColor = nil;
     self.opaque = NO;
     self.contentMode = UIViewContentModeRedraw;
-    self.translatesAutoresizingMaskIntoConstraints = false;
+//    self.translatesAutoresizingMaskIntoConstraints = false;
 }
 
 - (void)awakeFromNib { //Sets up for when cards are loaded from nib
@@ -223,41 +234,30 @@
 
 - (void)layoutSubviews { //Sets up for when cards are layed out in subview
     [self setUp];
-    [self setRotation];
+//    [self setRotation];
 }
 
-- (CGAffineTransform)rotateLeft {
-    return CGAffineTransformMakeRotation(M_PI_2);
-}
-
-- (CGAffineTransform)rotateRight {
-    return CGAffineTransformMakeRotation(-M_PI_2);
-}
-
-- (CGAffineTransform)rotate {
-    return CGAffineTransformMakeRotation(2 * M_PI);
-}
-
-- (void)setRotation {
-    int rotated = 0;
-    if (self.bounds.size.height < self.bounds.size.width) {
-        rotated = 1;
-    }
-    NSLog(@"%ld", rotated);
-    [UIView animateWithDuration:0.1 animations:^{
-        if ([Orientation landscapeOrientation]) {
-            self.transform = [self rotateLeft];
-//            if (!rotated) {
-//                self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-//            }
-        } else {
-            self.transform = [self rotate];
-//            if (rotated) {
-//                self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-//            }
-        }
-//        self.frame = self.frame;
-    }];
-}
+//- (CGAffineTransform)rotateLeft {
+//    return CGAffineTransformMakeRotation(M_PI_2);
+//}
+//
+//- (CGAffineTransform)rotateRight {
+//    return CGAffineTransformMakeRotation(-M_PI_2);
+//}
+//
+//- (CGAffineTransform)rotate {
+//    return CGAffineTransformMakeRotation(2 * M_PI);
+//}
+//
+//- (void)setRotation {
+//
+//    [UIView animateWithDuration:0.1 animations:^{
+//        if ([Orientation landscapeOrientation]) {
+//            self.transform = [self rotateLeft];
+//        } else {
+//            self.transform = [self rotate];
+//        }
+//    }];
+//}
 
 @end

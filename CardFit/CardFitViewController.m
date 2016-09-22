@@ -36,8 +36,9 @@
 
 @implementation CardFitViewController
 
-#pragma mark - ViewController Life Cycle
+#define WIDTH @"width"
 
+#pragma mark - ViewController Life Cycle
 
 //Called when view will appear
 - (void)viewWillAppear:(BOOL)animated {
@@ -49,11 +50,9 @@
         //Setup game for start
         [self setUpUIForGameStart];
     }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-//    [self setCardViewFrame];
+    if ([Orientation landscapeOrientation]) {
+        [self.cardView setTransform:CGAffineTransformRotate(self.cardView.transform, M_PI_2)];
+    }
 }
 
 - (void)viewDidLayoutSubviews {
@@ -62,15 +61,34 @@
 
 #pragma mark - Rotation
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    self.cardView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
+}
+
 //Called when the view changes size or the device changes orientation
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-//         [self setCardViewFrame];
+         CGAffineTransform deltaTransform = coordinator.targetTransform;
+         CGFloat deltaAngle = atan2f(deltaTransform.b, deltaTransform.a);
+         
+         CGFloat currentRotation = [[self.cardView.layer valueForKeyPath:@"transform.rotation.z"] floatValue];
+         // Adding a small value to the rotation angle forces the animation to occur in a the desired direction, preventing an issue where the view would appear to rotate 2PI radians during a rotation from LandscapeRight -> LandscapeLeft.
+         currentRotation += -1 * deltaAngle + 0.0001;
+         [self.cardView.layer setValue:@(currentRotation) forKeyPath:@"transform.rotation.z"];
+         [self setCardViewFrame];
      } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
+         // Integralize the transform to undo the extra 0.0001 added to the rotation angle.
+         CGAffineTransform currentTransform = self.cardView.transform;
+         currentTransform.a = round(currentTransform.a);
+         currentTransform.b = round(currentTransform.b);
+         currentTransform.c = round(currentTransform.c);
+         currentTransform.d = round(currentTransform.d);
+         self.cardView.transform = currentTransform;
          //When done update the UI
          [self updateUI];
      }];
@@ -188,8 +206,6 @@
 
 //Make count down label count down 3, 2, 1, Go....
 - (void)countDown {
-    //Set local variable couner
-    int counter = (int)self.centerLabel.tag;
     //If counter is between 0 and 4 then count down is active
     if (self.centerLabel.tag <= 3 && self.centerLabel.tag > 0) {
         // animate countdown label
@@ -209,9 +225,7 @@
         //Activate NSTimer for game timer label
         [self activateGameTimer];
     }
-    //increase counter
-    counter--;
-    self.centerLabel.tag = counter;
+    self.centerLabel.tag --;
 }
 
 //Animate count down label to change alpha from light do dark over time
