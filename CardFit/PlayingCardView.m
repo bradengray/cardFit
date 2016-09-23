@@ -7,17 +7,12 @@
 //
 
 #import "PlayingCardView.h"
-#import "Orientation.h"
 
 @implementation PlayingCardView
 
 - (CGSize)intrinsicContentSize {
     return CGSizeZero;
 }
-
-//- (UIEdgeInsets)alignmentRectInsets {
-//    return UIEdgeInsetsMake(10, 10, 10, 10);
-//}
 
 #pragma mark - Properties
 
@@ -234,30 +229,6 @@
 
 - (void)layoutSubviews { //Sets up for when cards are layed out in subview
     [self setUp];
-//    [self setRotation];
 }
-
-//- (CGAffineTransform)rotateLeft {
-//    return CGAffineTransformMakeRotation(M_PI_2);
-//}
-//
-//- (CGAffineTransform)rotateRight {
-//    return CGAffineTransformMakeRotation(-M_PI_2);
-//}
-//
-//- (CGAffineTransform)rotate {
-//    return CGAffineTransformMakeRotation(2 * M_PI);
-//}
-//
-//- (void)setRotation {
-//
-//    [UIView animateWithDuration:0.1 animations:^{
-//        if ([Orientation landscapeOrientation]) {
-//            self.transform = [self rotateLeft];
-//        } else {
-//            self.transform = [self rotate];
-//        }
-//    }];
-//}
 
 @end

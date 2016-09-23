@@ -50,8 +50,10 @@
         //Setup game for start
         [self setUpUIForGameStart];
     }
-    if ([Orientation landscapeOrientation]) {
-        [self.cardView setTransform:CGAffineTransformRotate(self.cardView.transform, M_PI_2)];
+    if (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassRegular || self.traitCollection.verticalSizeClass != UIUserInterfaceSizeClassRegular) {
+        if ([Orientation landscapeOrientation]) {
+            [self.cardView setTransform:CGAffineTransformRotate(self.cardView.transform, M_PI_2)];
+        }
     }
 }
 
@@ -66,29 +68,39 @@
     self.cardView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    if (previousTraitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+        //Do Something
+    }
+}
+
 //Called when the view changes size or the device changes orientation
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         CGAffineTransform deltaTransform = coordinator.targetTransform;
-         CGFloat deltaAngle = atan2f(deltaTransform.b, deltaTransform.a);
-         
-         CGFloat currentRotation = [[self.cardView.layer valueForKeyPath:@"transform.rotation.z"] floatValue];
-         // Adding a small value to the rotation angle forces the animation to occur in a the desired direction, preventing an issue where the view would appear to rotate 2PI radians during a rotation from LandscapeRight -> LandscapeLeft.
-         currentRotation += -1 * deltaAngle + 0.0001;
-         [self.cardView.layer setValue:@(currentRotation) forKeyPath:@"transform.rotation.z"];
-         [self setCardViewFrame];
+         if (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassRegular || self.traitCollection.verticalSizeClass != UIUserInterfaceSizeClassRegular) {
+             CGAffineTransform deltaTransform = coordinator.targetTransform;
+             CGFloat deltaAngle = atan2f(deltaTransform.b, deltaTransform.a);
+             
+             CGFloat currentRotation = [[self.cardView.layer valueForKeyPath:@"transform.rotation.z"] floatValue];
+             // Adding a small value to the rotation angle forces the animation to occur in a the desired direction, preventing an issue where the view would appear to rotate 2PI radians during a rotation from LandscapeRight -> LandscapeLeft.
+             currentRotation += -1 * deltaAngle + 0.0001;
+             [self.cardView.layer setValue:@(currentRotation) forKeyPath:@"transform.rotation.z"];
+             [self setCardViewFrame];
+         }
      } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         // Integralize the transform to undo the extra 0.0001 added to the rotation angle.
-         CGAffineTransform currentTransform = self.cardView.transform;
-         currentTransform.a = round(currentTransform.a);
-         currentTransform.b = round(currentTransform.b);
-         currentTransform.c = round(currentTransform.c);
-         currentTransform.d = round(currentTransform.d);
-         self.cardView.transform = currentTransform;
+         if (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassRegular || self.traitCollection.verticalSizeClass != UIUserInterfaceSizeClassRegular) {
+             // Integralize the transform to undo the extra 0.0001 added to the rotation angle.
+             CGAffineTransform currentTransform = self.cardView.transform;
+             currentTransform.a = round(currentTransform.a);
+             currentTransform.b = round(currentTransform.b);
+             currentTransform.c = round(currentTransform.c);
+             currentTransform.d = round(currentTransform.d);
+             self.cardView.transform = currentTransform;
+         }
          //When done update the UI
          [self updateUI];
      }];
@@ -421,34 +433,34 @@
 
 #pragma mark - Task Label
 
-#define LABEL_FONT_SCALE_FACTOR 0.005 //Scale font based on label height
-
-//Called to determine font scale factor
-- (CGFloat)labelFontScaleFactor {
-    CGFloat cardHeight;
-    //If device is landscape
-    if ([Orientation landscapeOrientation]) {
-        //set card height to view width
-        cardHeight = self.view.bounds.size.width;
-    } else { //If device orientation is portrait
-        //Set cardHeight to view height
-        cardHeight = self.view.bounds.size.height;
-    }
-    //Return cardHeight time scale factor
-    return cardHeight * LABEL_FONT_SCALE_FACTOR;
-}
-
+//#define LABEL_FONT_SCALE_FACTOR 0.005 //Scale font based on label height
+//
+////Called to determine font scale factor
+//- (CGFloat)labelFontScaleFactor {
+//    CGFloat cardHeight;
+//    //If device is landscape
+//    if ([Orientation landscapeOrientation]) {
+//        //set card height to view width
+//        cardHeight = self.view.bounds.size.width;
+//    } else { //If device orientation is portrait
+//        //Set cardHeight to view height
+//        cardHeight = self.view.bounds.size.height;
+//    }
+//    //Return cardHeight time scale factor
+//    return cardHeight * LABEL_FONT_SCALE_FACTOR;
+//}
+//
 //Called to set title for task label
 - (void)setTaskLabelTitleForCardView:(UIView *)cardView {
     //Intialize paragraph style object
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+//    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     //Set text alignment center
-    paragraphStyle.alignment = NSTextAlignmentCenter;
+//    paragraphStyle.alignment = NSTextAlignmentCenter;
     //Initialize font with style
-    UIFont *labelFont = [[UIFont alloc] init];
-    labelFont = [UIFont fontWithName:@"Helvetica-Bold" size:36];
+//    UIFont *labelFont = [[UIFont alloc] init];
+//    labelFont = [UIFont fontWithName:@"Helvetica-Bold" size:36];
     //Set task label attributed text with attributes
-    self.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self.dataSource labelForCard:self.currentCard]] attributes:@{NSParagraphStyleAttributeName : paragraphStyle, NSFontAttributeName : labelFont, NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
+    self.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self.dataSource labelForCard:self.currentCard]] attributes:@{NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
     //Set task label background color to light gray
     self.centerLabel.backgroundColor = [UIColor colorWithRed:.7 green:.7 blue:.7 alpha:0.60];
 }
