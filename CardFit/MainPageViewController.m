@@ -23,6 +23,7 @@
 @property (nonatomic) BOOL gameTypeSelected; //Tracks whether game type was selected single player or multiplayer
 @property (nonatomic) BOOL multiplayerReady; //Tracks player authentication
 
+
 @end
 
 @implementation MainPageViewController
@@ -66,19 +67,13 @@
     [self setUpButton:self.flyingSoloButton withTitle:@"F L Y I N G\nS O L O"];
     [self setUpButton:self.withFriendsButton withTitle:@"W I T H\nF R I E N D S"];
     [self setUpButton:self.nextButton withTitle:@"N E X T"];
-    //Set up reveal view controller for side menu
     self.revealViewController.rightViewController = nil;
     [self setMenuBarButton];
-    [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
 }
 
 - (void)viewWillAppear:(BOOL)animated { //Called when view appears
     [super viewWillAppear:animated];
-    UIImage *image = [UIImage imageNamed:@"BackGround"];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-    imageView.frame = CGRectMake(imageView.frame.origin.x, imageView.frame.origin.y + 25, imageView.frame.size.width, imageView.frame.size.height);
-    [self.view addSubview:imageView];
-    [self.view sendSubviewToBack:imageView];
+    [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
@@ -108,6 +103,14 @@
 
 - (void)dealloc { //Stop listening to radio stations
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (BOOL)iPad {
+    if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular && self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassRegular) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - Radio Station Methods
@@ -182,8 +185,7 @@
 }
 
 - (void)setUpButton:(UIButton *)button withTitle:(NSString *)title { //Set up button with title
-    [button setBackgroundColor:[[UIColor whiteColor] colorWithAlphaComponent:0.8]];
-    [button setAttributedTitle:[self buttonAttributedTitleWithString:title] forState:UIControlStateNormal];
+    [button setAttributedTitle:[self buttonAttributedTitleWithString:button.titleLabel.text] forState:UIControlStateNormal];
     [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
     [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -232,24 +234,24 @@
     }
 }
 
-#define BUTTON_FONT_SCALE_FACTOR .0379
-#define BUTTON_FONT_SCALE_FACTOR2 .0616
+#define BUTTON_FONT_REGULAR 18
+#define BUTTON_FONT_BOLD 30
+#define IPAD_BUTTON_FONT_REGULAR 26
+#define IPAD_BUTTON_FONT_BOLD 38
 
 #define FONT @"Helvetica"
 #define FONT_BOLD @"Helvetica-Bold"
 
 - (UIFont *)getScaledFontBold:(BOOL)bold {
     UIFont *font = [[UIFont alloc] init];
-    font = [UIFont fontWithName:bold ? FONT_BOLD : FONT size:1];
-    float scaleFactor = bold ? BUTTON_FONT_SCALE_FACTOR2 : BUTTON_FONT_SCALE_FACTOR;
-    font = [font fontWithSize:font.pointSize * (self.view.bounds.size.height * scaleFactor)];
+    font = [UIFont fontWithName:bold ? FONT_BOLD : FONT size:bold ? [self iPad] ? IPAD_BUTTON_FONT_BOLD : BUTTON_FONT_BOLD : [self iPad] ? IPAD_BUTTON_FONT_REGULAR : BUTTON_FONT_REGULAR];
     return font;
 }
 
-- (NSDictionary *)getAttributesDictionaryForFontBold:(BOOL)bold Centered:(BOOL)centered {
+- (NSDictionary *)getAttributesDictionaryForFontBold:(BOOL)bold centered:(BOOL)centered {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = centered ? NSTextAlignmentCenter : NSTextAlignmentLeft;
-    return @{NSForegroundColorAttributeName : [UIColor darkGrayColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-1, NSFontAttributeName : [self getScaledFontBold:bold], NSParagraphStyleAttributeName : paragraphStyle};
+    return @{NSParagraphStyleAttributeName : paragraphStyle, NSForegroundColorAttributeName : [UIColor darkGrayColor], NSFontAttributeName : [self getScaledFontBold:bold], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-1};
 }
 
 - (NSAttributedString *)buttonAttributedTitleWithString:(NSString *)string { //Returns attributed string for button titles
@@ -260,13 +262,13 @@
     NSAttributedString *aString1;
     if (twoWords) {
         NSString *string2 = components[1];
-        aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", string1] attributes:[self getAttributesDictionaryForFontBold:NO Centered:YES]];
-        NSAttributedString *aString2 = [[NSAttributedString alloc] initWithString:string2 attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]];
+        aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", string1] attributes:[self getAttributesDictionaryForFontBold:NO centered:YES]];
+        NSAttributedString *aString2 = [[NSAttributedString alloc] initWithString:string2 attributes:[self getAttributesDictionaryForFontBold:YES centered:YES]];
         NSMutableAttributedString *myString = [aString1 mutableCopy];
         [myString appendAttributedString:aString2];
         return myString;
     } else {
-        aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", string1] attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]];
+        aString1 = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", string1] attributes:[self getAttributesDictionaryForFontBold:YES centered:YES]];
         return aString1;
     }
 
@@ -303,7 +305,7 @@
 - (NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
     NSString *componentTitle = self.dataSource.dataSectionTitles[component];
     NSArray *titles = [self.dataSource.data objectForKey:componentTitle];
-    return [[NSAttributedString alloc] initWithString:[titles objectAtIndex:row] attributes:[self getAttributesDictionaryForFontBold:YES Centered:YES]]; //Return string for row
+    return [[NSAttributedString alloc] initWithString:[titles objectAtIndex:row] attributes:[self getAttributesDictionaryForFontBold:YES centered:YES]]; //Return string for row
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component { //Called when row selected
