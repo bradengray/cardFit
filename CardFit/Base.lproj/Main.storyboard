@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="mKd-mv-8Hy">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A271f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="mKd-mv-8Hy">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -30,13 +30,27 @@
                                 </constraints>
                             </view>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0tY-gL-Cs6"/>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="characterWrap" translatesAutoresizingMaskIntoConstraints="NO" id="lJ4-wO-WfZ">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="characterWrap" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lJ4-wO-WfZ">
                                 <color key="backgroundColor" white="1" alpha="0.79872255067567566" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="22"/>
                                 <state key="normal">
-                                    <string key="title">F L Y I N G 
-S O L O</string>
-                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                    <attributedString key="attributedTitle">
+                                        <fragment>
+                                            <string key="content">F L Y I N G 
+</string>
+                                            <attributes>
+                                                <color key="NSColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                <font key="NSFont" size="22" name="Helvetica"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                            </attributes>
+                                        </fragment>
+                                        <fragment content="S O L O">
+                                            <attributes>
+                                                <color key="NSColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                <font key="NSFont" size="28" name="Helvetica-Bold"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                            </attributes>
+                                        </fragment>
+                                    </attributedString>
                                 </state>
                                 <variation key="heightClass=regular-widthClass=regular">
                                     <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="32"/>
@@ -94,18 +108,18 @@ Cg
                             <constraint firstItem="jxi-us-W5V" firstAttribute="centerX" secondItem="cwN-S3-E16" secondAttribute="centerX" id="4wk-mw-P0M"/>
                             <constraint firstItem="jxi-us-W5V" firstAttribute="centerY" secondItem="cwN-S3-E16" secondAttribute="centerY" id="9S9-xZ-iRf"/>
                             <constraint firstItem="RDx-41-kIw" firstAttribute="top" secondItem="Qdl-qb-P9Y" secondAttribute="bottom" constant="20" id="Fqg-a1-0Cq"/>
-                            <constraint firstItem="bbn-aK-Fz9" firstAttribute="top" secondItem="jxi-us-W5V" secondAttribute="bottom" id="GiO-KR-uat"/>
+                            <constraint firstItem="bbn-aK-Fz9" firstAttribute="centerY" secondItem="jxi-us-W5V" secondAttribute="bottom" id="GiO-KR-uat"/>
                             <constraint firstItem="jxi-us-W5V" firstAttribute="top" secondItem="0tY-gL-Cs6" secondAttribute="centerY" id="Hkr-3g-nVT"/>
                             <constraint firstItem="jxi-us-W5V" firstAttribute="height" secondItem="cwN-S3-E16" secondAttribute="height" multiplier="0.28" id="I12-RM-aNa"/>
                             <constraint firstItem="lps-jo-TzV" firstAttribute="width" secondItem="cwN-S3-E16" secondAttribute="width" id="JAM-JX-Y2r"/>
                             <constraint firstItem="0tY-gL-Cs6" firstAttribute="height" secondItem="jxi-us-W5V" secondAttribute="height" id="KWX-W8-0L1"/>
                             <constraint firstItem="lJ4-wO-WfZ" firstAttribute="width" secondItem="cwN-S3-E16" secondAttribute="width" id="NCW-Sv-G9t"/>
-                            <constraint firstItem="jxi-us-W5V" firstAttribute="top" secondItem="lJ4-wO-WfZ" secondAttribute="bottom" id="OEd-v9-kLR"/>
+                            <constraint firstItem="jxi-us-W5V" firstAttribute="top" secondItem="lJ4-wO-WfZ" secondAttribute="centerY" id="OEd-v9-kLR"/>
                             <constraint firstItem="lps-jo-TzV" firstAttribute="centerX" secondItem="cwN-S3-E16" secondAttribute="centerX" id="RFM-lA-kd0"/>
                             <constraint firstItem="Qdl-qb-P9Y" firstAttribute="top" secondItem="YRe-5E-ecS" secondAttribute="bottom" constant="8" id="XDa-35-pKX"/>
                             <constraint firstItem="0tY-gL-Cs6" firstAttribute="width" secondItem="cwN-S3-E16" secondAttribute="width" id="dEJ-89-UH1"/>
                             <constraint firstAttribute="leadingMargin" secondItem="Qdl-qb-P9Y" secondAttribute="leading" id="eN7-xe-kIF"/>
-                            <constraint firstItem="lps-jo-TzV" firstAttribute="top" secondItem="jxi-us-W5V" secondAttribute="bottom" id="pbS-VR-mD7"/>
+                            <constraint firstItem="lps-jo-TzV" firstAttribute="centerY" secondItem="jxi-us-W5V" secondAttribute="bottom" id="pbS-VR-mD7"/>
                             <constraint firstItem="bbn-aK-Fz9" firstAttribute="centerX" secondItem="cwN-S3-E16" secondAttribute="centerX" id="qLZ-WD-70K"/>
                             <constraint firstItem="0tY-gL-Cs6" firstAttribute="centerX" secondItem="cwN-S3-E16" secondAttribute="centerX" id="rha-yF-mdx"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Qdl-qb-P9Y" secondAttribute="trailing" id="v0J-fT-m6l"/>
@@ -212,31 +226,38 @@ Cg
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OxS-SM-uMk">
-                                <state key="normal" title="Button"/>
-                                <connections>
-                                    <segue destination="Gu0-Qp-fnX" kind="custom" customClass="SWRevealViewControllerSeguePushController" id="nPT-nl-Hfl"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IX9-xk-LPa">
-                                <state key="normal" title="Button"/>
-                                <connections>
-                                    <segue destination="U8U-Fc-x4B" kind="custom" identifier="Show Settings" customClass="SWRevealViewControllerSeguePushController" id="dmd-Uo-2td"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="bEp-WB-yDg">
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OxS-SM-uMk">
+                                        <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="15"/>
+                                        <state key="normal" title="Main Menu">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <segue destination="Gu0-Qp-fnX" kind="custom" customClass="SWRevealViewControllerSeguePushController" id="nPT-nl-Hfl"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IX9-xk-LPa">
+                                        <state key="normal" title="Game Options">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <segue destination="U8U-Fc-x4B" kind="custom" identifier="Show Settings" customClass="SWRevealViewControllerSeguePushController" id="dmd-Uo-2td"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="leadingMargin" secondItem="IX9-xk-LPa" secondAttribute="leading" id="1KW-mV-ZCR"/>
-                            <constraint firstItem="OxS-SM-uMk" firstAttribute="top" secondItem="4QY-ay-mKB" secondAttribute="bottom" constant="12" id="3pa-KY-4QL"/>
-                            <constraint firstItem="IX9-xk-LPa" firstAttribute="top" secondItem="OxS-SM-uMk" secondAttribute="bottom" constant="70" id="DGH-dD-TRs"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="OxS-SM-uMk" secondAttribute="leading" id="TcB-qx-hoJ"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="bEp-WB-yDg" secondAttribute="leading" id="8eA-mh-4g6"/>
+                            <constraint firstItem="bEp-WB-yDg" firstAttribute="top" secondItem="4QY-ay-mKB" secondAttribute="bottom" constant="8" id="r5l-TI-qpE"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Options" id="VMC-VM-2eg"/>
                     <connections>
-                        <outletCollection property="buttons" destination="OxS-SM-uMk" id="ICB-lu-o9p"/>
-                        <outletCollection property="buttons" destination="IX9-xk-LPa" id="yPF-lg-B5U"/>
+                        <outlet property="gameOptionsButton" destination="IX9-xk-LPa" id="Xd5-Ap-yZ6"/>
+                        <outlet property="mainMenuButton" destination="OxS-SM-uMk" id="BVB-H0-3Hm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DMJ-5K-WkG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -476,30 +497,30 @@ Cg
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="8Sg-hr-PbG"/>
+                                <exclude reference="Oll-Ue-3Fm"/>
+                                <exclude reference="UTa-hO-TON"/>
+                                <exclude reference="dEp-Tz-vlL"/>
                                 <exclude reference="Boo-iy-www"/>
                                 <exclude reference="L79-mZ-p4q"/>
                                 <exclude reference="gDV-0c-p6T"/>
                                 <exclude reference="q3k-kS-UYz"/>
-                                <exclude reference="dEp-Tz-vlL"/>
-                                <exclude reference="8Sg-hr-PbG"/>
-                                <exclude reference="Oll-Ue-3Fm"/>
-                                <exclude reference="UTa-hO-TON"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact">
                             <mask key="constraints">
+                                <include reference="Oll-Ue-3Fm"/>
                                 <exclude reference="Boo-iy-www"/>
                                 <include reference="gDV-0c-p6T"/>
-                                <include reference="Oll-Ue-3Fm"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
-                                <include reference="L79-mZ-p4q"/>
-                                <exclude reference="dEp-Tz-vlL"/>
                                 <include reference="8Sg-hr-PbG"/>
                                 <include reference="UTa-hO-TON"/>
                                 <exclude reference="k7s-xg-lkD"/>
+                                <exclude reference="dEp-Tz-vlL"/>
+                                <include reference="L79-mZ-p4q"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">

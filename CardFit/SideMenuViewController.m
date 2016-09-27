@@ -13,11 +13,15 @@
 #define BUTTON_TITLE_TWO @"Game Options"
 
 @interface SideMenuViewController ()
-@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *buttons;
+//@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *buttons;
+@property (weak, nonatomic) IBOutlet UIButton *mainMenuButton;
+@property (weak, nonatomic) IBOutlet UIButton *gameOptionsButton;
 
 @end
 
 @implementation SideMenuViewController
+
+#pragma mark - ViewController Life Cycle
 
 - (void)viewDidLoad { //Called when view loads
     [super viewDidLoad];
@@ -31,8 +35,28 @@
     for (UIButton *button in self.buttons) {
         button.transform = CGAffineTransformMakeScale(0.01, 0.01);
     }
+
     //Animate buttons to reappear
     [self animateButtons:self.buttons];
+}
+
+#pragma mark - Size Classes
+
+#define COMPACT_FONT_SIZE 18.0
+#define REGULAR_FONT_SIZE 24.0
+
+- (BOOL)sizeClassIsRegularByRegular { //Tells if Size Class is Regular by regular
+    if (self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassRegular && self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+#pragma mark - Buttons
+
+- (NSArray *)buttons { //Returns array of buttons
+    return @[self.mainMenuButton, self.gameOptionsButton];
 }
 
 - (void)setUpButtons {
@@ -40,7 +64,7 @@
     for (UIButton *button in self.buttons) { //Set up buttons
         button.tag = counter;
         [button setBackgroundColor:self.view.backgroundColor];
-        [button setAttributedTitle:[self buttonAttributedTitleForButton:button] forState:UIControlStateNormal];
+        [button setAttributedTitle:[[NSAttributedString alloc] initWithString:button.titleLabel.text attributes:[self buttonAttributes]] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
         [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
         counter++;
@@ -57,23 +81,16 @@
     }];
 }
 
-- (NSAttributedString *)buttonAttributedTitleForButton:(UIButton *)button { //Returns title string for button
-    NSString *title;
-    if (button.tag == 0) {
-        title = BUTTON_TITLE_ONE;
-    } else {
-        title = BUTTON_TITLE_TWO;
-    }
-    //Set font
-    UIFont *font = [[UIFont alloc] init];
-    font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+- (UIFont *)buttonFont {
+    return [UIFont fontWithName:@"Helvetica" size:[self sizeClassIsRegularByRegular] ? REGULAR_FONT_SIZE : COMPACT_FONT_SIZE];
+}
+
+- (NSDictionary *)buttonAttributes{ //Returns title string for button
     //Center text
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.alignment = NSTextAlignmentLeft;
     //Set attributes dictionary
-    NSDictionary *attributes = @{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : font, NSParagraphStyleAttributeName : paragraphStyle};
-    //Return attributed string
-    return [[NSAttributedString alloc] initWithString:title attributes:attributes];
+    return @{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : [self buttonFont], NSParagraphStyleAttributeName : paragraphStyle};
 }
 
 //Values for animations

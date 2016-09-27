@@ -105,7 +105,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (BOOL)iPad {
+//Determines if size class is regular by regular or not
+- (BOOL)sizeClassIsRegularByRegular {
     if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular && self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassRegular) {
         return YES;
     } else {
@@ -244,7 +245,7 @@
 
 - (UIFont *)getScaledFontBold:(BOOL)bold {
     UIFont *font = [[UIFont alloc] init];
-    font = [UIFont fontWithName:bold ? FONT_BOLD : FONT size:bold ? [self iPad] ? IPAD_BUTTON_FONT_BOLD : BUTTON_FONT_BOLD : [self iPad] ? IPAD_BUTTON_FONT_REGULAR : BUTTON_FONT_REGULAR];
+    font = [UIFont fontWithName:bold ? FONT_BOLD : FONT size:bold ? [self sizeClassIsRegularByRegular] ? IPAD_BUTTON_FONT_BOLD : BUTTON_FONT_BOLD : [self sizeClassIsRegularByRegular] ? IPAD_BUTTON_FONT_REGULAR : BUTTON_FONT_REGULAR];
     return font;
 }
 

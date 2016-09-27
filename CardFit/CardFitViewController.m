@@ -8,7 +8,6 @@
 
 #import "CardFitViewController.h"
 #import "FireWorksView.h"
-#import "Orientation.h"
 #import "CardFitGame.h"
 #import "Timer.h"
 
@@ -50,8 +49,8 @@
         //Setup game for start
         [self setUpUIForGameStart];
     }
-    if (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassRegular || self.traitCollection.verticalSizeClass != UIUserInterfaceSizeClassRegular) {
-        if ([Orientation landscapeOrientation]) {
+    if (![self sizeClassIsRegularByRegular]) {
+        if ([self landscapeOrientation]) {
             [self.cardView setTransform:CGAffineTransformRotate(self.cardView.transform, M_PI_2)];
         }
     }
@@ -68,19 +67,13 @@
     self.cardView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
 }
 
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-    if (previousTraitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
-        //Do Something
-    }
-}
-
 //Called when the view changes size or the device changes orientation
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         if (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassRegular || self.traitCollection.verticalSizeClass != UIUserInterfaceSizeClassRegular) {
+         if (![self sizeClassIsRegularByRegular]) {
              CGAffineTransform deltaTransform = coordinator.targetTransform;
              CGFloat deltaAngle = atan2f(deltaTransform.b, deltaTransform.a);
              
@@ -92,7 +85,7 @@
          }
      } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
      {
-         if (self.traitCollection.horizontalSizeClass != UIUserInterfaceSizeClassRegular || self.traitCollection.verticalSizeClass != UIUserInterfaceSizeClassRegular) {
+         if (![self sizeClassIsRegularByRegular]) {
              // Integralize the transform to undo the extra 0.0001 added to the rotation angle.
              CGAffineTransform currentTransform = self.cardView.transform;
              currentTransform.a = round(currentTransform.a);
@@ -106,6 +99,25 @@
      }];
     
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+}
+
+//Returns whether orientation is landscape or not
+- (BOOL)landscapeOrientation {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (orientation == UIInterfaceOrientationPortrait) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
+//Returns whether size class is regular by regular or not
+- (BOOL)sizeClassIsRegularByRegular {
+    if (self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassRegular && self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 #pragma mark - Properties
@@ -210,6 +222,8 @@
     self.centerLabel.backgroundColor = [UIColor clearColor];
     //Set cound down label tag equal 3 to start count down
     self.centerLabel.tag = 3;
+    //Remove tap gesture
+    [self removeGesturesForView:self.cardView];
     //Count down
     [self countDown];
     //Start NStimer to call count down for COUNTDOWN_INTERVAL
@@ -309,12 +323,12 @@
             [self.containerView sendSubviewToBack:self.cardView];
             //Set text string for task label for card view
             [self setTaskLabelTitleForCardView:self.cardView];
-            //Set game points based on current card
-            self.game.totalPoints = [self.dataSource pointsForCard:self.currentCard];
         } else { //Device may have been rotated
             [self updateCardView:self.cardView withCard:self.currentCard];
             if (self.started) {
                 [self setTaskLabelTitleForCardView:self.cardView];
+                //Set game points based on current card
+                self.game.totalPoints = [self.dataSource pointsForCard:self.currentCard];
             }
         }
     } else { //If there is no card
@@ -433,32 +447,8 @@
 
 #pragma mark - Task Label
 
-//#define LABEL_FONT_SCALE_FACTOR 0.005 //Scale font based on label height
-//
-////Called to determine font scale factor
-//- (CGFloat)labelFontScaleFactor {
-//    CGFloat cardHeight;
-//    //If device is landscape
-//    if ([Orientation landscapeOrientation]) {
-//        //set card height to view width
-//        cardHeight = self.view.bounds.size.width;
-//    } else { //If device orientation is portrait
-//        //Set cardHeight to view height
-//        cardHeight = self.view.bounds.size.height;
-//    }
-//    //Return cardHeight time scale factor
-//    return cardHeight * LABEL_FONT_SCALE_FACTOR;
-//}
-//
 //Called to set title for task label
 - (void)setTaskLabelTitleForCardView:(UIView *)cardView {
-    //Intialize paragraph style object
-//    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    //Set text alignment center
-//    paragraphStyle.alignment = NSTextAlignmentCenter;
-    //Initialize font with style
-//    UIFont *labelFont = [[UIFont alloc] init];
-//    labelFont = [UIFont fontWithName:@"Helvetica-Bold" size:36];
     //Set task label attributed text with attributes
     self.centerLabel.attributedText = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", [self.dataSource labelForCard:self.currentCard]] attributes:@{NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor]}];
     //Set task label background color to light gray

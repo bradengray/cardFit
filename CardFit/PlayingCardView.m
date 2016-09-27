@@ -219,7 +219,6 @@
     self.backgroundColor = nil;
     self.opaque = NO;
     self.contentMode = UIViewContentModeRedraw;
-//    self.translatesAutoresizingMaskIntoConstraints = false;
 }
 
 - (void)awakeFromNib { //Sets up for when cards are loaded from nib
