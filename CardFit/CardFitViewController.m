@@ -51,7 +51,7 @@
     }
     if (![self sizeClassIsRegularByRegular]) {
         if ([self landscapeOrientation]) {
-            [self.cardView setTransform:CGAffineTransformRotate(self.cardView.transform, M_PI_2)];
+            [self.cardView setTransform:CGAffineTransformRotate(self.cardView.transform, -M_PI_2)];
         }
     }
 }
@@ -528,7 +528,7 @@
 //Called if player is player one
 - (void)isPlayerOne {
     //Send your settings to all other players
-//    [self.networkingEngine sendGameInfo:self.dataSource.settings];
+    [self.networkingEngine sendGameInfo:[self.dataSource getSettings]];
     //Set BOOL playerOne equal YES
     self.playerOne = YES;
     //Set up game for start
@@ -536,14 +536,13 @@
 }
 
 //Called when player asks for card from player one
-- (void)drawCard {
+- (void)drawCardForPlayer:(NSString *)playerId {
     //Draw card
     Card *card = [self drawRandomCard];
-    //If card
+    
     if (card) {
-#warning needs to be specific to player
         //Send the player a card
-        [self.networkingEngine sendGameInfo:card];
+        [self.networkingEngine sendGameInfo:card toPlayer:playerId];
     } else { //If no card
         //End game for other player
         [self.networkingEngine gameEnded];
@@ -566,7 +565,7 @@
         [self recievedCard:card];
     } else { //If not card them must be settings
         //call recieved Settings
-//        [self.dataSource recievedSettings:gameInfo];
+        [self.dataSource settingsForGameInfo:gameInfo];
     }
 }
 

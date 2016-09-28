@@ -99,6 +99,24 @@
     }
 }
 
+#pragma mark - Settings
+
+//Sets new settings object
+- (void)settingsForGameInfo:(id)gameInfo { //Abstract
+    if ([gameInfo isKindOfClass:[PlayingCardSettings class]]) {
+        self.cardSettings = (PlayingCardSettings *)gameInfo;
+        self.cardSettings.getLocalValue = YES;
+    } else {
+        NSLog(@"Invalid Type of settings");
+        return;
+    }
+}
+
+//Returns settings
+- (Settings *)getSettings { //Abstract
+    return self.cardSettings;
+}
+
 #pragma mark - Helper Methods
 
 //Returns a label string for a rank

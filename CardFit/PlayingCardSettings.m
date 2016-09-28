@@ -128,7 +128,6 @@
     if (self.getLocalValue) {
         return _spadesExerciseString ? _spadesExerciseString : @"?";
     } else {
-#warning needs introspection
         return [self valueForKey:SPADES_EXCERCISE_KEY withDefaultString:@"PUSH-UPS"];
     }
 }

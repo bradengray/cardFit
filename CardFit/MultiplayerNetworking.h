@@ -14,7 +14,7 @@
 - (void)matchReady;
 - (void)gameStarted;
 - (void)isPlayerOne;
-- (void)drawCard;
+- (void)drawCardForPlayer:(NSString *)playerId;
 - (void)progress:(float)currentProgress;
 - (void)gameInfo:(id)GameInfo;
 - (void)matchEnded;

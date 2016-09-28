@@ -28,14 +28,14 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
     if (self) {
         self.enableGameCenter = YES;
         [[GKLocalPlayer localPlayer] registerListener:self];
-        [GKGameSession addEventListener:self];
+//        [GKGameSession addEventListener:self];
     }
     return self;
 }
 
 - (void)dealloc {
     [[GKLocalPlayer localPlayer] unregisterListener:self];
-    [GKGameSession removeEventListener:self];
+//    [GKGameSession removeEventListener:self];
 }
 
 + (instancetype)sharedGameKitHelper {
@@ -176,13 +176,13 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
     }
 }
 
-- (BOOL)isICloudAvailable {
-    if ([[NSFileManager defaultManager] ubiquityIdentityToken]) {
-        return YES;
-    } else {
-        return NO;
-    }
-}
+//- (BOOL)isICloudAvailable {
+//    if ([[NSFileManager defaultManager] ubiquityIdentityToken]) {
+//        return YES;
+//    } else {
+//        return NO;
+//    }
+//}
 
 #pragma mark - GKMatchDelegate
 
@@ -245,22 +245,22 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
     [[NSNotificationCenter defaultCenter] postNotificationName:PresentGKMatchMakerViewController object:nil];
 }
 
-- (void)player:(GKPlayer *)player didRequestMatchWithRecipients:(NSArray<GKPlayer *> *)recipientPlayers {
-    NSLog(@"Did request invite");
-}
+//- (void)player:(GKPlayer *)player didRequestMatchWithRecipients:(NSArray<GKPlayer *> *)recipientPlayers {
+//    NSLog(@"Did request invite");
+//}
 
-#pragma mark = GKGameSessionEventListener
-
-- (void)session:(GKGameSession *)session didReceiveData:(NSData *)data fromPlayer:(GKCloudPlayer *)player {
-    NSLog(@"Session did recieve data");
-}
-
-- (void)session:(GKGameSession *)session player:(GKCloudPlayer *)player didChangeConnectionState:(GKConnectionState)newState {
-    if (newState == GKConnectionStateNotConnected) {
-        //Do Something
-    } else {
-        //Do Something Else
-    }
-}
+//#pragma mark = GKGameSessionEventListener
+//
+//- (void)session:(GKGameSession *)session didReceiveData:(NSData *)data fromPlayer:(GKCloudPlayer *)player {
+//    NSLog(@"Session did recieve data");
+//}
+//
+//- (void)session:(GKGameSession *)session player:(GKCloudPlayer *)player didChangeConnectionState:(GKConnectionState)newState {
+//    if (newState == GKConnectionStateNotConnected) {
+//        //Do Something
+//    } else {
+//        //Do Something Else
+//    }
+//}
 
 @end

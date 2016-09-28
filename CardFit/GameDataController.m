@@ -30,4 +30,12 @@
     return nil;
 }
 
+- (void)settingsForGameInfo:(id)gameInfo { //Abstract
+    return;
+}
+
+- (Settings *)getSettings { //Abstract
+    return nil;
+}
+
 @end

@@ -8,6 +8,7 @@
 
 #import "DataController.h"
 #import "Card.h"
+#import "Settings.h"
 
 //Keys for sections
 #define DEFAULTS @"DEFAULTS"
@@ -45,5 +46,9 @@
 - (NSUInteger)pointsForCard:(Card *)card; //Abstract
 //Returns label for card
 - (NSString *)labelForCard:(Card *)card; //Abstract
+//sets new settings object for gameInfo
+- (void)settingsForGameInfo:(id)gameInfo; //Abstract
+//Returns Settings Object
+-(Settings *)getSettings; //Abstract
 
 @end
