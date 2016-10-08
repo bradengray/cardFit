@@ -36,7 +36,7 @@
     if ([value isKindOfClass:[NSString class]]) {
         [cell textFieldText:(NSString *)value withNumberPad:NO];
     } else if ([value isKindOfClass:[NSNumber class]]) {
-        [cell textFieldText:[NSString stringWithFormat:@"%ld", [(NSNumber *)value integerValue]] withNumberPad:YES];
+        [cell textFieldText:[NSString stringWithFormat:@"%ld", (long)[(NSNumber *)value integerValue]] withNumberPad:YES];
     }
 
     return cell;
@@ -69,7 +69,7 @@
         if ([value isKindOfClass:[NSString class]]) {
             [cell textFieldText:value withNumberPad:NO];
         } else if ([value isKindOfClass:[NSNumber class]]) {
-            [cell textFieldText:[NSString stringWithFormat:@"%ld", [(NSNumber *)value integerValue]] withNumberPad:YES];
+            [cell textFieldText:[NSString stringWithFormat:@"%ld", (long)[(NSNumber *)value integerValue]] withNumberPad:YES];
         }
     }
 }

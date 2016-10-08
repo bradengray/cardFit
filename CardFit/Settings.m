@@ -32,7 +32,6 @@ NSString *const SettingsChangedInModel = @"Settings Changed In Model"; //Define 
             settings = [[NSMutableDictionary alloc] init];
         }
         for (NSString *key in allKeys) {
-            NSLog(@"Inside SettingsKey:%@", settings[key]);
             settings[key] = [dict objectForKey:key];
         }
         [[NSUserDefaults standardUserDefaults] setObject:settings forKey:NSUSERDEFAULTS_SETTINGS_KEY];
@@ -72,7 +71,6 @@ NSString *const SettingsChangedInModel = @"Settings Changed In Model"; //Define 
         return defaultString;
     }
     //If a value exists for the Key in the setting dictionary return that value.
-    NSLog(@"Settingkey:%@", settings[key]);
     return settings[key];
 }
 
@@ -106,11 +104,12 @@ NSString *const SettingsChangedInModel = @"Settings Changed In Model"; //Define 
 
 //Used by NSCoder to decode this object using NSKeyedUnarchiver.
 - (id)initWithCoder:(NSCoder *)aDecoder {
+    self.getLocalValue = YES;
     NSArray *allKeys = [self.values allKeys];
     
     for (NSString *key in allKeys) {
         NSObject *obj = [aDecoder decodeObjectForKey:key];
-        [self setValue:obj forKey:key];
+        [self setSettingsValue:obj forKey:key];
     }
     
     return self;

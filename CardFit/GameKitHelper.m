@@ -28,14 +28,12 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
     if (self) {
         self.enableGameCenter = YES;
         [[GKLocalPlayer localPlayer] registerListener:self];
-//        [GKGameSession addEventListener:self];
     }
     return self;
 }
 
 - (void)dealloc {
     [[GKLocalPlayer localPlayer] unregisterListener:self];
-//    [GKGameSession removeEventListener:self];
 }
 
 + (instancetype)sharedGameKitHelper {
@@ -46,11 +44,6 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
     });
     return sharedGameKitHelper;
 }
-
-//- (void)setSession:(GKGameSession *)session {
-//    _session = session;
-//    [self.delegate sessionStarted];
-//}
 
 - (void)authenticateLocalPlayer {
     // 1
@@ -81,8 +74,6 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
 
 - (void)lookupPlayers {
     
-    NSLog(@"Looking up %lu players...", (unsigned long)_match.players.count);
-    
     NSMutableArray *playerIDs = [[NSMutableArray alloc] init];
     for (GKPlayer *player in _match.players) {
         [playerIDs addObject:player.playerID];
@@ -97,7 +88,6 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
             // Populate players dict
             _playersDictionary = [NSMutableDictionary dictionaryWithCapacity:players.count];
             for (GKPlayer *player in players) {
-                NSLog(@"Found Player: %@", player.alias);
                 [_playersDictionary setObject:player forKey:player.playerID];
             }
             [_playersDictionary setObject:[GKLocalPlayer localPlayer] forKey:[GKLocalPlayer localPlayer].playerID];
@@ -171,18 +161,9 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
     _match = match;
     _match.delegate = self;
     if (!self.matchStarted && match.expectedPlayerCount == 0) {
-        NSLog(@"Ready to start match!");
         [self lookupPlayers];
     }
 }
-
-//- (BOOL)isICloudAvailable {
-//    if ([[NSFileManager defaultManager] ubiquityIdentityToken]) {
-//        return YES;
-//    } else {
-//        return NO;
-//    }
-//}
 
 #pragma mark - GKMatchDelegate
 
@@ -204,10 +185,8 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
     switch (state) {
         case GKPlayerStateConnected:
             // handle a new player connection.
-            NSLog(@"Player connected!");
             
             if (!self.matchStarted && match.expectedPlayerCount == 0) {
-                NSLog(@"Ready to start match!");
                 [self lookupPlayers];
             }
             break;
@@ -244,23 +223,5 @@ NSString *const GKMatchMakerViewControllerDismissed = @"dismiss_match_maker_view
     self.pendingInvite = invite;
     [[NSNotificationCenter defaultCenter] postNotificationName:PresentGKMatchMakerViewController object:nil];
 }
-
-//- (void)player:(GKPlayer *)player didRequestMatchWithRecipients:(NSArray<GKPlayer *> *)recipientPlayers {
-//    NSLog(@"Did request invite");
-//}
-
-//#pragma mark = GKGameSessionEventListener
-//
-//- (void)session:(GKGameSession *)session didReceiveData:(NSData *)data fromPlayer:(GKCloudPlayer *)player {
-//    NSLog(@"Session did recieve data");
-//}
-//
-//- (void)session:(GKGameSession *)session player:(GKCloudPlayer *)player didChangeConnectionState:(GKConnectionState)newState {
-//    if (newState == GKConnectionStateNotConnected) {
-//        //Do Something
-//    } else {
-//        //Do Something Else
-//    }
-//}
 
 @end

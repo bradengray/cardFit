@@ -35,8 +35,13 @@
 #pragma mark - Settings Methods
 
 //Create dictionary of all settings values for NSCoding
-- (NSDictionary *)settingsValues {
-    NSMutableDictionary *settingsValues = [[super values] mutableCopy];
+- (NSDictionary *)values {
+    NSMutableDictionary *settingsValues;
+    if ([super values]) {
+        settingsValues = [[super values] mutableCopy];
+    } else {
+        settingsValues = [[NSMutableDictionary alloc] init];
+    }
     [settingsValues addEntriesFromDictionary:@{SPADES_EXCERCISE_KEY : self.spadesExerciseString, CLUBS_EXCERCISE_KEY : self.clubsExerciseString, HEARTS_EXCERCISE_KEY : self.heartsExerciseString, DIAMONDS_EXCERCISE_KEY : self.diamondsExerciseString, ACES_EXERCISE_KEY : self.acesExerciseString, JOKERS_EXERCISE_KEY : self.jokersExerciseString, JACKS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.jokersPoints], QUEENS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.queensPoints], KINGS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.kingsPoints], ACES_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.acesPoints], JACKS_POINTS_KEY : [NSNumber numberWithUnsignedInteger:self.jokersPoints], JOKERS_BOOLEAN_KEY : [NSNumber numberWithBool:self.playWithJokers]}];
     return settingsValues;
 }
@@ -106,7 +111,17 @@
             return;
         }
     } else if ([value isKindOfClass:[NSNumber class]]) {
-        if ([key isEqualToString:JOKERS_BOOLEAN_KEY]) {
+        if ([key isEqualToString:JACKS_POINTS_KEY]) {
+            self.jacksPoints = [(NSNumber *)value unsignedIntegerValue];
+        } else if ([key isEqualToString:QUEENS_POINTS_KEY]) {
+            self.queensPoints = [(NSNumber *)value unsignedIntegerValue];
+        } else if ([key isEqualToString:KINGS_POINTS_KEY]) {
+            self.kingsPoints = [(NSNumber *)value unsignedIntegerValue];
+        } else if ([key isEqualToString:ACES_POINTS_KEY]) {
+            self.acesPoints = [(NSNumber *)value unsignedIntegerValue];
+        } else if ([key isEqualToString:JOKERS_POINTS_KEY]) {
+            self.jokersPoints = [(NSNumber *)value unsignedIntegerValue];
+        } else if ([key isEqualToString:JOKERS_BOOLEAN_KEY]) {
             self.playWithJokers = [(NSNumber *)value boolValue];
         }
     } else {

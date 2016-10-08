@@ -8,12 +8,10 @@
 
 #import <Foundation/Foundation.h>
 @import GameKit;
-//@import MultipeerConnectivity;
 
 @protocol GameKitHelperDelegate
 
 - (void)matchStarted;
-//- (void)sessionStarted;
 - (void)matchEnded;
 - (void)matchCanceled;
 - (void)myMatch:(GKMatch *)match didRecieveData:(NSData *)data fromPlayer:(GKPlayer *)player;
@@ -33,8 +31,6 @@ extern NSString *const GKMatchMakerViewControllerDismissed;
 @property (nonatomic, readonly) NSError *lastError;
 
 @property (nonatomic, strong) GKMatch *match;
-//@property (nonatomic, strong) GKGameSession *session;
-//@property (nonatomic, strong) NSURL *sharedSessionURL;
 @property (nonatomic, strong) GKTurnBasedMatch *turnMatch;
 @property (nonatomic, assign) id <GameKitHelperDelegate> delegate;
 

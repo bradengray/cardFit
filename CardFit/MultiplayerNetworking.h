@@ -26,11 +26,13 @@
 
 @property (nonatomic, assign) id<MultiplayerNetworkingProtocol> delegate;
 
+- (void)gameLoaded;
 - (void)sendGameInfo:(id)gameInfo;
 - (void)sendGameInfo:(id)gameInfo toPlayer:(NSString *)playerid;
 - (void)sendProgress:(float)currentProgress;
 - (void)startGame;
 - (void)gameEnded;
 - (void)drawCard;
+- (void)gameDismissed;
 
 @end

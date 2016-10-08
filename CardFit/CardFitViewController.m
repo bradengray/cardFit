@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *timerLabel;
 @property (weak, nonatomic) IBOutlet UILabel *centerLabel;
 @property (weak, nonatomic) IBOutlet UIProgressView *progress; //Progress view that shows the progress of the game
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator; //tells if loading
 @property (nonatomic) BOOL started; //Tells if game has started or not
 @property (nonatomic, strong) NSTimer *gameTimer; //Timer to determine when countDownLabel and timerLabel should update
 
@@ -39,11 +40,20 @@
 
 #pragma mark - ViewController Life Cycle
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self.networkingEngine gameLoaded];
+    [self.activityIndicator startAnimating];
+    self.centerLabel.hidden = YES;
+    self.timerLabel.hidden = YES;
+}
+
 //Called when view will appear
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //Hide progress bar
     self.progress.hidden = YES;
+    self.networkingEngine.delegate = self;
     //If not multiplayer game
     if (!self.multiplayer) {
         //Setup game for start
@@ -54,6 +64,11 @@
             [self.cardView setTransform:CGAffineTransformRotate(self.cardView.transform, -M_PI_2)];
         }
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.networkingEngine gameDismissed];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -167,6 +182,12 @@
     [self createButton];
     //Show progress bar
     self.progress.hidden = NO;
+    //Show center label
+    self.centerLabel.hidden = NO;
+    //Show timer label
+    self.timerLabel.hidden = NO;
+    //Stop animating activity Indicator
+    [self.activityIndicator stopAnimating];
     //Check to see if player One
     if (self.playerOne) {
         //Draw a card
@@ -196,6 +217,7 @@
             //Set textString to Player Two
             textString = @"Player Two";
             self.pauseButton.enabled = NO;
+            [self removeGesturesForView:self.cardView];
         }
     } else { //if single player
         //Set textString to CardFit
@@ -274,7 +296,7 @@
     paragraphStyle.alignment = NSTextAlignmentCenter;
     UIFont *countDownLabelFont = [[UIFont alloc] init];
     countDownLabelFont = [UIFont fontWithName:@"Helvetica-Bold" size:130];
-    return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", self.centerLabel.tag] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : countDownLabelFont, NSParagraphStyleAttributeName : paragraphStyle}];
+    return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", (long)self.centerLabel.tag] attributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeColorAttributeName : [UIColor blackColor], NSStrokeWidthAttributeName : @-2, NSFontAttributeName : countDownLabelFont, NSParagraphStyleAttributeName : paragraphStyle}];
 }
 
 //Animate card view changing from face down to face up
@@ -379,7 +401,7 @@
     //Get dictionary of attributes for that range
     NSDictionary *attributes = [self.centerLabel.attributedText attributesAtIndex:0 effectiveRange:&range];
     //Set an attributed string for task label to reflect score
-    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld\n\nPoints:%ld", self.game.score ,self.game.totalPoints] attributes:attributes];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"Score:%ld\n\nPoints:%ld", (long)self.game.score ,(long)self.game.totalPoints] attributes:attributes];
     //Set task label attributed text to that string
     self.centerLabel.attributedText = attributedString;;
     //Disable pause button
@@ -482,6 +504,8 @@
             if (!self.gameOver) {
                 //Draw a card from player one
                 [self.networkingEngine drawCard];
+                [self.activityIndicator startAnimating];
+                [self removeGesturesForView:self.cardView];
             } else { //If game is over
                 //End game
                 [self endGame];
@@ -500,6 +524,8 @@
     if (self.started) {
         //remove old card view and update UI
         self.currentCard.selected = YES;
+        [self.activityIndicator stopAnimating];
+        [self addTapGestureToView:self.cardView];
         [self updateUI];
     } else { //If game has not started
         //Set card as not selected

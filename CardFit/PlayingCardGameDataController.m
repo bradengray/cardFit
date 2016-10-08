@@ -75,7 +75,7 @@
         } else if (playingCard.rank > 10) {
             return [NSString stringWithFormat:@"%@ %@", [self labelForKey:rankKey], [self labelForKey:suitKey]];
         } else {
-            return [NSString stringWithFormat:@"%ld %@", playingCard.rank, [self labelForKey:suitKey]];
+            return [NSString stringWithFormat:@"%ld %@", (unsigned long)playingCard.rank, [self labelForKey:suitKey]];
         }
     } else {
         NSLog(@"GameDataController Error: Incorrect type");
@@ -105,7 +105,6 @@
 - (void)settingsForGameInfo:(id)gameInfo { //Abstract
     if ([gameInfo isKindOfClass:[PlayingCardSettings class]]) {
         self.cardSettings = (PlayingCardSettings *)gameInfo;
-        self.cardSettings.getLocalValue = YES;
     } else {
         NSLog(@"Invalid Type of settings");
         return;
@@ -159,7 +158,7 @@
     if (label) {
         return label;
     } else {
-        return [NSString stringWithFormat:@"%ld", [self pointsForKey:key]];
+        return [NSString stringWithFormat:@"%ld", (unsigned long)[self pointsForKey:key]];
     }
 }
 

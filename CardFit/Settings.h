@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Settings : NSObject
+@interface Settings : NSObject <NSCoding>
 
 //RadioStation
 extern NSString *const SettingsChangedInModel; //Global for posting that data changed in Model

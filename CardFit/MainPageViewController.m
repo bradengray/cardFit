@@ -131,6 +131,7 @@
 
 - (void)segueToGame { //Called when ready to segue to game
     [self performSegueWithIdentifier:@"Play Game" sender:self.nextButton];
+    NSLog(@"Segueing To Game");
 }
 
 #pragma mark - Properties
@@ -326,11 +327,9 @@
         if ((UIButton *)sender == self.nextButton) { //Check sender
             if ([segue.destinationViewController isKindOfClass:[CardFitViewController class]]) { //Check destination
                 CardFitViewController *cfvc = (CardFitViewController *)segue.destinationViewController;
-//                cfvc.multiplayer = self.dataSource.multiplayer;
                 cfvc.dataSource = self.dataSource;
                 //Check to see what gameType
                 if (self.dataSource.multiplayer) {
-                    self.networkingEngine.delegate = cfvc;
                     cfvc.networkingEngine = self.networkingEngine;
                 }
             }
